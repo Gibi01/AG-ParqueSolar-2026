@@ -1,7 +1,7 @@
-"""Tests for the CDS/ERA5-Land client. The underlying `cdsapi.Client` is
-replaced with a fake object (`FakeCdsClient`) that writes a synthetic CSV
-instead of calling the real Copernicus service — no test here touches
-the network or requires a CDS_API_KEY."""
+"""Tests para el cliente de CDS/ERA5-Land. El `cdsapi.Client` subyacente
+se reemplaza por un objeto falso (`FakeCdsClient`) que escribe un CSV
+sintético en vez de llamar al servicio real de Copernicus — ningún test
+acá toca la red ni requiere una CDS_API_KEY."""
 
 from __future__ import annotations
 

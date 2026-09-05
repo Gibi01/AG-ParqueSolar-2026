@@ -1,11 +1,11 @@
-"""Preprocessing: ingested layers -> grid -> metrics -> candidate_locations.
+"""Preprocesamiento: capas ingeridas -> grilla -> métricas -> candidate_locations.
 
-This is the ETL step that turns raw ingested GeoDataFrames into the
-local, GA-ready `candidate_locations` table (Fase 20 of the
-requirements). Nothing here calls an external API — climate retrieval
-(which does call the CDS API, cached) is the one exception, invoked
-through `Era5LandRadiationService` which itself never re-fetches an
-already-cached point/month.
+Este es el paso de ETL que convierte los GeoDataFrames crudos ingeridos
+en la tabla local `candidate_locations`, lista para el AG (Fase 20 de los
+requisitos). Nada acá llama a una API externa — la obtención de clima
+(que sí llama a la API de CDS, cacheada) es la única excepción, invocada
+a través de `Era5LandRadiationService`, que a su vez nunca vuelve a
+obtener un punto/mes ya cacheado.
 """
 
 from __future__ import annotations
@@ -36,8 +36,8 @@ def run_preprocessing(
     transformers_gdf: gpd.GeoDataFrame,
     era5_service: Era5LandRadiationService | None = None,
 ) -> pd.DataFrame:
-    # Fase 32 pre-flight checks: fail loudly, never proceed silently
-    # without a required layer (transformers in particular — Fase 16).
+    # Chequeos previos de la Fase 32: fallar explícitamente, nunca seguir
+    # en silencio sin una capa requerida (transformadores en particular — Fase 16).
     validate_layer_present(power_lines_gdf, "power_lines")
     validate_layer_present(transformers_gdf, "transformers")
 

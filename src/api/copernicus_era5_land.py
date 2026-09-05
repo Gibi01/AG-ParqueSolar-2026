@@ -1,48 +1,50 @@
-"""Official programmatic client for the Copernicus Climate Data Store (CDS),
-specifically the "ERA5-Land hourly time-series data from 1950 to present"
-(ARCO) dataset — id `reanalysis-era5-land-timeseries`.
+"""Cliente programático oficial para el Copernicus Climate Data Store (CDS),
+específicamente el dataset "ERA5-Land hourly time-series data from 1950
+to present" (ARCO) — id `reanalysis-era5-land-timeseries`.
 
-Access mechanism, confirmed directly against the live CDS service before
-writing this client (never guessed):
+Mecanismo de acceso, confirmado directamente contra el servicio CDS real
+antes de escribir este cliente (nunca adivinado):
 
-- Library: the official `cdsapi` package, `cdsapi.Client().retrieve(...)`.
-- Auth: `~/.cdsapirc` with `url: https://cds.climate.copernicus.eu/api`
-  and `key: <PERSONAL-ACCESS-TOKEN>` — or the equivalent constructor
-  kwargs, which is what this client uses so the key can come from the
-  `CDS_API_KEY` environment variable instead of a file.
-- Confirmed via the dataset's own form/constraints/OGC-process JSON
+- Librería: el paquete oficial `cdsapi`, `cdsapi.Client().retrieve(...)`.
+- Autenticación: `~/.cdsapirc` con `url: https://cds.climate.copernicus.eu/api`
+  y `key: <PERSONAL-ACCESS-TOKEN>` — o los kwargs equivalentes del
+  constructor, que es lo que usa este cliente para que la clave pueda venir
+  de la variable de entorno `CDS_API_KEY` en vez de un archivo.
+- Confirmado vía el JSON de form/constraints/proceso-OGC del propio dataset
   (`.../api/catalogue/v1/collections/reanalysis-era5-land-timeseries/{form,constraints}.json`
-  and `.../api/retrieve/v1/processes/reanalysis-era5-land-timeseries`):
-    * `variable`: list of variable names, includes
-      `surface_solar_radiation_downwards` — labelled by CDS itself as
-      "Surface solar radiation downwards (**de-accumulated**)". This is
-      the key semantic fact this MVP relies on: unlike the raw ERA5-Land
-      archive (where SSRD is accumulated since the start of the forecast
-      and must be manually de-accumulated), each hourly value returned by
-      THIS dataset already represents the accumulation for that single
-      hour. See src/climate/radiation.py for how this drives aggregation.
-    * Geographic selection: the formal input schema exposes an `area`
-      bounding box `[N, W, S, E]` (no separate bare lat/lon "location"
-      key, even though the interactive form has a location-vs-area
-      toggle — the toggle is a UI convenience over the same `area`
-      field). The official help text states: "Location selection
+  y `.../api/retrieve/v1/processes/reanalysis-era5-land-timeseries`):
+    * `variable`: lista de nombres de variable, incluye
+      `surface_solar_radiation_downwards` — etiquetada por el propio CDS
+      como "Surface solar radiation downwards (**de-accumulated**)". Este
+      es el hecho semántico clave del que depende este MVP: a diferencia
+      del archivo crudo de ERA5-Land (donde SSRD es acumulado desde el
+      inicio del forecast y hay que de-acumularlo manualmente), cada valor
+      horario devuelto por ESTE dataset ya representa la acumulación de
+      esa hora puntual. Ver src/climate/radiation.py para cómo esto guía
+      la agregación.
+    * Selección geográfica: el schema formal de entrada expone un bounding
+      box `area` `[N, W, S, E]` (no una clave suelta "location" de
+      lat/lon, aunque el formulario interactivo tenga un selector
+      ubicación-vs-área — ese selector es un atajo de UI sobre el mismo
+      campo `area`). El texto de ayuda oficial dice: "Location selection
       returns a time series for the nearest grid point to the selected
-      location" — i.e. nearest-neighbour is applied automatically by the
-      server. This client requests a tiny bounding box centred on the
-      target point (see `point_bbox_epsilon_deg`) to reproduce that
-      "location" behaviour through the documented `area` field, without
-      inventing an undocumented parameter.
-    * `date`: a single `"YYYY-MM-DD/YYYY-MM-DD"` range string.
-    * `data_format`: `"csv"` or `"netcdf"`.
+      location" — es decir, el servidor aplica automáticamente el vecino
+      más cercano. Este cliente pide un bounding box mínimo centrado en el
+      punto objetivo (ver `point_bbox_epsilon_deg`) para reproducir ese
+      comportamiento de "ubicación" a través del campo `area` documentado,
+      sin inventar un parámetro no documentado.
+    * `date`: un único string de rango `"YYYY-MM-DD/YYYY-MM-DD"`.
+    * `data_format`: `"csv"` o `"netcdf"`.
 
-IMPORTANT: this mapping was derived from the dataset's own machine-readable
-schema, not from guesswork — but it has NOT been exercised against a real
-authenticated request (no CDS_API_KEY was available while building this).
-Before any bulk download, run `python -m src.main --test-era5` (a single
-coordinate, single month request) and inspect its printed diagnostics
-(requested vs. returned coordinates, units, first values) per the
-project's Fase 10/36 validation requirement. If CDS has since changed the
-schema, only this file and `src/climate/radiation.py` should need updates.
+IMPORTANTE: este mapeo se derivó del schema legible por máquina del propio
+dataset, no de adivinar — pero NO fue ejercido contra una solicitud
+autenticada real (no había una CDS_API_KEY disponible al construir esto).
+Antes de cualquier descarga masiva, correr `python -m src.main --test-era5`
+(una solicitud de una sola coordenada, un solo mes) e inspeccionar sus
+diagnósticos impresos (coordenadas solicitadas vs. devueltas, unidades,
+primeros valores) según el requisito de validación de la Fase 10/36 del
+proyecto. Si CDS cambió el schema desde entonces, solo este archivo y
+`src/climate/radiation.py` deberían necesitar actualizarse.
 """
 
 from __future__ import annotations
@@ -61,10 +63,10 @@ logger = logging.getLogger(__name__)
 
 DATASET_ID = "reanalysis-era5-land-timeseries"
 
-# Column-name aliases tolerated when parsing the returned CSV — the exact
-# header used by the live service was not observable without credentials.
-# If a real response uses a different name, add it here (single point of
-# adaptation) rather than in calling code.
+# Alias de nombres de columna tolerados al parsear el CSV devuelto — el
+# encabezado exacto que usa el servicio real no se pudo observar sin
+# credenciales. Si una respuesta real usa un nombre distinto, agregarlo
+# acá (único punto de adaptación) en vez de en el código que llama.
 VARIABLE_COLUMN_ALIASES: dict[str, list[str]] = {
     "surface_solar_radiation_downwards": [
         "surface_solar_radiation_downwards",
@@ -96,7 +98,7 @@ class Era5PointRequest:
 
     def area_bbox(self) -> list[float]:
         eps = self.bbox_epsilon_deg
-        # CDS area format is [North, West, South, East]
+        # El formato de área de CDS es [Norte, Oeste, Sur, Este]
         return [self.latitude + eps, self.longitude - eps, self.latitude - eps, self.longitude + eps]
 
     def to_cds_request(self) -> dict:
@@ -113,7 +115,7 @@ class Era5PointResponse:
     requested: Era5PointRequest
     era5_latitude: float
     era5_longitude: float
-    hourly: pd.DataFrame  # columns: valid_time (datetime64), value (float, J/m^2)
+    hourly: pd.DataFrame  # columnas: valid_time (datetime64), value (float, J/m^2)
     raw_file_path: Path
     retrieved_at: datetime
 
@@ -132,7 +134,7 @@ def _find_column(columns: list[str], aliases: list[str], role: str) -> str:
 
 
 def _read_result_file(path: Path) -> pd.DataFrame:
-    """Read a CDS result file that may be a raw CSV or a zip containing one."""
+    """Lee un archivo de resultado de CDS que puede ser un CSV crudo o un zip que contiene uno."""
     if zipfile.is_zipfile(path):
         with zipfile.ZipFile(path) as zf:
             csv_names = [n for n in zf.namelist() if n.lower().endswith(".csv")]
@@ -144,7 +146,7 @@ def _read_result_file(path: Path) -> pd.DataFrame:
 
 
 class CopernicusEra5LandClient:
-    """Wraps `cdsapi.Client` for the ERA5-Land Time-Series dataset."""
+    """Envuelve `cdsapi.Client` para el dataset ERA5-Land Time-Series."""
 
     def __init__(
         self,
@@ -157,7 +159,7 @@ class CopernicusEra5LandClient:
         self._api_url = api_url or "https://cds.climate.copernicus.eu/api"
         self.raw_download_dir = Path(raw_download_dir) if raw_download_dir else Path("data/raw/era5_downloads")
         self.raw_download_dir.mkdir(parents=True, exist_ok=True)
-        self._cds_client = cds_client  # injectable for tests; built lazily otherwise
+        self._cds_client = cds_client  # inyectable para tests; se construye de forma perezosa si no
 
     def _get_cds_client(self):
         if self._cds_client is not None:

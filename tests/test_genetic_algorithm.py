@@ -21,7 +21,7 @@ def _candidates_with_one_clear_winner(n=20) -> pd.DataFrame:
             "transformer_proximity_score": rng.uniform(0, 0.5, n),
         }
     )
-    # cell 0 clearly dominates every metric
+    # la celda 0 domina claramente todas las métricas
     df.loc[0, ["solar_score", "grid_proximity_score", "transformer_proximity_score"]] = [1.0, 1.0, 1.0]
     return df
 
@@ -41,7 +41,7 @@ def test_ga_converges_to_the_dominant_candidate():
     ga = GeneticAlgorithm(candidates, weights, config)
     result = ga.run(top_n=10)
 
-    assert result.top10.iloc[0]["grid_cell_id"] == 1  # cell_id of index 0
+    assert result.top10.iloc[0]["grid_cell_id"] == 1  # cell_id del índice 0
     assert result.top10.iloc[0]["fitness"] == pytest.approx(1.0)
     assert result.history["best_fitness"].iloc[-1] == pytest.approx(1.0)
 
@@ -61,7 +61,7 @@ def test_ga_top10_is_sorted_descending_by_fitness():
     ga = GeneticAlgorithm(candidates, weights, config)
     result = ga.run(top_n=10)
     fitness_values = result.top10["fitness"].to_numpy()
-    assert np.all(np.diff(fitness_values) <= 1e-12)  # non-increasing
+    assert np.all(np.diff(fitness_values) <= 1e-12)  # no creciente
 
 
 def test_ga_rejects_empty_candidates():

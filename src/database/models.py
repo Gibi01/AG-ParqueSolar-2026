@@ -1,14 +1,14 @@
-"""SQLAlchemy models: the relational store the GA reads from.
+"""Modelos SQLAlchemy: el almacén relacional del que lee el AG.
 
-Heavy geometry operations (distance, intersection, buffering) happen in
-GeoPandas against GeoPackage files (see src/data/cache.py RawLayerCache
-and data/raw/layers/*.gpkg) — that is the appropriate tool for
-geometries. This SQLite database is the queryable, portable "processed
-data" layer described in the architecture (RAW -> ETL -> geospatial
-processing -> local DB -> GA -> results); geometries are also mirrored
-here as WKT text for reference/traceability, but the GA and the fitness
-function only ever read plain numeric columns from here — never
-geometries, and never the network.
+Las operaciones pesadas de geometría (distancia, intersección, buffer)
+suceden en GeoPandas contra archivos GeoPackage (ver RawLayerCache en
+src/data/cache.py y data/raw/layers/*.gpkg) — esa es la herramienta
+apropiada para geometrías. Esta base SQLite es la capa de "datos
+procesados" consultable y portable descripta en la arquitectura
+(RAW -> ETL -> procesamiento geoespacial -> DB local -> AG -> resultados);
+las geometrías también se replican acá como texto WKT para
+referencia/trazabilidad, pero el AG y la función de fitness solo leen de
+acá columnas numéricas simples — nunca geometrías, y nunca la red.
 """
 
 from __future__ import annotations

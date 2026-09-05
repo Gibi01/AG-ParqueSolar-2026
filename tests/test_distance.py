@@ -6,12 +6,12 @@ from src.gis.distance import nearest_distance_km
 
 
 def test_nearest_distance_km_matches_known_offset():
-    # Two points ~0.01 deg apart in latitude at the equator ~ 1.1km, but we
-    # use a projected CRS with EXACT metre offsets to make the expectation
-    # unambiguous, rather than relying on geodesic approximations.
-    projected_crs = "EPSG:5346"  # POSGAR 2007 / Argentina Faja 4 (metric)
+    # Dos puntos separados ~0.01 grados de latitud en el ecuador dan ~1.1km,
+    # pero usamos un CRS proyectado con offsets EXACTOS en metros para que
+    # la expectativa sea inequívoca, en vez de depender de aproximaciones geodésicas.
+    projected_crs = "EPSG:5346"  # POSGAR 2007 / Argentina Faja 4 (métrico)
     source = gpd.GeoDataFrame({"id": [1]}, geometry=[Point(0, 0)], crs=projected_crs)
-    target = gpd.GeoDataFrame({"id": [1]}, geometry=[Point(0, 3000)], crs=projected_crs)  # 3000 m north
+    target = gpd.GeoDataFrame({"id": [1]}, geometry=[Point(0, 3000)], crs=projected_crs)  # 3000 m al norte
 
     distances = nearest_distance_km(source, target, projected_crs)
     assert distances[0] == pytest.approx(3.0, abs=1e-6)
@@ -32,7 +32,7 @@ def test_nearest_distance_km_picks_the_closer_of_several_targets():
 def test_nearest_distance_km_to_line_uses_perpendicular_distance():
     projected_crs = "EPSG:5346"
     source = gpd.GeoDataFrame({"id": [1]}, geometry=[Point(0, 0)], crs=projected_crs)
-    # A vertical line 1000m to the east; perpendicular distance is exactly 1000m
+    # Una línea vertical a 1000m al este; la distancia perpendicular es exactamente 1000m
     target = gpd.GeoDataFrame(
         {"id": [1]}, geometry=[LineString([(1000, -5000), (1000, 5000)])], crs=projected_crs
     )

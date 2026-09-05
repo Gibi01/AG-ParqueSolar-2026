@@ -1,4 +1,4 @@
-# Core
+# Núcleo
 numpy>=1.26
 pandas>=2.2
 pyyaml>=6.0
@@ -8,24 +8,24 @@ pydantic>=2.6
 # HTTP
 requests>=2.31
 
-# Geospatial
+# Geoespacial
 geopandas>=0.14
 shapely>=2.0
 pyproj>=3.6
 pyogrio>=0.7
 rasterio>=1.3
 
-# Climate data (NetCDF handling for ERA5-Land Time Series responses)
+# Datos climáticos (manejo de NetCDF para respuestas de ERA5-Land Time Series)
 xarray>=2024.2
 netCDF4>=1.6
 
-# Copernicus Climate Data Store official client
+# Cliente oficial del Copernicus Climate Data Store
 cdsapi>=0.7.7
 
-# Database
+# Base de datos
 SQLAlchemy>=2.0
 
-# Visualization
+# Visualización
 folium>=0.15
 
 # Tests

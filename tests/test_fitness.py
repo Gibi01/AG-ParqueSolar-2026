@@ -17,8 +17,8 @@ def test_normalize_min_max_basic():
 def test_normalize_min_max_invert_makes_smallest_value_best():
     distances_km = np.array([0.0, 5.0, 10.0])
     proximity = normalize_min_max(distances_km, invert=True)
-    assert proximity[0] == pytest.approx(1.0)  # closest -> best score
-    assert proximity[2] == pytest.approx(0.0)  # farthest -> worst score
+    assert proximity[0] == pytest.approx(1.0)  # más cerca -> mejor puntaje
+    assert proximity[2] == pytest.approx(0.0)  # más lejos -> peor puntaje
 
 
 def test_normalize_min_max_constant_values_returns_ones():

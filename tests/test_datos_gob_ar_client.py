@@ -1,5 +1,5 @@
-"""Tests for the datos.gob.ar client — the HTTP session is mocked so no
-test in this module touches the network."""
+"""Tests para el cliente de datos.gob.ar — la sesión HTTP se mockea, así
+que ningún test de este módulo toca la red."""
 
 from __future__ import annotations
 

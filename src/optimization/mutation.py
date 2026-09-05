@@ -1,4 +1,4 @@
-"""Random-resetting mutation over candidate-index encoded individuals."""
+"""Mutación por reinicio aleatorio sobre individuos codificados como índice de candidato."""
 
 from __future__ import annotations
 
@@ -11,9 +11,9 @@ def mutate_population(
     n_candidates: int,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """With probability `mutation_probability`, replace an individual's
-    candidate index with a fresh uniformly-random one (keeps the search
-    from converging prematurely on a local optimum)."""
+    """Con probabilidad `mutation_probability`, reemplaza el índice de
+    candidato de un individuo por uno nuevo uniformemente aleatorio
+    (evita que la búsqueda converja prematuramente a un óptimo local)."""
     mutated = population.copy()
     mutate_mask = rng.random(len(population)) < mutation_probability
     n_mutations = int(mutate_mask.sum())

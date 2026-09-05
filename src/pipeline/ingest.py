@@ -1,20 +1,23 @@
-"""Ingestion: APIs -> raw GeoDataFrames, cached to disk.
+"""Ingesta: APIs -> GeoDataFrames crudos, cacheados en disco.
 
-Every function here is region-agnostic: it reads `settings.region` to
-decide *what* to fetch and *how to clip it*, never a hardcoded province
-name. Changing `region` in config.yaml (name + admin_source) is enough
-to point the whole ingestion step at a different province, as long as
-the same national datasets (BAHRA, power lines, transformer stations)
-cover it — see README "Cambiar de provincia" for the parts that are
-NOT yet generalized (e.g. transformer stations is an Argentina-wide
-Secretaría de Energía source, which is fine; a different country would
-need a different `infrastructure.transformers.source_url`).
+Cada función acá es agnóstica de la región: lee `settings.region` para
+decidir *qué* obtener y *cómo recortarlo*, nunca un nombre de provincia
+hardcodeado. Cambiar `region` en config.yaml (name + admin_source) alcanza
+para apuntar todo el paso de ingesta a otra provincia, siempre que los
+mismos datasets nacionales (BAHRA, líneas eléctricas, estaciones
+transformadoras) la cubran — ver README "Cambiar de provincia" para las
+partes que TODAVÍA no están generalizadas (p. ej. estaciones
+transformadoras es una fuente de la Secretaría de Energía a nivel país,
+lo cual está bien; un país distinto necesitaría un
+`infrastructure.transformers.source_url` diferente).
 
-National point/line datasets (BAHRA localities, power lines, transformer
-stations) are fetched in full and then spatially clipped to the region
-boundary, rather than filtered by a province-name text field. This
-avoids brittle text matching (accents, casing) against source-specific
-province-name spellings and generalizes cleanly to any province.
+Los datasets nacionales de puntos/líneas (localidades BAHRA, líneas
+eléctricas, estaciones transformadoras) se obtienen completos y luego se
+recortan espacialmente al límite de la región, en vez de filtrarse por un
+campo de texto con el nombre de provincia. Esto evita el matching de
+texto frágil (acentos, mayúsculas) contra las variantes de escritura del
+nombre de provincia específicas de cada fuente, y generaliza limpiamente
+a cualquier provincia.
 """
 
 from __future__ import annotations
@@ -63,10 +66,10 @@ def ingest_region_boundary(
     session: Optional[requests.Session] = None,
     force: bool = False,
 ) -> LayerBundle:
-    """Fetch the official IGN provincial boundary and isolate the configured region.
+    """Obtiene el límite provincial oficial del IGN y aísla la región configurada.
 
-    Source: Instituto Geográfico Nacional (IGN) "Unidades Territoriales"
-    dataset, provincia layer (WGS84 / EPSG:4326 per its .prj file).
+    Fuente: dataset "Unidades Territoriales" del Instituto Geográfico
+    Nacional (IGN), capa provincia (WGS84 / EPSG:4326 según su archivo .prj).
     """
     cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
     name = "region_boundary"
@@ -102,8 +105,8 @@ def ingest_region_boundary(
         columns={admin.name_field: "region_name", admin.code_field: "region_code"}
     )
     boundary = boundary.reset_index(drop=True)
-    # The IGN source ships 3D (Z=0) geometries; flatten to 2D since every
-    # downstream spatial operation here is purely planar.
+    # La fuente del IGN trae geometrías 3D (Z=0); se aplanan a 2D ya que
+    # toda operación espacial posterior acá es puramente planar.
     boundary["geometry"] = shapely.force_2d(boundary["geometry"])
     validate_crs_is_set(boundary, "region_boundary")
     validate_geometries_valid(boundary, "region_boundary")
@@ -149,11 +152,11 @@ def ingest_urban_areas(
     client: Optional[DatosGobArClient] = None,
     force: bool = False,
 ) -> LayerBundle:
-    """Fetch BAHRA localities (points) and clip them to the region boundary.
+    """Obtiene las localidades BAHRA (puntos) y las recorta al límite de la región.
 
-    Confirmed by schema inspection: this resource is POINT geometry
-    (`geojson` field with type "Point"), never polygons — see README for
-    why urban areas are therefore approximated via a buffer.
+    Confirmado al inspeccionar el schema: este recurso es geometría de
+    PUNTO (campo `geojson` con tipo "Point"), nunca polígonos — ver README
+    para saber por qué las zonas urbanas se aproximan entonces con un buffer.
     """
     cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
     name = "urban_areas_points"
@@ -203,23 +206,24 @@ def ingest_power_lines(
     client: Optional[DatosGobArClient] = None,
     force: bool = False,
 ) -> LayerBundle:
-    """Fetch power-line geometries and clip them to the region boundary.
+    """Obtiene las geometrías de líneas eléctricas y las recorta al límite de la región.
 
-    Confirmed by schema inspection: MultiLineString geometry with a
-    `tension` (voltage) attribute only — no substation/transformer
-    entities in this resource (see ingest_transformers for that layer).
+    Confirmado al inspeccionar el schema: geometría MultiLineString con un
+    único atributo `tension` (voltaje) — sin entidades de
+    subestación/transformador en este recurso (ver ingest_transformers
+    para esa capa).
 
-    IMPORTANT scope note (found empirically, not documented on the
-    dataset page): despite its generic "Consejo Federal" name, this
-    resource's ~46k records are ALL located within Santa Fe's bounding
-    box already — it does not actually cover the rest of the country.
-    It is a good fit for this MVP's region, but switching `region` to
-    another province will very likely yield zero clipped power-line
-    features from this same resource_id, and a different source will
-    need to be configured. This is exactly the kind of source-specific
-    limitation the region-agnostic design tries to make visible rather
-    than silently hide (an empty clipped result still fails loudly via
-    validate_not_empty below).
+    NOTA DE ALCANCE IMPORTANTE (hallada empíricamente, no documentada en
+    la página del dataset): pese a su nombre genérico "Consejo Federal",
+    los ~46 mil registros de este recurso ya están TODOS ubicados dentro
+    del bounding box de Santa Fe — en realidad no cubre el resto del país.
+    Es una buena fuente para la región de este MVP, pero cambiar `region`
+    a otra provincia muy probablemente devuelva cero features de línea
+    eléctrica recortadas para este mismo resource_id, y habrá que
+    configurar una fuente distinta. Esto es exactamente el tipo de
+    limitación específica de la fuente que el diseño agnóstico de región
+    intenta hacer visible en vez de esconder en silencio (un resultado
+    recortado vacío igual falla explícitamente vía validate_not_empty más abajo).
     """
     cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
     name = "power_lines"
@@ -259,7 +263,7 @@ def _transformers_csv_to_geodataframe(csv_bytes: bytes) -> gpd.GeoDataFrame:
     geometries = []
     for raw in df["geojson"]:
         geom = shape(json.loads(raw))
-        # Source uses MultiPoint with a single member per station; normalize to Point.
+        # La fuente usa MultiPoint con un único miembro por estación; se normaliza a Point.
         if geom.geom_type == "MultiPoint":
             geom = geom.geoms[0]
         geometries.append(geom)
@@ -284,14 +288,15 @@ def ingest_transformers(
     client: Optional[DatosGobArClient] = None,
     force: bool = False,
 ) -> LayerBundle:
-    """Fetch transformer/substation stations and clip them to the region.
+    """Obtiene las estaciones transformadoras/subestaciones y las recorta al límite de la región.
 
-    This is a mandatory, independent layer (see README/requirements
-    Fase 16): the power-lines resource above has no substation data, so
-    this uses a separate official source — Secretaría de Energía's
-    "Transporte Eléctrico AT - Estaciones Transformadoras" dataset.
-    If this source ever disappears, the pipeline must fail loudly rather
-    than silently proceed without the transformer-proximity criterion.
+    Esta es una capa obligatoria e independiente (ver README/requisitos
+    Fase 16): el recurso de líneas eléctricas de arriba no tiene datos de
+    subestaciones, así que esto usa una fuente oficial separada — el
+    dataset "Transporte Eléctrico AT - Estaciones Transformadoras" de la
+    Secretaría de Energía. Si esta fuente alguna vez desaparece, el
+    pipeline debe fallar explícitamente en vez de seguir en silencio sin
+    el criterio de proximidad a transformadores.
     """
     cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
     name = "transformers"

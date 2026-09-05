@@ -1,28 +1,31 @@
-"""Associates grid cells with ERA5-Land points and orchestrates retrieval.
+"""Asocia celdas de grilla con puntos de ERA5-Land y orquesta la obtención de datos.
 
-ERA5-Land's native grid (~9 km / 0.1°) is coarser than the project's
-analysis grid (5 km by default), so many grid cells legitimately share
-the same ERA5-Land point. This module:
+La grilla nativa de ERA5-Land (~9 km / 0.1°) es más gruesa que la grilla
+de análisis del proyecto (5 km por defecto), así que muchas celdas de
+grilla legítimamente comparten el mismo punto de ERA5-Land. Este módulo:
 
-1. Predicts, for each cell centroid, the nearest point on ERA5-Land's
-   regular 0.1° x 0.1° grid (`predict_nearest_era5_grid_point`) — used
-   purely to GROUP cells before querying, so the CDS API and the local
-   `Era5LandCache` are hit once per unique point x year x month, never
-   once per cell. The CDS service performs its own authoritative
-   nearest-neighbour selection server-side; this local prediction is
-   only a deduplication heuristic.
-2. For each unique (point, year, month), serves the request from
-   `Era5LandCache` if present, otherwise calls
-   `CopernicusEra5LandClient.fetch_point_hourly` and aggregates the
-   returned hourly series to a monthly kWh/m^2 figure
+1. Predice, para cada centroide de celda, el punto más cercano en la
+   grilla regular de 0.1° x 0.1° de ERA5-Land
+   (`predict_nearest_era5_grid_point`) — usado puramente para AGRUPAR
+   celdas antes de consultar, de modo que la API de CDS y la
+   `Era5LandCache` local se golpeen una vez por cada punto x año x mes
+   único, nunca una vez por celda. El servicio de CDS hace su propia
+   selección autoritativa de vecino más cercano en el servidor; esta
+   predicción local es solo una heurística de deduplicación.
+2. Para cada (punto, año, mes) único, sirve la solicitud desde
+   `Era5LandCache` si está presente, si no llama a
+   `CopernicusEra5LandClient.fetch_point_hourly` y agrega la serie
+   horaria devuelta a una cifra mensual de kWh/m^2
    (`src/climate/radiation.py`).
-3. Returns one row per (grid_cell_id, year, month) with full traceability
-   (era5_latitude/era5_longitude actually confirmed by CDS, source,
-   download timestamp) — ready for `solar_radiation` table storage.
+3. Devuelve una fila por (grid_cell_id, year, month) con trazabilidad
+   completa (era5_latitude/era5_longitude realmente confirmados por CDS,
+   fuente, timestamp de descarga) — lista para guardarse en la tabla
+   `solar_radiation`.
 
-No interpolation is performed, matching the dataset's own documented
-nearest-neighbour methodology; interpolation could be added later as a
-separate strategy without touching the association/caching logic above.
+No se realiza interpolación, siguiendo la metodología de vecino más
+cercano documentada por el propio dataset; la interpolación podría
+agregarse a futuro como una estrategia separada sin tocar la lógica de
+asociación/caché de arriba.
 """
 
 from __future__ import annotations
@@ -65,10 +68,11 @@ class SolarRadiationRecord:
 
 
 def predict_nearest_era5_grid_point(lat: float, lon: float) -> tuple[float, float]:
-    """Round (lat, lon) to the nearest point of ERA5-Land's regular 0.1°
-    grid. This is a local prediction used only to deduplicate requests
-    across cells — the value actually stored for each cell always comes
-    from the CDS response (see `SolarRadiationRecord.era5_latitude/longitude`).
+    """Redondea (lat, lon) al punto más cercano de la grilla regular de
+    0.1° de ERA5-Land. Esta es una predicción local usada solo para
+    deduplicar solicitudes entre celdas — el valor realmente guardado
+    para cada celda siempre viene de la respuesta de CDS (ver
+    `SolarRadiationRecord.era5_latitude/longitude`).
     """
     lat_r = round(round(lat / ERA5_LAND_GRID_SPACING_DEG) * ERA5_LAND_GRID_SPACING_DEG, 1)
     lon_r = round(round(lon / ERA5_LAND_GRID_SPACING_DEG) * ERA5_LAND_GRID_SPACING_DEG, 1)

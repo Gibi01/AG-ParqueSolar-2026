@@ -1,7 +1,7 @@
-"""Tournament selection.
+"""Selección por torneo.
 
-Individuals are represented as integer indices into the (fixed) array of
-valid candidate locations — see genetic_algorithm.py for why.
+Los individuos se representan como índices enteros dentro del arreglo
+(fijo) de ubicaciones candidatas válidas — ver genetic_algorithm.py para saber por qué.
 """
 
 from __future__ import annotations
@@ -16,10 +16,10 @@ def tournament_selection(
     num_to_select: int,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Select `num_to_select` individuals from `population` via tournaments.
+    """Selecciona `num_to_select` individuos de `population` mediante torneos.
 
-    Each tournament samples `tournament_size` members (with replacement)
-    from the current population and keeps the fittest.
+    Cada torneo muestrea `tournament_size` miembros (con reposición) de la
+    población actual y se queda con el más apto.
     """
     pop_size = len(population)
     selected = np.empty(num_to_select, dtype=population.dtype)

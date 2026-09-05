@@ -1,16 +1,16 @@
-"""CLI entry point.
+"""Punto de entrada del CLI.
 
     python -m src.main --setup
     python -m src.main --download
     python -m src.main --process
     python -m src.main --optimize
     python -m src.main --run-all
-    python -m src.main --test-era5      # Fase 10/36 single-point diagnostic
+    python -m src.main --test-era5      # diagnóstico de un solo punto, Fase 10/36
 
-Each step's outputs are cached on disk (data/raw/layers/*.gpkg for
-ingested vector layers, data/cache/era5_land_cache/ for climate points,
-data/processed/parque_solar.sqlite for everything downstream). Re-running
-a step is a fast no-op unless --force is given.
+Las salidas de cada paso se cachean en disco (data/raw/layers/*.gpkg para
+las capas vectoriales ingeridas, data/cache/era5_land_cache/ para los
+puntos de clima, data/processed/parque_solar.sqlite para todo lo que
+sigue). Volver a correr un paso es un no-op rápido salvo que se pase --force.
 """
 
 from __future__ import annotations
@@ -156,8 +156,8 @@ def cmd_optimize(settings: Settings, repo: Repository):
 
 
 def cmd_test_era5(settings: Settings) -> None:
-    """Fase 10/36: single-coordinate, single-month diagnostic against the
-    real CDS API, run BEFORE any bulk download is attempted."""
+    """Fase 10/36: diagnóstico de una sola coordenada y un solo mes contra
+    la API real de CDS, se corre ANTES de intentar cualquier descarga masiva."""
     cache = RawLayerCache(settings.paths.data_raw / "layers")
     if cache.exists("region_boundary"):
         region_gdf, _ = cache.load("region_boundary")
@@ -221,7 +221,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except (AttributeError, ValueError):
-        pass  # not all stdout streams support reconfigure (e.g. captured in tests)
+        pass  # no todos los streams de stdout soportan reconfigure (p. ej. cuando se capturan en tests)
 
     parser = build_arg_parser()
     args = parser.parse_args(argv)

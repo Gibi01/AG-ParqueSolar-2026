@@ -1,96 +1,99 @@
-# Configuration for the solar park siting MVP.
+# Configuración para el MVP de ubicación de parques solares.
 #
-# Nothing region-specific is hardcoded in the source code: change `region`
-# (and, if a future province needs a different administrative source, the
-# `region.admin_source` block) to run the same pipeline over another
-# Argentine province. See README.md "Cambiar de provincia" for the full
-# checklist of what does / does not need to change.
+# Nada específico de la región está hardcodeado en el código fuente: cambiando
+# `region` (y, si una futura provincia necesita una fuente administrativa
+# distinta, el bloque `region.admin_source`) alcanza para correr el mismo
+# pipeline sobre otra provincia argentina. Ver en README.md "Cambiar de
+# provincia" el checklist completo de qué cambia y qué no.
 
 region:
   name: "Santa Fe"
-  # Official administrative boundary source: Instituto Geográfico Nacional
-  # (IGN) "Unidades Territoriales" dataset, published on datos.gob.ar.
+  # Fuente oficial del límite administrativo: dataset "Unidades Territoriales"
+  # del Instituto Geográfico Nacional (IGN), publicado en datos.gob.ar.
   # https://datos.gob.ar/dataset/unidades-territoriales
   admin_source:
     provider: "IGN"
     shapefile_zip_url: "http://www.ign.gob.ar/descargas/geodatos/SHAPES/ign_provincia.zip"
     shapefile_member: "Provincia/ign_provincia.shp"
-    name_field: "NAM"      # short province name, e.g. "Santa Fe"
-    code_field: "IN1"      # INDEC/GeoRef province code, e.g. "82" for Santa Fe
+    name_field: "NAM"      # nombre corto de la provincia, ej. "Santa Fe"
+    code_field: "IN1"      # código de provincia INDEC/GeoRef, ej. "82" para Santa Fe
     code_value: "82"
-    native_crs: "EPSG:4326"  # CRS of the IGN shapefile itself (confirmed from its .prj)
+    native_crs: "EPSG:4326"  # CRS del propio shapefile del IGN (confirmado desde su .prj)
 
 grid:
-  # Analysis grid cell size. This is a spatial discretisation unit for the
-  # optimization problem — NOT the resolution of any single data source.
+  # Tamaño de celda de la grilla de análisis. Es una unidad de discretización
+  # espacial para el problema de optimización — NO la resolución de ninguna
+  # fuente de datos en particular.
   resolution_km: 5
 
 park:
-  # Nominal footprint of a single candidate solar park.
-  # 2 ha = 20,000 m^2 = 0.02 km^2. Stored for traceability only: the MVP
-  # does NOT yet verify that 20,000 contiguous m^2 of usable land actually
-  # exist inside a candidate cell (no land-cover layer yet — see README).
+  # Superficie nominal de un único parque solar candidato.
+  # 2 ha = 20.000 m^2 = 0.02 km^2. Se guarda solo para trazabilidad: el MVP
+  # todavía NO verifica que existan 20.000 m^2 contiguos de terreno utilizable
+  # dentro de una celda candidata (todavía no hay capa de cobertura de suelo —
+  # ver README).
   area_hectares: 2
 
 urban_exclusion:
-  # The BAHRA "localidades" source (see infrastructure.urban_areas below)
-  # provides POINTS, not polygons. To approximate an urban footprint for
-  # exclusion purposes, each locality point is buffered by this radius
-  # (in a projected, metric CRS). This is a documented MVP approximation,
-  # not a real cadastral urban-limit layer.
+  # La fuente de "localidades" de BAHRA (ver infrastructure.urban_areas más
+  # abajo) provee PUNTOS, no polígonos. Para aproximar una huella urbana a
+  # fines de exclusión, cada punto de localidad se bufferiza con este radio
+  # (en un CRS proyectado, métrico). Esta es una aproximación de MVP
+  # documentada, no una capa catastral real de límites urbanos.
   buffer_km: 3.0
-  # BAHRA mixes real population centres with isolated built structures
-  # (single buildings, rural schools, etc.) under different `tipo` values.
-  # Observed distribution in Santa Fe: LOCALIDAD=386, SITIO EDIFICADO=473,
-  # ENTIDAD=6. Buffering ALL of them at buffer_km excludes ~48% of the
-  # whole province (dominated by isolated "SITIO EDIFICADO" points, which
-  # are not urban zones). Only these types are treated as "urban" for the
-  # exclusion criterion; the rest of the ingested BAHRA layer is still
-  # stored in full for traceability.
+  # BAHRA mezcla centros poblados reales con estructuras edificadas aisladas
+  # (edificios sueltos, escuelas rurales, etc.) bajo distintos valores de
+  # `tipo`. Distribución observada en Santa Fe: LOCALIDAD=386,
+  # SITIO EDIFICADO=473, ENTIDAD=6. Bufferizar TODOS con buffer_km excluye
+  # ~48% de toda la provincia (dominado por los puntos aislados de
+  # "SITIO EDIFICADO", que no son zonas urbanas). Solo estos tipos se tratan
+  # como "urbanos" para el criterio de exclusión; el resto de la capa BAHRA
+  # ingerida igual se guarda completa para trazabilidad.
   include_types: ["LOCALIDAD"]
 
 climate:
-  # Copernicus Climate Data Store dataset. MUST remain the Time-Series /
-  # ARCO dataset per the project requirements — do not substitute for
-  # plain ERA5, ERA5-Land monthly, or the bulk ERA5-Land hourly archive.
+  # Dataset del Copernicus Climate Data Store. DEBE seguir siendo el dataset
+  # Time-Series / ARCO según los requisitos del proyecto — no sustituir por
+  # ERA5 simple, ERA5-Land mensual, ni el archivo horario bulk de ERA5-Land.
   dataset: "reanalysis-era5-land-timeseries"
   variable: "surface_solar_radiation_downwards"
   years: [2024]
-  months: [1, 4, 7, 10]   # January (summer), April (autumn), July (winter), October (spring)
-  # The dataset's formal request schema exposes an `area` bounding box
-  # (not a bare lat/lon pair) as the geographic selector. To request a
-  # single point we send a tiny bounding box centred on it; this epsilon
-  # (degrees) is far smaller than the 0.1° native grid spacing, so in
-  # practice exactly one ARCO grid point falls inside it, matching the
-  # documented nearest-neighbour behaviour. See src/api/copernicus_era5_land.py.
+  months: [1, 4, 7, 10]   # enero (verano), abril (otoño), julio (invierno), octubre (primavera)
+  # El schema formal de solicitud del dataset expone un bounding box `area`
+  # (no un par lat/lon suelto) como selector geográfico. Para pedir un único
+  # punto se envía un bounding box mínimo centrado en él; este epsilon
+  # (en grados) es muchísimo más chico que los 0.1° de separación nativa de
+  # la grilla, así que en la práctica cae exactamente un punto de grilla ARCO
+  # adentro, replicando el comportamiento documentado de vecino más cercano.
+  # Ver src/api/copernicus_era5_land.py.
   point_bbox_epsilon_deg: 0.001
 
 infrastructure:
   urban_areas:
-    # BAHRA localities (points), datos.gob.ar DataStore.
+    # Localidades BAHRA (puntos), DataStore de datos.gob.ar.
     # https://datos.gob.ar/dataset/localidades-bahra
     resource_id: "c1fc1f5b-dfe3-5231-9f3b-f7c703b906c7"
   power_lines:
-    # Redes de distribución eléctrica del Consejo Federal, datos.gob.ar DataStore.
-    # Contains line geometries with a "tension" (voltage) attribute only —
-    # NO transformer/substation entities (confirmed by schema inspection).
+    # Redes de distribución eléctrica del Consejo Federal, DataStore de datos.gob.ar.
+    # Contiene geometrías de línea con un único atributo "tension" (voltaje) —
+    # SIN entidades de transformador/subestación (confirmado al inspeccionar el schema).
     resource_id: "3d5eda86-6822-5c39-b366-f89360b0363a"
   transformers:
     # Transporte Eléctrico AT - Estaciones Transformadoras.
-    # Secretaría de Energía de la Nación, datos.gob.ar (direct CSV download,
-    # not DataStore-backed). Required because the power-lines dataset above
-    # has no substation layer. If this source ever becomes unavailable,
-    # the pipeline must stop and report the missing layer — never fabricate
-    # transformer locations.
+    # Secretaría de Energía de la Nación, datos.gob.ar (descarga directa de
+    # CSV, no respaldada por DataStore). Es necesaria porque el dataset de
+    # líneas eléctricas de arriba no tiene capa de subestaciones. Si esta
+    # fuente alguna vez deja de estar disponible, el pipeline debe detenerse
+    # e informar la capa faltante — nunca inventar ubicaciones de transformadores.
     # https://datos.gob.ar/dataset/transporte-electrico-at-estaciones-transformadoras
     source_url: "http://datos.energia.gob.ar/dataset/5ae5fbf9-5ab3-407b-a047-625bf27835aa/resource/cedb62c4-4a4c-4124-bdc9-48f611a59862/download/transporte-elctrico-at-estaciones-transformadoras.csv"
     native_crs: "EPSG:4326"
 
 fitness:
-  # Initial MVP weights — placeholders for future calibration, not a
-  # scientifically validated weighting. Must sum to 1.0 (+/- 1e-6).
-  # Transformer proximity is weighted above simple line proximity per
-  # the project requirement.
+  # Pesos iniciales del MVP — valores provisorios para calibrar a futuro, no
+  # una ponderación científicamente validada. Deben sumar 1.0 (+/- 1e-6).
+  # La proximidad a transformadores pesa más que la proximidad simple a
+  # líneas, según lo pedido en el proyecto.
   weight_solar: 0.50
   weight_grid_distance: 0.20
   weight_transformer_distance: 0.30

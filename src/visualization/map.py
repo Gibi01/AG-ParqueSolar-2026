@@ -1,8 +1,8 @@
-"""results/map.html — GeoPandas + Folium visualization.
+"""results/map.html — visualización con GeoPandas + Folium.
 
-Shows the provincial boundary, the analysis grid, the urban exclusion
-buffers, power lines, transformer stations, and the TOP-10 ranked
-locations, each as a toggleable layer.
+Muestra el límite provincial, la grilla de análisis, los buffers de
+exclusión urbana, las líneas eléctricas, las estaciones transformadoras,
+y las ubicaciones del TOP-10, cada una como una capa que se puede activar/desactivar.
 """
 
 from __future__ import annotations
@@ -16,9 +16,10 @@ import shapely
 
 from src.gis.crs import GEOGRAPHIC_CRS
 
-# ~1m precision at these latitudes — plenty for province-scale display,
-# but cuts the float precision (hence file size) folium/GeoJson would
-# otherwise inherit from the pyproj reprojection.
+# ~1m de precisión en estas latitudes — de sobra para una visualización a
+# escala provincial, pero recorta la precisión de punto flotante (y por
+# ende el tamaño de archivo) que folium/GeoJson heredaría de la
+# reproyección de pyproj.
 MAP_COORDINATE_PRECISION_DEG = 0.00001
 
 
@@ -52,10 +53,11 @@ def build_map(
         style_function=lambda _: {"color": "#222222", "weight": 2, "fillOpacity": 0},
     ).add_to(fmap)
 
-    # Grid and power-line layers can carry tens of thousands of vertices
-    # (5k+ grid cells, 46k+ line segments at full resolution) — simplified
-    # here purely for map file size / browser rendering, never for the
-    # underlying analytical geometries used elsewhere in the pipeline.
+    # Las capas de grilla y de líneas eléctricas pueden llevar decenas de
+    # miles de vértices (5 mil+ celdas de grilla, 46 mil+ segmentos de
+    # línea a resolución completa) — se simplifican acá puramente por
+    # tamaño de archivo del mapa / renderizado en el navegador, nunca para
+    # las geometrías analíticas subyacentes usadas en el resto del pipeline.
     simplify_tolerance_m = 25.0
 
     grid_layer = folium.FeatureGroup(name="Grilla de análisis (5 km)", show=False)
@@ -76,16 +78,17 @@ def build_map(
         urban_layer.add_to(fmap)
 
     lines_layer = folium.FeatureGroup(name="Líneas eléctricas (por tensión)", show=True)
-    # Dissolving ~46k individual segments down to one MultiLineString per
-    # voltage tier cuts the rendered feature count by 4+ orders of
-    # magnitude (map.html would otherwise be tens of MB) and, as a bonus,
-    # lets the map encode voltage visually. Simplification happens in the
-    # grid's metric CRS so the tolerance is actually in metres.
+    # Disolver ~46 mil segmentos individuales en un MultiLineString por
+    # nivel de tensión reduce la cantidad de features renderizadas en más
+    # de 4 órdenes de magnitud (si no, map.html pesaría decenas de MB) y,
+    # de yapa, permite que el mapa codifique el voltaje visualmente. La
+    # simplificación sucede en el CRS métrico de la grilla, así que la
+    # tolerancia está realmente en metros.
     lines_proj = power_lines_gdf.to_crs(grid_gdf.crs)
     dissolved = lines_proj.dissolve(by="tension_v").reset_index()
     dissolved["geometry"] = dissolved.geometry.simplify(simplify_tolerance_m)
     dissolved_geo = _to_geographic(dissolved)
-    voltage_styles = {  # weight scales roughly with voltage tier
+    voltage_styles = {  # el grosor escala aproximadamente con el nivel de tensión
         7620: {"color": "#fdd0a2", "weight": 1},
         13200: {"color": "#fdae6b", "weight": 1.5},
         33000: {"color": "#e6550d", "weight": 2.5},

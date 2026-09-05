@@ -1,20 +1,22 @@
-"""On-disk caching.
+"""Caché en disco.
 
-Two independent caches live here:
+Acá viven dos cachés independientes:
 
-- `RawLayerCache`: generic cache for whole vector layers ingested from an
-  API (region boundary, urban areas, power lines, transformers). Keyed by
-  a filename; stores the GeoDataFrame as GeoPackage plus a JSON sidecar
-  with source traceability metadata. Re-running the ETL step is then a
-  no-op unless `force=True`.
+- `RawLayerCache`: caché genérica para capas vectoriales completas
+  ingeridas desde una API (límite de región, zonas urbanas, líneas
+  eléctricas, transformadores). Indexada por un nombre de archivo; guarda
+  el GeoDataFrame como GeoPackage más un sidecar JSON con metadata de
+  trazabilidad de la fuente. Volver a correr el paso de ETL es entonces
+  un no-op salvo que se pase `force=True`.
 
-- `Era5LandCache`: the ERA5-Land point cache required by the project
-  ("era5_land_cache/"). ERA5-Land's ~9 km grid is coarser than our 5 km
-  analysis grid, so multiple grid cells legitimately map to the SAME
-  ERA5-Land point. This cache is keyed by (variable, year, month,
-  era5_latitude, era5_longitude) — i.e. by the ERA5-Land point actually
-  used — so that when two cells share a point, the second one is served
-  from disk instead of re-querying the CDS API.
+- `Era5LandCache`: la caché de puntos de ERA5-Land requerida por el
+  proyecto ("era5_land_cache/"). La grilla de ~9 km de ERA5-Land es más
+  gruesa que nuestra grilla de análisis de 5 km, así que varias celdas
+  de grilla legítimamente mapean al MISMO punto de ERA5-Land. Esta caché
+  se indexa por (variable, year, month, era5_latitude, era5_longitude)
+  — es decir, por el punto de ERA5-Land realmente usado — de modo que
+  cuando dos celdas comparten un punto, la segunda se sirve desde disco
+  en vez de volver a consultar la API de CDS.
 """
 
 from __future__ import annotations
@@ -68,9 +70,10 @@ class Era5CacheKey:
 
 
 class Era5LandCache:
-    """File-backed cache mapping an (variable, year, month, ERA5-Land point)
-    key to its hourly time series, so that grid cells sharing an ERA5-Land
-    point never trigger a second CDS download for the same period."""
+    """Caché respaldada por archivos que mapea una clave
+    (variable, year, month, punto ERA5-Land) a su serie horaria, de modo
+    que las celdas de grilla que comparten un punto de ERA5-Land nunca
+    disparen una segunda descarga de CDS para el mismo período."""
 
     def __init__(self, cache_dir: Path):
         self.cache_dir = Path(cache_dir)

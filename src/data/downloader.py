@@ -1,9 +1,10 @@
-"""Generic, cache-aware file downloading.
+"""Descarga genérica de archivos, con soporte de caché.
 
-Used both for one-off administrative-boundary downloads (IGN shapefile
-zip) and for any other "download once, reuse forever" raw file. This is
-NOT the ERA5-Land point cache (see src/data/cache.py) — that one keys on
-(variable, year, month, lat, lon) rather than a URL.
+Se usa tanto para descargas puntuales del límite administrativo (zip del
+shapefile del IGN) como para cualquier otro archivo crudo "descargar una
+vez, reusar para siempre". Esto NO es la caché de puntos de ERA5-Land
+(ver src/data/cache.py) — esa se indexa por (variable, año, mes, lat, lon)
+en vez de por una URL.
 """
 
 from __future__ import annotations
@@ -27,8 +28,8 @@ def download_file(
     timeout_s: int = DEFAULT_TIMEOUT_S,
     force: bool = False,
 ) -> Path:
-    """Download `url` to `dest_path`, skipping the request if the file
-    already exists on disk (unless force=True)."""
+    """Descarga `url` a `dest_path`, omitiendo la solicitud si el archivo
+    ya existe en disco (salvo que force=True)."""
     dest_path = Path(dest_path)
     if dest_path.exists() and not force:
         logger.info("Using cached file, skipping download: %s", dest_path)
@@ -51,7 +52,7 @@ def download_and_extract_zip(
     timeout_s: int = DEFAULT_TIMEOUT_S,
     force: bool = False,
 ) -> Path:
-    """Download a zip file (cached) and extract it (idempotently)."""
+    """Descarga un archivo zip (cacheado) y lo extrae (de forma idempotente)."""
     zip_path = download_file(url, zip_dest_path, session=session, timeout_s=timeout_s, force=force)
     extract_dir = Path(extract_dir)
     if not extract_dir.exists() or force:

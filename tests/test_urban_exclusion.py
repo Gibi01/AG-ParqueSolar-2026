@@ -12,8 +12,8 @@ PROJECTED_CRS = "EPSG:5346"
 def test_buffer_points_km_produces_polygons_of_expected_radius():
     points = gpd.GeoDataFrame({"id": [1]}, geometry=[Point(0, 0)], crs=PROJECTED_CRS)
     buffered = buffer_points_km(points, buffer_km=2.0, projected_crs=PROJECTED_CRS)
-    # A circle of radius 2000m has area pi*r^2; allow generous tolerance
-    # for polygon approximation of the circle.
+    # Un círculo de radio 2000m tiene área pi*r^2; se permite una tolerancia
+    # generosa por la aproximación poligonal del círculo.
     expected_area = math.pi * (2000**2)
     assert buffered.geometry.iloc[0].area == pytest.approx(expected_area, rel=0.02)
 

@@ -1,5 +1,5 @@
-"""Assembles and writes results/: ranking.csv, candidate_locations.csv,
-optimization_run.json and map.html — plus persisting the run into
+"""Arma y escribe results/: ranking.csv, candidate_locations.csv,
+optimization_run.json y map.html — además de persistir la corrida en
 `optimization_results`.
 """
 
@@ -89,9 +89,10 @@ def write_run_outputs(
         "grid_resolution_km": settings.grid.resolution_km,
         "park_area_hectares": settings.park.area_hectares,
         "park_area_note": (
-            "Stored for traceability only; this MVP does not yet verify that "
-            "20,000 contiguous m^2 of usable, obstruction-free land actually "
-            "exist inside a candidate cell (no land-cover layer yet)."
+            "Se guarda solo para trazabilidad; este MVP todavia no verifica que "
+            "existan 20.000 m^2 contiguos de terreno utilizable y sin "
+            "obstrucciones dentro de una celda candidata (todavia no hay capa "
+            "de cobertura de suelo)."
         ),
         "climate": {
             "dataset": settings.climate.dataset,

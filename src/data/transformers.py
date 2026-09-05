@@ -1,9 +1,10 @@
-"""Generic unit-conversion primitives.
+"""Primitivas genéricas de conversión de unidades.
 
-Domain-specific aggregation logic (e.g. "how to turn an hourly SSRD
-series into a monthly kWh/m^2 figure") lives in src/climate/radiation.py.
-This module only holds the small, dimensionally-obvious conversions that
-logic depends on, so they can be unit-tested in isolation.
+La lógica de agregación específica del dominio (p. ej. "cómo convertir
+una serie horaria de SSRD en una cifra mensual de kWh/m^2") vive en
+src/climate/radiation.py. Este módulo solo contiene las conversiones
+chicas y dimensionalmente obvias de las que depende esa lógica, para que
+puedan testearse unitariamente de forma aislada.
 """
 
 from __future__ import annotations
@@ -12,12 +13,12 @@ JOULES_PER_KWH = 3_600_000.0
 
 
 def joules_per_m2_to_kwh_per_m2(value_j_per_m2: float) -> float:
-    """Convert an energy areal density from J/m^2 to kWh/m^2.
+    """Convierte una densidad areal de energía de J/m^2 a kWh/m^2.
 
-    1 kWh = 3.6e6 J, so kWh/m^2 = (J/m^2) / 3.6e6. This is a pure unit
-    conversion — it says nothing about *what* the J/m^2 figure represents
-    (instantaneous, hourly-accumulated, or otherwise); that semantic
-    determination is made in src/climate/radiation.py based on the
-    official CDS documentation for the specific dataset in use.
+    1 kWh = 3.6e6 J, entonces kWh/m^2 = (J/m^2) / 3.6e6. Esto es una
+    conversión de unidad pura — no dice nada sobre *qué* representa la
+    cifra en J/m^2 (instantánea, acumulada por hora, u otra cosa); esa
+    determinación semántica se hace en src/climate/radiation.py en base
+    a la documentación oficial de CDS para el dataset específico en uso.
     """
     return value_j_per_m2 / JOULES_PER_KWH

@@ -1,18 +1,19 @@
-"""Genetic algorithm over candidate solar-park locations.
+"""Algoritmo genético sobre ubicaciones candidatas de parque solar.
 
-Individual representation: a single integer — the position of a row in
-the (fixed, pre-filtered to `valid == True`) candidate locations table.
-That row already carries `grid_cell_id`, so "individual = grid_cell_id"
-(per the project requirements) holds via this one-to-one mapping; the
-integer index is just a convenient, contiguous encoding for the array
-operations in selection/crossover/mutation.
+Representación del individuo: un único entero — la posición de una fila
+en la tabla (fija, pre-filtrada a `valid == True`) de ubicaciones
+candidatas. Esa fila ya lleva `grid_cell_id`, así que "individuo =
+grid_cell_id" (según los requisitos del proyecto) se cumple vía este
+mapeo uno a uno; el índice entero es solo una codificación contigua y
+conveniente para las operaciones de arreglo en selección/cruce/mutación.
 
-The fitness of every candidate is precomputed once (it depends only on
-static, already-normalized columns from the local database — no API
-calls happen anywhere in this module, satisfying the "GA never queries
-an API" requirement). A hall-of-fame accumulates the best individuals
-seen across all generations, so the final TOP-10 ranking cannot lose a
-strong solution to genetic drift late in the run.
+El fitness de cada candidato se precalcula una sola vez (depende solo de
+columnas estáticas, ya normalizadas, de la base de datos local — no
+sucede ninguna llamada a API en ningún lugar de este módulo, cumpliendo
+el requisito de "el AG nunca consulta una API"). Un hall-of-fame acumula
+los mejores individuos vistos a lo largo de todas las generaciones, así
+que el ranking final TOP-10 no puede perder una solución fuerte por
+deriva genética tarde en la corrida.
 """
 
 from __future__ import annotations

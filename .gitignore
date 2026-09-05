@@ -1,4 +1,4 @@
-# Secrets
+# Secretos
 .env
 .cdsapirc
 
@@ -12,7 +12,7 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# Data (downloaded / generated — reproducible via the pipeline, not versioned)
+# Datos (descargados/generados — reproducibles vía el pipeline, no se versionan)
 data/raw/*
 data/processed/*
 data/cache/*
@@ -20,18 +20,18 @@ data/cache/*
 !data/processed/.gitkeep
 !data/cache/.gitkeep
 
-# Database
+# Base de datos
 *.sqlite
 *.sqlite3
 *.gpkg
 
-# Results / logs
+# Resultados / logs
 results/*
 logs/*
 !results/.gitkeep
 !logs/.gitkeep
 
-# OS / editor
+# SO / editor
 .DS_Store
 .vscode/
 .idea/

@@ -7,7 +7,7 @@ from src.config.settings import ClimateConfig, FitnessWeights, GeneticAlgorithmC
 def test_climate_config_rejects_wrong_dataset():
     with pytest.raises(PydanticValidationError):
         ClimateConfig(
-            dataset="reanalysis-era5-single-levels",  # forbidden substitute
+            dataset="reanalysis-era5-single-levels",  # sustituto prohibido
             variable="surface_solar_radiation_downwards",
             years=[2024],
             months=[1, 4, 7, 10],

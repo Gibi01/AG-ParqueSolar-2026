@@ -23,7 +23,7 @@ def test_to_projected_then_to_geographic_roundtrip(region_boundary_gdf):
 
     back = to_geographic(projected)
     assert str(back.crs).endswith("4326")
-    # roundtrip should preserve area/shape closely (allow small reprojection error)
+    # el roundtrip debe preservar área/forma de cerca (se permite un pequeño error de reproyección)
     orig_bounds = region_boundary_gdf.total_bounds
     back_bounds = back.total_bounds
     assert orig_bounds == pytest.approx(back_bounds, abs=1e-6)

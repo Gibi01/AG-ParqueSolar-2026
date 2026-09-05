@@ -1,13 +1,14 @@
-"""Analysis grid construction.
+"""Construcción de la grilla de análisis.
 
-Builds a configurable resolution_km x resolution_km square grid over the
-region boundary, following the procedure mandated by the requirements:
-project to a metric CRS, tile in metres, clip to the boundary, assign
-IDs and centroids. This grid is a spatial discretisation unit for the
-optimization problem — it is independent of, and coarser/finer than,
-any single climate data source's native resolution (see
-src/climate/era5_land.py for how ERA5-Land's ~9km points get associated
-to these 5km cells).
+Construye una grilla cuadrada configurable de resolution_km x
+resolution_km sobre el límite de la región, siguiendo el procedimiento
+exigido por los requisitos: proyectar a un CRS métrico, teselar en
+metros, recortar al límite, asignar IDs y centroides. Esta grilla es una
+unidad de discretización espacial para el problema de optimización — es
+independiente de, y más gruesa/fina que, la resolución nativa de
+cualquier fuente de datos climáticos en particular (ver
+src/climate/era5_land.py para cómo los puntos de ~9km de ERA5-Land se
+asocian a estas celdas de 5km).
 """
 
 from __future__ import annotations
@@ -33,20 +34,20 @@ def build_grid(
     resolution_km: float,
     projected_crs: CRS | None = None,
 ) -> Grid:
-    """Build the analysis grid, clipped to `region_boundary`.
+    """Construye la grilla de análisis, recortada a `region_boundary`.
 
-    Steps (per project requirements, Fase 13):
-    1. Determine an appropriate projected CRS if not given (via
-       `estimate_utm_crs`, never a hardcoded EPSG).
-    2. Reproject the boundary into that CRS.
-    3. Tile the boundary's bounding box into resolution_km x resolution_km
-       squares.
-    4. Intersect each square with the boundary (cells partially outside
-       the region are clipped, not discarded, but cells with fully empty
-       intersection are dropped).
-    5. Assign a unique cell_id and compute centroids (both in the
-       projected CRS, in metres, and reprojected back to WGS84 lat/lon
-       for storage/traceability).
+    Pasos (según los requisitos del proyecto, Fase 13):
+    1. Determinar un CRS proyectado apropiado si no se da uno (vía
+       `estimate_utm_crs`, nunca un EPSG hardcodeado).
+    2. Reproyectar el límite a ese CRS.
+    3. Tesselar el bounding box del límite en cuadrados de
+       resolution_km x resolution_km.
+    4. Intersectar cada cuadrado con el límite (las celdas parcialmente
+       fuera de la región se recortan, no se descartan, pero las celdas
+       con intersección totalmente vacía se eliminan).
+    5. Asignar un cell_id único y calcular centroides (tanto en el CRS
+       proyectado, en metros, como reproyectados de vuelta a lat/lon
+       WGS84 para almacenamiento/trazabilidad).
     """
     if projected_crs is None:
         projected_crs = estimate_projected_crs(region_boundary)

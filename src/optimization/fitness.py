@@ -1,13 +1,13 @@
-"""Fitness function: reads only pre-computed local metrics, never an API.
+"""Función de fitness: solo lee métricas locales precalculadas, nunca una API.
 
     fitness = weight_solar * normalized_solar
             + weight_grid_distance * normalized_grid_proximity
             + weight_transformer_distance * normalized_transformer_proximity
 
-All three inputs are already normalized to [0, 1] (closer/more-radiation
-= 1, per src/optimization/fitness.py:normalize_min_max) before this
-function combines them — this module does not itself compute distances
-or radiation.
+Las tres entradas ya están normalizadas a [0, 1] (más cerca/más radiación
+= 1, según src/optimization/fitness.py:normalize_min_max) antes de que
+esta función las combine — este módulo no calcula distancias ni radiación
+por sí mismo.
 """
 
 from __future__ import annotations
@@ -19,17 +19,17 @@ from src.config.settings import FitnessWeights
 
 
 def normalize_min_max(values: np.ndarray, invert: bool = False) -> np.ndarray:
-    """Min-max normalize `values` to [0, 1].
+    """Normaliza `values` a [0, 1] usando min-max.
 
-    invert=False: the largest raw value maps to 1 (use for "more is
-    better" metrics, e.g. solar radiation).
-    invert=True: the SMALLEST raw value maps to 1 (use for "closer is
-    better" metrics, e.g. distance to infrastructure — so proximity, not
-    distance, is what ends up close to 1).
+    invert=False: el valor crudo más grande mapea a 1 (usar para métricas
+    "más es mejor", p. ej. radiación solar).
+    invert=True: el valor crudo MÁS CHICO mapea a 1 (usar para métricas
+    "más cerca es mejor", p. ej. distancia a infraestructura — así que lo
+    que termina cerca de 1 es la proximidad, no la distancia).
 
-    If every value is identical (no discriminating information), every
-    output is 1.0 — documented choice: with no basis to prefer one cell
-    over another on this metric, it should not penalize any of them.
+    Si todos los valores son idénticos (no hay información discriminante),
+    toda salida es 1.0 — decisión documentada: sin ninguna base para
+    preferir una celda sobre otra en esta métrica, no debería penalizar a ninguna.
     """
     values = np.asarray(values, dtype=float)
     vmin, vmax = np.nanmin(values), np.nanmax(values)
@@ -40,10 +40,10 @@ def normalize_min_max(values: np.ndarray, invert: bool = False) -> np.ndarray:
 
 
 def compute_fitness(candidates: pd.DataFrame, weights: FitnessWeights) -> pd.Series:
-    """Compute the weighted fitness for each row of `candidates`.
+    """Calcula el fitness ponderado para cada fila de `candidates`.
 
-    Expects columns: solar_score, grid_proximity_score,
-    transformer_proximity_score — all already normalized to [0, 1].
+    Espera las columnas: solar_score, grid_proximity_score,
+    transformer_proximity_score — todas ya normalizadas a [0, 1].
     """
     required = ["solar_score", "grid_proximity_score", "transformer_proximity_score"]
     missing = [c for c in required if c not in candidates.columns]

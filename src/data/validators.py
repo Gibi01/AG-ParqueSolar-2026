@@ -1,9 +1,9 @@
-"""Reusable validation primitives.
+"""Primitivas de validación reutilizables.
 
-Used both by the pipeline (pre-flight checks before the GA is allowed to
-run — Fase 32 of the requirements) and by the unit tests. Each validator
-raises `ValidationError` with a message specific enough to diagnose the
-problem without re-reading the source code.
+Se usan tanto en el pipeline (chequeos previos antes de que se permita
+correr el AG — Fase 32 de los requisitos) como en los tests unitarios.
+Cada validador lanza `ValidationError` con un mensaje lo bastante
+específico para diagnosticar el problema sin tener que releer el código fuente.
 """
 
 from __future__ import annotations
@@ -54,8 +54,9 @@ def validate_not_empty(gdf_or_df, label: str) -> None:
 
 
 def validate_layer_present(gdf: gpd.GeoDataFrame | None, label: str) -> None:
-    """Fail loudly (never silently skip a criterion) when a required layer
-    is missing — e.g. the transformer-station layer, per Fase 32/16.
+    """Falla de forma explícita (nunca omite silenciosamente un criterio)
+    cuando falta una capa requerida — p. ej. la capa de estaciones
+    transformadoras, según la Fase 32/16.
     """
     if gdf is None or len(gdf) == 0:
         raise ValidationError(

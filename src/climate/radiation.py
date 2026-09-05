@@ -1,21 +1,23 @@
-"""SSRD aggregation: raw value -> transformation -> final unit.
+"""Agregación de SSRD: valor original -> transformación -> unidad final.
 
-    Original value : surface_solar_radiation_downwards (SSRD), in J/m^2,
-                      from the CDS "reanalysis-era5-land-timeseries"
-                      dataset. CDS itself labels this dataset's variable
-                      as "(de-accumulated)": each hourly record already
-                      represents the radiation accumulated during THAT
-                      single hour — NOT a running total since the start
-                      of a forecast, which is how SSRD is stored in the
-                      raw/bulk ERA5-Land archive and would otherwise
-                      require manually differencing consecutive hours.
-                      This assumption is exactly what Fase 10's single
-                      point test (`--test-era5`) exists to confirm
-                      empirically once real credentials are available.
-    Transformation  : sum the hourly J/m^2 values within a calendar month,
-                      then convert J/m^2 -> kWh/m^2 (1 kWh = 3.6e6 J).
-    Final unit      : kWh/m^2 per month — chosen for interpretability
-                      (project requirement) over the raw J/m^2.
+    Valor original  : surface_solar_radiation_downwards (SSRD), en J/m^2,
+                      del dataset "reanalysis-era5-land-timeseries" de CDS.
+                      El propio CDS etiqueta la variable de este dataset
+                      como "(de-accumulated)": cada registro horario ya
+                      representa la radiación acumulada durante ESA hora
+                      puntual — NO un total corriendo desde el inicio de
+                      un forecast, que es como se guarda SSRD en el
+                      archivo crudo/bulk de ERA5-Land y que de otro modo
+                      requeriría diferenciar manualmente horas
+                      consecutivas. Este supuesto es exactamente lo que
+                      la prueba de un solo punto de la Fase 10
+                      (`--test-era5`) existe para confirmar empíricamente
+                      una vez que haya credenciales reales disponibles.
+    Transformación  : sumar los valores horarios en J/m^2 dentro de un mes
+                      calendario, luego convertir J/m^2 -> kWh/m^2
+                      (1 kWh = 3.6e6 J).
+    Unidad final    : kWh/m^2 por mes — elegida por interpretabilidad
+                      (requisito del proyecto) sobre el J/m^2 crudo.
 """
 
 from __future__ import annotations
@@ -27,11 +29,11 @@ import pandas as pd
 
 from src.data.transformers import joules_per_m2_to_kwh_per_m2
 
-# Generous plausibility bounds for monthly surface solar radiation at
-# mid-southern latitudes (~28-34S, Santa Fe). Real Argentine Pampas
-# climatology is roughly 80-110 kWh/m^2/month in winter (July) and
-# 190-230 kWh/m^2/month in summer (January); bounds are kept wide on
-# purpose since this is a plausibility guard, not a climatological model.
+# Límites de plausibilidad generosos para radiación solar superficial
+# mensual en latitudes medio-sur (~28-34S, Santa Fe). La climatología real
+# de la Pampa argentina ronda 80-110 kWh/m^2/mes en invierno (julio) y
+# 190-230 kWh/m^2/mes en verano (enero); los límites se dejan amplios a
+# propósito ya que esto es una guarda de plausibilidad, no un modelo climatológico.
 PLAUSIBLE_MONTHLY_KWH_M2_RANGE = (20.0, 320.0)
 
 MIN_HOURLY_COVERAGE_FRACTION = 0.95
@@ -52,8 +54,8 @@ class RadiationAggregationError(RuntimeError):
 
 
 def aggregate_monthly_kwh_m2(hourly: pd.DataFrame, year: int, month: int) -> MonthlyAggregationResult:
-    """Aggregate an hourly de-accumulated SSRD series (columns
-    `valid_time`, `value` in J/m^2) into a single monthly kWh/m^2 figure.
+    """Agrega una serie horaria de SSRD ya de-acumulada (columnas
+    `valid_time`, `value` en J/m^2) en una única cifra mensual de kWh/m^2.
     """
     mask = (hourly["valid_time"].dt.year == year) & (hourly["valid_time"].dt.month == month)
     month_hours = hourly.loc[mask]
@@ -86,9 +88,10 @@ def aggregate_monthly_kwh_m2(hourly: pd.DataFrame, year: int, month: int) -> Mon
 
 
 def representative_solar_score(monthly_values_kwh_m2: list[float]) -> float:
-    """Combine the sampled months (Jan/Apr/Jul/Oct) into one representative
-    figure via a simple mean, per the project's MVP methodology (documented
-    as a placeholder — not a claim about full-year insolation)."""
+    """Combina los meses muestreados (ene/abr/jul/oct) en una única cifra
+    representativa mediante un promedio simple, según la metodología de
+    MVP del proyecto (documentado como un placeholder — no una afirmación
+    sobre la insolación de todo el año)."""
     if not monthly_values_kwh_m2:
         raise ValueError("monthly_values_kwh_m2 is empty.")
     return sum(monthly_values_kwh_m2) / len(monthly_values_kwh_m2)

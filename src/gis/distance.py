@@ -1,10 +1,10 @@
-"""Minimum-distance calculations, always in a projected (metric) CRS.
+"""Cálculos de distancia mínima, siempre en un CRS proyectado (métrico).
 
-Never compute physical distances on raw lat/lon degrees (a naive
-sqrt((lat1-lat2)^2 + (lon1-lon2)^2) is not a real distance — degrees of
-longitude shrink towards the poles and the two axes aren't even the same
-length). Everything here operates in metres after reprojection, and
-returns kilometres.
+Nunca calcular distancias físicas sobre grados crudos de lat/lon (un
+sqrt((lat1-lat2)^2 + (lon1-lon2)^2) ingenuo no es una distancia real —
+los grados de longitud se achican hacia los polos y los dos ejes ni
+siquiera tienen la misma longitud). Todo acá opera en metros después de
+reproyectar, y devuelve kilómetros.
 """
 
 from __future__ import annotations
@@ -21,11 +21,11 @@ def nearest_distance_km(
     target_gdf: gpd.GeoDataFrame,
     projected_crs: CRS,
 ) -> np.ndarray:
-    """For each geometry in `source_gdf`, return the distance (km) to the
-    nearest geometry in `target_gdf`, both reprojected into `projected_crs`.
+    """Para cada geometría en `source_gdf`, devuelve la distancia (km) a la
+    geometría más cercana en `target_gdf`, ambas reproyectadas a `projected_crs`.
 
-    Uses GeoPandas' spatial-index-backed `sjoin_nearest` rather than an
-    O(n*m) loop, since grids can have thousands of cells.
+    Usa el `sjoin_nearest` de GeoPandas (respaldado por índice espacial)
+    en vez de un loop O(n*m), ya que las grillas pueden tener miles de celdas.
     """
     if len(target_gdf) == 0:
         raise ValueError("target_gdf is empty; cannot compute nearest distances.")
@@ -34,8 +34,9 @@ def nearest_distance_km(
     target_proj = to_projected(target_gdf, projected_crs)[["geometry"]].reset_index(drop=True)
 
     joined = gpd.sjoin_nearest(source_proj, target_proj, distance_col="distance_m", how="left")
-    # sjoin_nearest can emit >1 row per source feature when several target
-    # features are exactly equidistant; keep the minimum per source row.
+    # sjoin_nearest puede emitir >1 fila por feature de origen cuando varias
+    # features de destino están exactamente equidistantes; nos quedamos con
+    # el mínimo por fila de origen.
     nearest_m = joined.groupby(level=0)["distance_m"].min()
     nearest_m = nearest_m.reindex(range(len(source_proj)))
     return (nearest_m.to_numpy() / 1000.0)

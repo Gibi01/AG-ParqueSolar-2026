@@ -1,9 +1,9 @@
-"""Repository: the only place that talks to the SQLite database.
+"""Repositorio: el único lugar que habla con la base de datos SQLite.
 
-The genetic algorithm (src/optimization/*) must never query an API — it
-reads candidate locations exclusively through this repository, which in
-turn reads only from the local SQLite file. This module is the
-enforcement point for that architectural rule.
+El algoritmo genético (src/optimization/*) nunca debe consultar una API —
+lee las ubicaciones candidatas exclusivamente a través de este
+repositorio, que a su vez solo lee del archivo SQLite local. Este módulo
+es el punto donde se hace cumplir esa regla arquitectónica.
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ class Repository:
             if len(df) > 0:
                 df.to_sql(table.name, conn, if_exists="append", index=False)
 
-    # --- writes -----------------------------------------------------
+    # --- escrituras -----------------------------------------------------
 
     def replace_grid_cells(self, grid_gdf: gpd.GeoDataFrame, region_name: str, resolution_km: float, projected_crs: str) -> None:
         df = pd.DataFrame(
@@ -135,7 +135,7 @@ class Repository:
         with self.engine.begin() as conn:
             df.to_sql(OptimizationResult.__tablename__, conn, if_exists="append", index=False)
 
-    # --- reads --------------------------------------------------------
+    # --- lecturas --------------------------------------------------------
 
     def get_grid_cells_df(self) -> pd.DataFrame:
         return pd.read_sql("SELECT * FROM grid_cells", self.engine)

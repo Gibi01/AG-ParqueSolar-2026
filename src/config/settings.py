@@ -1,9 +1,9 @@
-"""Typed, validated access to config.yaml + environment variables.
+"""Acceso tipado y validado a config.yaml + variables de entorno.
 
-This is the single source of truth for every tunable parameter in the
-pipeline. Nothing here hardcodes a region: `region.name` and
-`region.admin_source` fully describe how to obtain the boundary of
-whatever province is configured (see README "Cambiar de provincia").
+Esta es la única fuente de verdad para todo parámetro configurable del
+pipeline. Nada acá hardcodea una región: `region.name` y
+`region.admin_source` describen completamente cómo obtener el límite de
+la provincia que esté configurada (ver README "Cambiar de provincia").
 """
 
 from __future__ import annotations
@@ -206,8 +206,8 @@ class Settings(BaseModel):
     genetic_algorithm: GeneticAlgorithmConfig
     paths: PathsConfig
 
-    # Not part of config.yaml — loaded from the environment, never from the
-    # repository, and never given a literal default value here.
+    # No es parte de config.yaml — se carga desde el entorno, nunca desde el
+    # repositorio, y nunca se le da un valor por defecto literal acá.
     cds_api_key: Optional[str] = None
     cds_api_url: Optional[str] = None
 
@@ -224,11 +224,11 @@ class Settings(BaseModel):
 
 
 def load_settings(config_path: str | Path = "config.yaml") -> Settings:
-    """Load and validate configuration from YAML + environment variables.
+    """Carga y valida la configuración desde YAML + variables de entorno.
 
-    The CDS API key is deliberately never read from config.yaml: it is
-    read from the process environment (populated from `.env` via
-    python-dotenv, or from a real environment variable / CI secret).
+    La clave de la API de CDS deliberadamente nunca se lee de config.yaml:
+    se lee del entorno del proceso (poblado desde `.env` vía python-dotenv,
+    o desde una variable de entorno real / secreto de CI).
     """
     config_path = Path(config_path)
     if not config_path.is_absolute():

@@ -24,7 +24,7 @@ def _make_hourly_series(year: int, month: int, hourly_value_j_m2: float) -> pd.D
 
 
 def test_aggregate_monthly_kwh_m2_sums_correctly():
-    # 1,000,000 J/m^2 every hour of January 2024 (744 hours)
+    # 1.000.000 J/m^2 cada hora de enero de 2024 (744 horas)
     hourly = _make_hourly_series(2024, 1, 1_000_000.0)
     result = aggregate_monthly_kwh_m2(hourly, 2024, 1)
     expected_kwh = (744 * 1_000_000.0) / JOULES_PER_KWH
@@ -34,13 +34,13 @@ def test_aggregate_monthly_kwh_m2_sums_correctly():
 
 
 def test_aggregate_monthly_kwh_m2_raises_on_insufficient_coverage():
-    hourly = _make_hourly_series(2024, 1, 1_000_000.0).iloc[:100]  # far less than a full month
+    hourly = _make_hourly_series(2024, 1, 1_000_000.0).iloc[:100]  # muchísimo menos que un mes completo
     with pytest.raises(RadiationAggregationError):
         aggregate_monthly_kwh_m2(hourly, 2024, 1)
 
 
 def test_aggregate_monthly_kwh_m2_flags_implausible_values():
-    # An unrealistically huge hourly value should fail the plausibility check
+    # Un valor horario irrealmente enorme debería fallar el chequeo de plausibilidad
     hourly = _make_hourly_series(2024, 7, 50_000_000.0)
     result = aggregate_monthly_kwh_m2(hourly, 2024, 7)
     assert not result.is_plausible

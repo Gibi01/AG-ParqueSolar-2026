@@ -1,5 +1,6 @@
-"""Shared fixtures. No test in this suite touches the network — GeoDataFrames
-are built directly from in-memory geometries, never fetched."""
+"""Fixtures compartidas. Ningún test de esta suite toca la red — los
+GeoDataFrames se construyen directamente a partir de geometrías en
+memoria, nunca se descargan."""
 
 from __future__ import annotations
 
@@ -7,9 +8,9 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import box
 
-# A small square "region" (~50km x 50km) around a point in Santa Fe,
-# already in WGS84, used by every test that needs a boundary.
-_REGION_BOUNDS = (-61.2, -32.2, -60.7, -31.7)  # minx, miny, maxx, maxy (approx 50km square)
+# Una pequeña "región" cuadrada (~50km x 50km) alrededor de un punto en
+# Santa Fe, ya en WGS84, usada por todo test que necesite un límite.
+_REGION_BOUNDS = (-61.2, -32.2, -60.7, -31.7)  # minx, miny, maxx, maxy (cuadrado de ~50km aprox.)
 
 
 @pytest.fixture

@@ -1,11 +1,11 @@
-"""Blend (arithmetic) crossover over candidate-index encoded individuals.
+"""Cruce (crossover) por mezcla aritmética sobre individuos codificados como índice de candidato.
 
-Each individual is a single integer gene (its position in the candidate
-locations array), so classic multi-gene crossover doesn't apply. Instead
-this uses real-coded/arithmetic blend crossover — standard for
-single-variable GAs — producing two offspring whose index lies on the
-line between the two parents' indices, then rounds and clips back into
-the valid range.
+Cada individuo es un único gen entero (su posición en el arreglo de
+ubicaciones candidatas), así que el cruce clásico multi-gen no aplica. En
+cambio, esto usa cruce de mezcla real/aritmético — estándar para AGs de
+una sola variable — produciendo dos hijos cuyo índice cae sobre la línea
+entre los índices de los dos padres, y luego redondea y recorta de vuelta
+al rango válido.
 """
 
 from __future__ import annotations
@@ -30,9 +30,9 @@ def crossover_population(
     n_candidates: int,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Pair up consecutive parents and apply blend crossover with
-    probability `crossover_probability`; unpaired/skipped individuals
-    pass through unchanged."""
+    """Empareja padres consecutivos y aplica cruce de mezcla con
+    probabilidad `crossover_probability`; los individuos no emparejados/
+    saltados pasan sin cambios."""
     children = parents.copy()
     for i in range(0, len(parents) - 1, 2):
         if rng.random() < crossover_probability:

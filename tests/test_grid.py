@@ -7,10 +7,10 @@ def test_build_grid_cells_are_within_region(region_boundary_gdf):
     grid = build_grid(region_boundary_gdf, resolution_km=5)
     assert len(grid.gdf) > 0
     region_geom_proj = region_boundary_gdf.to_crs(grid.projected_crs).geometry.union_all()
-    # every cell must be (at least almost) contained in the region, since
-    # cells are clipped by intersection with the boundary
+    # cada celda debe estar (al menos casi) contenida en la región, ya que
+    # las celdas se recortan por intersección con el límite
     outside_area = grid.gdf.geometry.difference(region_geom_proj).area.sum()
-    assert outside_area < 1.0  # negligible floating point slop, in m^2
+    assert outside_area < 1.0  # margen de error de punto flotante despreciable, en m^2
 
 
 def test_build_grid_assigns_unique_sequential_ids(region_boundary_gdf):
@@ -36,6 +36,6 @@ def test_build_grid_centroids_have_plausible_lat_lon(region_boundary_gdf):
     grid = build_grid(region_boundary_gdf, resolution_km=5)
     assert grid.gdf["latitude"].between(-90, 90).all()
     assert grid.gdf["longitude"].between(-180, 180).all()
-    # centroids should fall inside (or very near) the original geographic bounds
+    # los centroides deben caer dentro (o muy cerca) del límite geográfico original
     assert grid.gdf["latitude"].min() >= -32.3
     assert grid.gdf["latitude"].max() <= -31.6

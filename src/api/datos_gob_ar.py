@@ -1,17 +1,18 @@
-"""Client for datos.gob.ar (CKAN DataStore API + direct file downloads).
+"""Cliente para datos.gob.ar (API CKAN DataStore + descargas directas de archivos).
 
-Two access patterns are used by this project, matching what schema
-inspection (Fase 3) revealed about the actual resources:
+Este proyecto usa dos patrones de acceso, según lo que reveló la
+inspección de schemas (Fase 3) sobre los recursos reales:
 
-- DataStore-backed resources (BAHRA localities, power lines) are queried
-  through the CKAN `datastore_search` action, paginated.
-- The transformer-station resource is a plain CSV file hosted by the
-  Secretaría de Energía (not DataStore-backed: `datastore_active` is
-  False for it), so it is fetched as a direct file download instead.
+- Los recursos respaldados por DataStore (localidades BAHRA, líneas
+  eléctricas) se consultan mediante la acción CKAN `datastore_search`, paginada.
+- El recurso de estaciones transformadoras es un archivo CSV plano alojado
+  por la Secretaría de Energía (no respaldado por DataStore:
+  `datastore_active` es False para él), así que se obtiene como una
+  descarga directa de archivo en su lugar.
 
-Every fetch returns a `FetchResult` carrying source traceability
-(url/resource id, parameters, download timestamp) alongside the data,
-per the project's traceability requirements.
+Cada fetch devuelve un `FetchResult` que lleva trazabilidad de la fuente
+(url/id de recurso, parámetros, timestamp de descarga) junto con los
+datos, según los requisitos de trazabilidad del proyecto.
 """
 
 from __future__ import annotations
@@ -28,7 +29,7 @@ DEFAULT_PAGE_SIZE = 1000
 
 
 class DatosGobArError(RuntimeError):
-    """Raised when the datos.gob.ar API returns an error or unexpected shape."""
+    """Se lanza cuando la API de datos.gob.ar devuelve un error o una forma inesperada."""
 
 
 @dataclass
@@ -43,17 +44,17 @@ class FetchResult:
 
 
 class DatosGobArClient:
-    """Thin, testable wrapper around the datos.gob.ar CKAN API."""
+    """Envoltorio delgado y testeable sobre la API CKAN de datos.gob.ar."""
 
     def __init__(self, session: Optional[requests.Session] = None, timeout_s: int = DEFAULT_TIMEOUT_S):
         self._session = session or requests.Session()
         self._timeout_s = timeout_s
 
     def inspect_schema(self, resource_id: str) -> list[dict[str, str]]:
-        """Return the DataStore field list for a resource (id + type).
+        """Devuelve la lista de campos del DataStore para un recurso (id + tipo).
 
-        Use this BEFORE assuming a resource's shape (e.g. whether geometries
-        are points or polygons) — see Fase 3 of the project requirements.
+        Usar esto ANTES de asumir la forma de un recurso (p. ej. si las
+        geometrías son puntos o polígonos) — ver Fase 3 de los requisitos del proyecto.
         """
         result = self._datastore_search(resource_id, limit=1)
         return result.fields
@@ -64,7 +65,7 @@ class DatosGobArClient:
         filters: Optional[dict[str, Any]] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> FetchResult:
-        """Fetch every record of a DataStore resource, paginating as needed."""
+        """Obtiene todos los registros de un recurso DataStore, paginando según sea necesario."""
         offset = 0
         all_records: list[dict[str, Any]] = []
         fields: list[dict[str, str]] = []
@@ -124,8 +125,9 @@ class DatosGobArClient:
         )
 
     def fetch_file(self, url: str) -> tuple[bytes, datetime]:
-        """Download a plain file resource (not DataStore-backed), e.g. the
-        transformer-stations CSV published directly by Secretaría de Energía.
+        """Descarga un recurso de archivo plano (no respaldado por DataStore),
+        p. ej. el CSV de estaciones transformadoras publicado directamente
+        por la Secretaría de Energía.
         """
         response = self._session.get(url, timeout=self._timeout_s)
         response.raise_for_status()
