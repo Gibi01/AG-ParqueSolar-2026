@@ -1,0 +1,67 @@
+"""Reusable validation primitives.
+
+Used both by the pipeline (pre-flight checks before the GA is allowed to
+run — Fase 32 of the requirements) and by the unit tests. Each validator
+raises `ValidationError` with a message specific enough to diagnose the
+problem without re-reading the source code.
+"""
+
+from __future__ import annotations
+
+from typing import Iterable
+
+import geopandas as gpd
+import pandas as pd
+
+
+class ValidationError(ValueError):
+    pass
+
+
+def validate_crs_is_set(gdf: gpd.GeoDataFrame, label: str) -> None:
+    if gdf.crs is None:
+        raise ValidationError(f"{label}: GeoDataFrame has no CRS set.")
+
+
+def validate_geometries_valid(gdf: gpd.GeoDataFrame, label: str) -> None:
+    invalid = ~gdf.geometry.is_valid
+    if invalid.any():
+        raise ValidationError(
+            f"{label}: {int(invalid.sum())} of {len(gdf)} geometries are invalid "
+            "(self-intersections or similar). Fix upstream before proceeding."
+        )
+
+
+def validate_no_empty_geometries(gdf: gpd.GeoDataFrame, label: str) -> None:
+    empty = gdf.geometry.is_empty | gdf.geometry.isna()
+    if empty.any():
+        raise ValidationError(f"{label}: {int(empty.sum())} of {len(gdf)} geometries are empty/null.")
+
+
+def validate_no_nulls(df: pd.DataFrame, columns: Iterable[str], label: str) -> None:
+    missing_cols = [c for c in columns if c not in df.columns]
+    if missing_cols:
+        raise ValidationError(f"{label}: missing expected column(s) {missing_cols}.")
+    for col in columns:
+        n_null = df[col].isna().sum()
+        if n_null:
+            raise ValidationError(f"{label}: column '{col}' has {n_null} null value(s) out of {len(df)}.")
+
+
+def validate_not_empty(gdf_or_df, label: str) -> None:
+    if len(gdf_or_df) == 0:
+        raise ValidationError(f"{label}: dataset is empty.")
+
+
+def validate_layer_present(gdf: gpd.GeoDataFrame | None, label: str) -> None:
+    """Fail loudly (never silently skip a criterion) when a required layer
+    is missing — e.g. the transformer-station layer, per Fase 32/16.
+    """
+    if gdf is None or len(gdf) == 0:
+        raise ValidationError(
+            f"{label}: required layer is missing or empty. Per project requirements, "
+            "the optimization must NOT run silently without this criterion — "
+            "either restore the data source or explicitly disable the criterion "
+            "in configuration (which is not currently supported and must be a "
+            "deliberate code change, not a silent fallback)."
+        )

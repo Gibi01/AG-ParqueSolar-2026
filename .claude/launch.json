@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "map-preview",
+      "runtimeExecutable": "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/.venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8123", "--directory", "results"],
+      "port": 8123
+    }
+  ]
+}

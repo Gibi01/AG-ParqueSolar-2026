@@ -1,0 +1,113 @@
+# Configuration for the solar park siting MVP.
+#
+# Nothing region-specific is hardcoded in the source code: change `region`
+# (and, if a future province needs a different administrative source, the
+# `region.admin_source` block) to run the same pipeline over another
+# Argentine province. See README.md "Cambiar de provincia" for the full
+# checklist of what does / does not need to change.
+
+region:
+  name: "Santa Fe"
+  # Official administrative boundary source: Instituto Geográfico Nacional
+  # (IGN) "Unidades Territoriales" dataset, published on datos.gob.ar.
+  # https://datos.gob.ar/dataset/unidades-territoriales
+  admin_source:
+    provider: "IGN"
+    shapefile_zip_url: "http://www.ign.gob.ar/descargas/geodatos/SHAPES/ign_provincia.zip"
+    shapefile_member: "Provincia/ign_provincia.shp"
+    name_field: "NAM"      # short province name, e.g. "Santa Fe"
+    code_field: "IN1"      # INDEC/GeoRef province code, e.g. "82" for Santa Fe
+    code_value: "82"
+    native_crs: "EPSG:4326"  # CRS of the IGN shapefile itself (confirmed from its .prj)
+
+grid:
+  # Analysis grid cell size. This is a spatial discretisation unit for the
+  # optimization problem — NOT the resolution of any single data source.
+  resolution_km: 5
+
+park:
+  # Nominal footprint of a single candidate solar park.
+  # 2 ha = 20,000 m^2 = 0.02 km^2. Stored for traceability only: the MVP
+  # does NOT yet verify that 20,000 contiguous m^2 of usable land actually
+  # exist inside a candidate cell (no land-cover layer yet — see README).
+  area_hectares: 2
+
+urban_exclusion:
+  # The BAHRA "localidades" source (see infrastructure.urban_areas below)
+  # provides POINTS, not polygons. To approximate an urban footprint for
+  # exclusion purposes, each locality point is buffered by this radius
+  # (in a projected, metric CRS). This is a documented MVP approximation,
+  # not a real cadastral urban-limit layer.
+  buffer_km: 3.0
+  # BAHRA mixes real population centres with isolated built structures
+  # (single buildings, rural schools, etc.) under different `tipo` values.
+  # Observed distribution in Santa Fe: LOCALIDAD=386, SITIO EDIFICADO=473,
+  # ENTIDAD=6. Buffering ALL of them at buffer_km excludes ~48% of the
+  # whole province (dominated by isolated "SITIO EDIFICADO" points, which
+  # are not urban zones). Only these types are treated as "urban" for the
+  # exclusion criterion; the rest of the ingested BAHRA layer is still
+  # stored in full for traceability.
+  include_types: ["LOCALIDAD"]
+
+climate:
+  # Copernicus Climate Data Store dataset. MUST remain the Time-Series /
+  # ARCO dataset per the project requirements — do not substitute for
+  # plain ERA5, ERA5-Land monthly, or the bulk ERA5-Land hourly archive.
+  dataset: "reanalysis-era5-land-timeseries"
+  variable: "surface_solar_radiation_downwards"
+  years: [2024]
+  months: [1, 4, 7, 10]   # January (summer), April (autumn), July (winter), October (spring)
+  # The dataset's formal request schema exposes an `area` bounding box
+  # (not a bare lat/lon pair) as the geographic selector. To request a
+  # single point we send a tiny bounding box centred on it; this epsilon
+  # (degrees) is far smaller than the 0.1° native grid spacing, so in
+  # practice exactly one ARCO grid point falls inside it, matching the
+  # documented nearest-neighbour behaviour. See src/api/copernicus_era5_land.py.
+  point_bbox_epsilon_deg: 0.001
+
+infrastructure:
+  urban_areas:
+    # BAHRA localities (points), datos.gob.ar DataStore.
+    # https://datos.gob.ar/dataset/localidades-bahra
+    resource_id: "c1fc1f5b-dfe3-5231-9f3b-f7c703b906c7"
+  power_lines:
+    # Redes de distribución eléctrica del Consejo Federal, datos.gob.ar DataStore.
+    # Contains line geometries with a "tension" (voltage) attribute only —
+    # NO transformer/substation entities (confirmed by schema inspection).
+    resource_id: "3d5eda86-6822-5c39-b366-f89360b0363a"
+  transformers:
+    # Transporte Eléctrico AT - Estaciones Transformadoras.
+    # Secretaría de Energía de la Nación, datos.gob.ar (direct CSV download,
+    # not DataStore-backed). Required because the power-lines dataset above
+    # has no substation layer. If this source ever becomes unavailable,
+    # the pipeline must stop and report the missing layer — never fabricate
+    # transformer locations.
+    # https://datos.gob.ar/dataset/transporte-electrico-at-estaciones-transformadoras
+    source_url: "http://datos.energia.gob.ar/dataset/5ae5fbf9-5ab3-407b-a047-625bf27835aa/resource/cedb62c4-4a4c-4124-bdc9-48f611a59862/download/transporte-elctrico-at-estaciones-transformadoras.csv"
+    native_crs: "EPSG:4326"
+
+fitness:
+  # Initial MVP weights — placeholders for future calibration, not a
+  # scientifically validated weighting. Must sum to 1.0 (+/- 1e-6).
+  # Transformer proximity is weighted above simple line proximity per
+  # the project requirement.
+  weight_solar: 0.50
+  weight_grid_distance: 0.20
+  weight_transformer_distance: 0.30
+
+genetic_algorithm:
+  population_size: 50
+  generations: 100
+  crossover_probability: 0.75
+  mutation_probability: 0.05
+  elitism: 2
+  tournament_size: 3
+  random_seed: 42
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  era5_cache: "data/cache/era5_land_cache"
+  database: "data/processed/parque_solar.sqlite"
+  results: "results"
+  logs: "logs"
