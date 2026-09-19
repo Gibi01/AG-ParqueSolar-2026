@@ -1,7 +1,7 @@
 # Optimización de ubicaciones de parques solares — MVP (Santa Fe, Argentina)
 
 Sistema que usa un **Algoritmo Genético** para identificar celdas de una grilla
-de 5×5 km dentro de la provincia de Santa Fe que resulten **potencialmente
+de 9×9 km dentro de la provincia de Santa Fe que resulten **potencialmente
 favorables** para instalar un parque solar fotovoltaico de 2 ha, en base a:
 
 1. Radiación solar (Copernicus **ERA5-Land hourly time-series data from 1950
@@ -51,6 +51,13 @@ funcionalmente son intercambiables).
 
 ## Uso (CLI)
 
+En Windows, desde la carpeta del proyecto, ejecutar `run.cmd`. El script
+crea `.venv` si hace falta, instala las dependencias, corre el pipeline y
+abre `results/map.html` al finalizar correctamente. La primera ejecución
+requiere `CDS_API_KEY` en `.env` y conexión a las fuentes de datos. La
+descarga histórica desde 1970 puede tardar bastante; los datos climáticos
+se guardan en caché para las siguientes corridas.
+
 ```bash
 python -m src.main --setup       # valida configuración, crea directorios
 python -m src.main --download    # descarga/cachea capas de datos.gob.ar + IGN
@@ -63,6 +70,17 @@ python -m src.main --test-era5   # diagnóstico de UN punto (ver Fase 10 abajo)
 Agregar `--force` a `--download` para ignorar la caché en disco y volver a
 descargar todo. `--config ruta.yaml` permite usar un archivo de configuración
 alternativo.
+
+La corrida usa enero, abril, julio y octubre desde 1970. `end_year: latest`
+incluye el mes representativo más reciente que terminó con al menos un mes
+de margen para la publicación de CDS. Para cada celda se calcula primero la
+media histórica de la radiación mensual de cada mes elegido. Cada valor se
+divide por los días de ese mes para obtener la irradiación diaria media; se
+proyecta a los días de su estación (enero→verano, abril→otoño, julio→invierno,
+octubre→primavera) y se suman las cuatro estaciones. El resultado es una
+**estimación de radiación anual en kWh/m²/año**, no una medición de los doce
+meses. El ranking muestra esa estimación y las cuatro medias mensuales;
+`optimization_run.json` registra el período utilizado.
 
 ### Antes de la primera descarga masiva de clima: `--test-era5`
 
@@ -114,7 +132,6 @@ src/
   pipeline/               Orquestación: ingest -> preprocess -> reporting
   config/                 Carga y validación de config.yaml + .env
   main.py                 CLI
-tests/                    Tests unitarios (sin red — todo mockeado)
 config.yaml               Toda la configuración editable del MVP
 .env.example              Documenta CDS_API_KEY sin exponer ningún valor real
 ```
@@ -135,7 +152,7 @@ region:
   name: "Santa Fe"
   admin_source: {...}      # de dónde sale el límite administrativo (IGN)
 grid:
-  resolution_km: 5
+  resolution_km: 9
 park:
   area_hectares: 2
 urban_exclusion:
@@ -144,7 +161,8 @@ urban_exclusion:
 climate:
   dataset: "reanalysis-era5-land-timeseries"   # validado, no se puede cambiar sin justificar
   variable: "surface_solar_radiation_downwards"
-  years: [2024]
+  start_year: 1970
+  end_year: latest
   months: [1, 4, 7, 10]
 infrastructure:
   urban_areas: {resource_id: "..."}
@@ -280,20 +298,28 @@ en vez de asumir un formato de request. Hallazgos confirmados:
   suma horaria del mes → división por 3.6×10⁶ (1 kWh = 3.6×10⁶ J) →
   **kWh/m²/mes** (unidad final, elegida por interpretabilidad).
 
-**Advertencia honesta**: este mapeo se derivó del schema real de CDS, pero
-**no se ejerció contra el servicio con credenciales reales** (no había una
-`CDS_API_KEY` disponible al construir este MVP). Por eso existe
-`python -m src.main --test-era5`: antes de cualquier descarga masiva, corre
-una solicitud de un solo punto/mes y imprime todos los diagnósticos
-necesarios (coordenada solicitada vs. usada, unidad, primeros valores,
-plausibilidad física) para confirmar o corregir el supuesto de
-de-acumulación antes de confiar en el resto del pipeline. Si CDS cambiara
-el schema, sólo `src/api/copernicus_era5_land.py` y
-`src/climate/radiation.py` deberían necesitar ajustes.
+**Validado contra la API real** (una vez disponible una `CDS_API_KEY`) con
+`python -m src.main --test-era5`: confirmó la coordenada ERA5-Land devuelta,
+744/744 horas para enero 2024, y una radiación mensual de 222.71 kWh/m² —
+dentro del rango físicamente plausible esperado para verano en Santa Fe.
+Esa misma validación reveló dos ajustes necesarios que no se podían prever
+sin credenciales reales:
+
+- `point_bbox_epsilon_deg` inicial (0.001°) era demasiado chico: la fase
+  real de la grilla ARCO respecto a una coordenada arbitraria no está
+  documentada, así que una caja de ese tamaño podía no contener ningún
+  punto de grilla (`MultiAdaptorNoDataError: No data found`). Subido a
+  0.06°.
+- El campo `area` puede devolver más de un punto de grilla dentro de la
+  caja pedida; el cliente ahora se queda con el más cercano a la
+  coordenada solicitada (`CopernicusEra5LandClient.fetch_point_hourly`).
+
+Si CDS cambiara el schema en el futuro, sólo `src/api/copernicus_era5_land.py`
+y `src/climate/radiation.py` deberían necesitar ajustes.
 
 ### Caché ERA5-Land y por qué no se pide una vez por celda
 
-La grilla de análisis es de 5 km; ERA5-Land tiene resolución nativa de
+La grilla de análisis es de 9 km; ERA5-Land tiene resolución nativa de
 ~9 km (0.1° × 0.1°). Por lo tanto varias celdas comparten el mismo punto
 ERA5-Land. `src/climate/era5_land.py::predict_nearest_era5_grid_point`
 redondea cada centroide de celda al punto de grilla 0.1° más cercano
@@ -307,6 +333,39 @@ igual que la metodología documentada del propio dataset — la arquitectura
 queda preparada para agregar interpolación como una estrategia alternativa
 sin tocar la lógica de agrupación/caché.
 
+### Modo área: por qué pedir punto por punto no escala
+
+La grilla anterior de Santa Fe (5 km) necesitaba **1356 puntos ERA5 únicos**.
+Pedirlos uno por uno (una solicitud HTTP por punto y mes, cada una en cola
+del servidor ~20-35s) da **5424 solicitudes** para los 4 meses configurados
+— del orden de **decenas de horas** de ejecución secuencial. El propio
+dataset soporta pedir un bounding box y recibir *todos* los puntos de
+grilla ARCO adentro en una sola respuesta (`Era5AreaRequest` /
+`CopernicusEra5LandClient.fetch_area_hourly`), así que
+`src/climate/era5_land.py` agrupa los puntos únicos en tiles geográficos
+(`climate.area_tile_size_deg`, `tile_for_point`) y pide cada tile completo
+en una sola llamada.
+
+**Límite de costo no documentado**: CDS declara 1.0° como máximo
+geográfico del modo área (`form.json: maximum_extent`), pero al pedir un
+mes completo (744 horas) aplica además un límite de "costo" bastante más
+restrictivo — probablemente proporcional a `puntos × horas` — que rechaza
+la solicitud con `403 cost limits exceeded, Your request is too large`
+mucho antes de llegar a 1°. Calibrado empíricamente contra la API real:
+
+| Tile | Puntos aprox. | Punto-horas (mes completo) | Resultado |
+|---|---|---|---|
+| 0.2° | ~9 | 6.696 | OK |
+| 0.3° | ~16 | 11.904 | OK (valor por defecto) |
+| 0.4° | ~25 | 18.600 | Falla: cost limits exceeded |
+| 0.9° | ~100 | 74.400 | Falla: cost limits exceeded |
+
+Con `area_tile_size_deg: 0.3` esa grilla anterior pasaba de 5424 a **~704
+solicitudes** (7.7x menos). Sigue siendo una cantidad no trivial de
+llamadas secuenciales — si se necesita más velocidad, la siguiente palanca
+sería paralelizar el envío de solicitudes (CDS procesa cada job de forma
+asíncrona), no agrandar más el tile.
+
 ---
 
 ## Superficie del parque (2 ha) — qué se garantiza y qué no
@@ -314,7 +373,7 @@ sin tocar la lógica de agrupación/caché.
 `park.area_hectares` (2 ha = 20.000 m² = 0.02 km²) se **almacena** como
 parámetro y aparece en `optimization_run.json`, pero este MVP **no verifica**
 que existan 20.000 m² contiguos realmente disponibles dentro de una celda
-(no hay todavía una capa de cobertura/uso de suelo). La celda de 5×5 km es
+(no hay todavía una capa de cobertura/uso de suelo). La celda de 9×9 km es
 una unidad espacial de análisis — no una afirmación de que toda esa área
 esté disponible para el parque.
 
@@ -332,7 +391,6 @@ ubicación económicamente óptima. Explícitamente **no** se considera todavía
 - Cobertura/uso de suelo completo, pendiente, hidrografía.
 - Disponibilidad física real de los 20.000 m² contiguos.
 - Sombras, orientación, análisis financiero, mediciones in situ.
-- Más de un año / más meses de clima (queda preparado, no implementado).
 
 Los pesos de la función de fitness (`fitness.weight_*`) son valores
 iniciales de MVP, no pesos científicamente calibrados.
@@ -341,29 +399,13 @@ iniciales de MVP, no pesos científicamente calibrados.
 
 ## Extensiones futuras (arquitectura ya preparada)
 
-- Más años/meses de ERA5-Land (2015-2024, etc.) y estadísticos de
-  variabilidad interanual (media, mediana, desvío, percentiles) — las
+- Estadísticos de variabilidad interanual (mediana, desvío, percentiles) — las
   tablas `solar_radiation` ya son (celda, año, mes) por fila.
 - Interpolación espacial en vez de nearest-neighbour.
 - Capas adicionales de exclusión/ponderación: uso de suelo (WorldCover),
   elevación/pendiente (SRTM), áreas protegidas, cuerpos de agua.
 - Capacidad de subestación, tensión de línea, costo de conexión.
 - Otras provincias argentinas (ver "Cambiar de provincia" arriba).
-
----
-
-## Tests
-
-```bash
-pytest tests/ -v
-```
-
-56 tests, **ninguno toca la red** (los clientes HTTP/CDS se mockean).
-Cubren: generación de grilla, selección de CRS, distancias en CRS
-proyectado, normalización y fitness, conversión de SSRD y agregación
-mensual, asociación celda↔punto ERA5-Land, exclusión urbana, validación de
-configuración, y el algoritmo genético (selección/cruce/mutación/elitismo,
-convergencia hacia un óptimo conocido).
 
 ---
 

@@ -41,11 +41,19 @@ def build_map(
     transformers_gdf: gpd.GeoDataFrame,
     top10_df: pd.DataFrame,
     output_path: Path,
+    grid_resolution_km: float = 5,
+    climate_period: str = "",
 ) -> Path:
     region_geo = _to_geographic(region_gdf)
     center = region_geo.geometry.union_all().centroid
 
     fmap = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="OpenStreetMap")
+    if climate_period:
+        folium.Element(
+            f'<div style="position:fixed;top:12px;left:50px;z-index:9999;background:white;'
+            f'padding:8px;border:1px solid #777">Grilla {grid_resolution_km:g} km · '
+            f'Radiación media: {climate_period}</div>'
+        ).add_to(fmap.get_root().html)
 
     folium.GeoJson(
         region_geo[["geometry"]],
@@ -60,7 +68,7 @@ def build_map(
     # las geometrías analíticas subyacentes usadas en el resto del pipeline.
     simplify_tolerance_m = 25.0
 
-    grid_layer = folium.FeatureGroup(name="Grilla de análisis (5 km)", show=False)
+    grid_layer = folium.FeatureGroup(name=f"Grilla de análisis ({grid_resolution_km:g} km)", show=False)
     grid_simplified = grid_gdf.copy()
     grid_simplified["geometry"] = grid_simplified.geometry.simplify(simplify_tolerance_m)
     folium.GeoJson(
@@ -124,6 +132,7 @@ def build_map(
             f"<b>Rank {int(row['rank'])}</b> — Cell ID {int(row['grid_cell_id'])}<br>"
             f"Lat/Lon: {row['latitude']:.5f}, {row['longitude']:.5f}<br>"
             f"Fitness: {row['fitness']:.4f}<br>"
+            f"Radiación anual estimada: {row['solar_annual_kwh_m2']:.1f} kWh/m²/año<br>"
             f"Solar score: {row['solar_score']:.3f}<br>"
             f"Línea: {row['distance_to_power_line_km']:.2f} km "
             f"(score {row['grid_proximity_score']:.3f})<br>"

@@ -1,0 +1,1387 @@
+2026-09-07 21:42:51,589 INFO __main__: Logging to C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\logs\run_20260908T004251Z.log
+Región configurada: Santa Fe (code=82)
+Grilla: 30.0 km | Parque: 2.0 ha
+Pesos fitness: solar=0.50 linea=0.20 transformador=0.30 (suma=1.00)
+Clima: reanalysis-era5-land-timeseries / surface_solar_radiation_downwards
+       años=[2024] meses=[1]
+CDS_API_KEY: configurada (no se muestra el valor).
+Directorios de datos/resultados verificados/creados.
+Límite provincial: IGN - Instituto Geográfico Nacional (Unidades Territoriales, capa Provincia)
+Zonas urbanas (BAHRA): 865 puntos en la región.
+Líneas eléctricas: 46175 segmentos en la región.
+Centros/subestaciones transformadoras: 4 en la región.
+2026-09-07 21:42:52,331 INFO src.pipeline.preprocess: Built grid: 190 cells (EPSG:32720)
+2026-09-07 21:42:52,397 INFO src.pipeline.preprocess: Urban exclusion: 136/190 cells excluded (buffer=3.0km, types=['LOCALIDAD'])
+2026-09-07 21:42:52,770 INFO src.climate.era5_land: ERA5-Land association: 190 grid cells -> 190 unique ERA5-Land points (1.0x dedup factor)
+2026-09-07 21:42:52,771 INFO src.climate.era5_land: 190 puntos ERA5 únicos agrupados en 131 tiles de 0.30° (1.5 puntos/tile en promedio)
+2026-09-07 21:42:54,120 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-34.160000000000004, -63.04, -34.54, -62.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:42:54,774 INFO Request ID is b7fdb0d2-ef38-4d76-a729-d9b06bac7169
+2026-09-07 21:42:54,774 INFO ecmwf.datastores.legacy_client: Request ID is b7fdb0d2-ef38-4d76-a729-d9b06bac7169
+2026-09-07 21:42:55,835 INFO status has been updated to accepted
+2026-09-07 21:42:55,835 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:43:10,453 INFO status has been updated to running
+2026-09-07 21:43:10,453 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:43:18,336 INFO status has been updated to successful
+2026-09-07 21:43:18,336 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:43:18,891 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/2d7fb930aae3e4aaab35d40aca8ef78a.zip
+2d7fb930aae3e4aaab35d40aca8ef78a.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]2d7fb930aae3e4aaab35d40aca8ef78a.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 42.8kB/s]                                                                                          2026-09-07 21:43:21,845 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:43:21,849 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.86000000000001, -62.74, -34.24, -62.36000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:43:22,513 INFO Request ID is 58dcb1b4-2fb7-4120-a01a-78721d8736ac
+2026-09-07 21:43:22,513 INFO ecmwf.datastores.legacy_client: Request ID is 58dcb1b4-2fb7-4120-a01a-78721d8736ac
+2026-09-07 21:43:22,789 INFO status has been updated to accepted
+2026-09-07 21:43:22,789 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:43:56,943 INFO status has been updated to successful
+2026-09-07 21:43:56,943 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:43:57,495 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/2766972e15bcf96901ac416c19b199de.zip
+2766972e15bcf96901ac416c19b199de.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]2766972e15bcf96901ac416c19b199de.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 41.3kB/s]                                                                                          2026-09-07 21:44:00,183 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:44:00,187 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-34.160000000000004, -62.44, -34.54, -62.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:44:00,801 INFO Request ID is c9b5b740-7e1f-4412-8803-a1af9fbcb15f
+2026-09-07 21:44:00,801 INFO ecmwf.datastores.legacy_client: Request ID is c9b5b740-7e1f-4412-8803-a1af9fbcb15f
+2026-09-07 21:44:01,085 INFO status has been updated to accepted
+2026-09-07 21:44:01,085 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:44:23,576 INFO status has been updated to running
+2026-09-07 21:44:23,576 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:44:35,237 INFO status has been updated to successful
+2026-09-07 21:44:35,237 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:44:35,900 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/1c5650229d01477ee389a3d254adc00f.zip
+1c5650229d01477ee389a3d254adc00f.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]1c5650229d01477ee389a3d254adc00f.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 45.5kB/s]                                                                                          2026-09-07 21:44:38,430 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:44:38,433 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.86000000000001, -62.44, -34.24, -62.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:44:41,857 INFO Request ID is b5cb5419-0371-40fa-af5d-61ab23986293
+2026-09-07 21:44:41,857 INFO ecmwf.datastores.legacy_client: Request ID is b5cb5419-0371-40fa-af5d-61ab23986293
+2026-09-07 21:44:42,150 INFO status has been updated to accepted
+2026-09-07 21:44:42,150 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:44:56,741 INFO status has been updated to running
+2026-09-07 21:44:56,741 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:45:06,214 INFO status has been updated to successful
+2026-09-07 21:45:06,214 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:45:06,803 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/15f4a349d79025d7e0876614e23d32c8.zip
+15f4a349d79025d7e0876614e23d32c8.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]15f4a349d79025d7e0876614e23d32c8.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 47.1kB/s]                                                                                          2026-09-07 21:45:09,321 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:45:09,337 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -62.44, -33.94, -62.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:45:09,927 INFO Request ID is 6162c7cf-1fdb-4961-be3d-0b86e3802698
+2026-09-07 21:45:09,927 INFO ecmwf.datastores.legacy_client: Request ID is 6162c7cf-1fdb-4961-be3d-0b86e3802698
+2026-09-07 21:45:10,525 INFO status has been updated to accepted
+2026-09-07 21:45:10,525 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:45:32,979 INFO status has been updated to successful
+2026-09-07 21:45:32,979 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:45:33,526 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/e63c8a5f2088439db06fb087aa35dc91.zip
+e63c8a5f2088439db06fb087aa35dc91.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]e63c8a5f2088439db06fb087aa35dc91.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 47.3kB/s]                                                                                          2026-09-07 21:45:36,034 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:45:36,038 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-34.160000000000004, -62.14, -34.54, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:45:36,624 INFO Request ID is 9b439d15-72b9-4f5e-a5a8-c99cc3d95ea4
+2026-09-07 21:45:36,624 INFO ecmwf.datastores.legacy_client: Request ID is 9b439d15-72b9-4f5e-a5a8-c99cc3d95ea4
+2026-09-07 21:45:37,563 INFO status has been updated to accepted
+2026-09-07 21:45:37,563 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:45:52,144 INFO status has been updated to running
+2026-09-07 21:45:52,144 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:46:00,011 INFO status has been updated to successful
+2026-09-07 21:46:00,011 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:46:02,824 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/851426ad8cdd58e46cc29a5c28a14a1f.zip
+851426ad8cdd58e46cc29a5c28a14a1f.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]851426ad8cdd58e46cc29a5c28a14a1f.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 47.1kB/s]                                                                                          2026-09-07 21:46:05,358 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:46:05,361 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.86000000000001, -62.14, -34.24, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:46:05,994 INFO Request ID is ffa093be-6e5a-4f33-9741-7e7fe0b533d9
+2026-09-07 21:46:05,994 INFO ecmwf.datastores.legacy_client: Request ID is ffa093be-6e5a-4f33-9741-7e7fe0b533d9
+2026-09-07 21:46:06,287 INFO status has been updated to accepted
+2026-09-07 21:46:06,287 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:47:00,756 INFO status has been updated to running
+2026-09-07 21:47:00,756 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:47:26,668 INFO status has been updated to successful
+2026-09-07 21:47:26,668 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:47:27,243 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/4bcbdcccd4d9c8541b7c296bdc03f551.zip
+4bcbdcccd4d9c8541b7c296bdc03f551.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]4bcbdcccd4d9c8541b7c296bdc03f551.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 45.0kB/s]                                                                                          2026-09-07 21:47:29,902 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:47:29,905 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -62.14, -33.94, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:47:30,509 INFO Request ID is 339e4240-895f-4bad-82cd-4d5353747f5f
+2026-09-07 21:47:30,509 INFO ecmwf.datastores.legacy_client: Request ID is 339e4240-895f-4bad-82cd-4d5353747f5f
+2026-09-07 21:47:30,783 INFO status has been updated to accepted
+2026-09-07 21:47:30,783 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:47:47,212 INFO status has been updated to running
+2026-09-07 21:47:47,212 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:47:55,097 INFO status has been updated to successful
+2026-09-07 21:47:55,097 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:47:55,655 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/200bbde68e97eac8bbdb3dbdbaf56088.zip
+200bbde68e97eac8bbdb3dbdbaf56088.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]200bbde68e97eac8bbdb3dbdbaf56088.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 43.5kB/s]                                                                                          2026-09-07 21:47:58,300 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:47:58,303 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -62.14, -33.64, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:47:58,885 INFO Request ID is 0d23ae3e-3471-4047-850b-29c8e19e3ee8
+2026-09-07 21:47:58,885 INFO ecmwf.datastores.legacy_client: Request ID is 0d23ae3e-3471-4047-850b-29c8e19e3ee8
+2026-09-07 21:47:59,222 INFO status has been updated to accepted
+2026-09-07 21:47:59,222 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:48:23,466 INFO status has been updated to successful
+2026-09-07 21:48:23,466 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:48:24,005 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/d8a768e9de01fc98b6cd77eb2ea6bbf5.zip
+d8a768e9de01fc98b6cd77eb2ea6bbf5.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]d8a768e9de01fc98b6cd77eb2ea6bbf5.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 42.8kB/s]                                                                                          2026-09-07 21:48:26,929 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:48:26,932 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -62.14, -33.339999999999996, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:48:27,912 INFO Request ID is 75f0e3a4-3a64-4938-b30b-0e4967ab33d0
+2026-09-07 21:48:27,912 INFO ecmwf.datastores.legacy_client: Request ID is 75f0e3a4-3a64-4938-b30b-0e4967ab33d0
+2026-09-07 21:48:28,190 INFO status has been updated to accepted
+2026-09-07 21:48:28,190 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:48:41,461 INFO status has been updated to running
+2026-09-07 21:48:41,461 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:48:46,819 INFO status has been updated to successful
+2026-09-07 21:48:46,819 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:48:49,279 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/8e7dfb8f519a7298e46d833a74df09dc.zip
+8e7dfb8f519a7298e46d833a74df09dc.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]8e7dfb8f519a7298e46d833a74df09dc.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 43.9kB/s]                                                                                          2026-09-07 21:48:51,890 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:48:51,893 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -62.14, -33.04, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:48:52,571 INFO Request ID is 3a25ce1f-bdb0-4656-a37d-9174ee63bc26
+2026-09-07 21:48:52,571 INFO ecmwf.datastores.legacy_client: Request ID is 3a25ce1f-bdb0-4656-a37d-9174ee63bc26
+2026-09-07 21:48:52,840 INFO status has been updated to accepted
+2026-09-07 21:48:52,840 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:49:15,297 INFO status has been updated to running
+2026-09-07 21:49:15,297 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:49:26,959 INFO status has been updated to successful
+2026-09-07 21:49:26,959 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:49:27,539 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/a9cdf8553f98b729b616fbcc875e880.zip
+a9cdf8553f98b729b616fbcc875e880.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]a9cdf8553f98b729b616fbcc875e880.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 43.6kB/s]                                                                                         2026-09-07 21:49:30,184 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:49:30,187 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.06, -62.14, -32.44, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:49:33,660 INFO Request ID is 3d6f8a0b-2123-4a71-9c65-86b91e73953a
+2026-09-07 21:49:33,660 INFO ecmwf.datastores.legacy_client: Request ID is 3d6f8a0b-2123-4a71-9c65-86b91e73953a
+2026-09-07 21:49:33,944 INFO status has been updated to accepted
+2026-09-07 21:49:33,944 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:49:48,544 INFO status has been updated to running
+2026-09-07 21:49:48,544 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:49:57,418 INFO status has been updated to successful
+2026-09-07 21:49:57,418 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:49:58,783 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/51f7e45a2b8a0e757531077a77b83690.zip
+51f7e45a2b8a0e757531077a77b83690.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]51f7e45a2b8a0e757531077a77b83690.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 46.2kB/s]                                                                                          2026-09-07 21:50:01,353 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:50:01,359 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -62.14, -31.84, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:50:01,995 INFO Request ID is 2ec0d6af-61d3-47ae-963f-0d147c2b46aa
+2026-09-07 21:50:01,995 INFO ecmwf.datastores.legacy_client: Request ID is 2ec0d6af-61d3-47ae-963f-0d147c2b46aa
+2026-09-07 21:50:02,262 INFO status has been updated to accepted
+2026-09-07 21:50:02,262 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:50:17,557 INFO status has been updated to running
+2026-09-07 21:50:17,557 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:50:25,537 INFO status has been updated to successful
+2026-09-07 21:50:25,537 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:50:26,104 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/241e6f1fc28b039a95b4e660c772eea1.zip
+241e6f1fc28b039a95b4e660c772eea1.zip:   0%|          | 0.00/68.2k [00:00<?, ?B/s]241e6f1fc28b039a95b4e660c772eea1.zip: 100%|##########| 68.2k/68.2k [00:01<00:00, 42.8kB/s]                                                                                          2026-09-07 21:50:28,789 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:50:28,795 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -62.14, -31.54, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:50:29,702 INFO Request ID is 3e37e014-58fb-4314-a71c-e36b16c3006b
+2026-09-07 21:50:29,702 INFO ecmwf.datastores.legacy_client: Request ID is 3e37e014-58fb-4314-a71c-e36b16c3006b
+2026-09-07 21:50:29,981 INFO status has been updated to accepted
+2026-09-07 21:50:29,981 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:50:52,532 INFO status has been updated to running
+2026-09-07 21:50:52,532 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:51:04,210 INFO status has been updated to successful
+2026-09-07 21:51:04,210 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:51:07,685 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/88fb55a757138eb451ce2fc8f1c41b75.zip
+88fb55a757138eb451ce2fc8f1c41b75.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]88fb55a757138eb451ce2fc8f1c41b75.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 46.1kB/s]                                                                                          2026-09-07 21:51:10,317 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:51:10,320 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -62.14, -31.24, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:51:10,974 INFO Request ID is 42113529-07c5-4881-82d6-5417a1d242a7
+2026-09-07 21:51:10,974 INFO ecmwf.datastores.legacy_client: Request ID is 42113529-07c5-4881-82d6-5417a1d242a7
+2026-09-07 21:51:11,239 INFO status has been updated to accepted
+2026-09-07 21:51:11,239 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:51:33,746 INFO status has been updated to running
+2026-09-07 21:51:33,746 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:51:45,431 INFO status has been updated to successful
+2026-09-07 21:51:45,431 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:51:46,645 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/be3d6a232eeee4533204ff1f76a9a94.zip
+be3d6a232eeee4533204ff1f76a9a94.zip:   0%|          | 0.00/68.2k [00:00<?, ?B/s]be3d6a232eeee4533204ff1f76a9a94.zip: 100%|##########| 68.2k/68.2k [00:01<00:00, 46.5kB/s]                                                                                         2026-09-07 21:51:49,168 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:51:49,171 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -62.14, -30.939999999999998, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:51:52,921 INFO Request ID is fb80d269-ba25-448d-9a34-c1e8ad57f7e7
+2026-09-07 21:51:52,921 INFO ecmwf.datastores.legacy_client: Request ID is fb80d269-ba25-448d-9a34-c1e8ad57f7e7
+2026-09-07 21:51:53,504 INFO status has been updated to accepted
+2026-09-07 21:51:53,504 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:52:16,182 INFO status has been updated to successful
+2026-09-07 21:52:16,182 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:52:16,945 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/913fd9244249167db74ad600758b3073.zip
+913fd9244249167db74ad600758b3073.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]913fd9244249167db74ad600758b3073.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 21:52:19,544 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:52:19,547 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -62.14, -30.64, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:52:20,140 INFO Request ID is acdf3763-b749-4366-ae2f-b03511f7d0a9
+2026-09-07 21:52:20,140 INFO ecmwf.datastores.legacy_client: Request ID is acdf3763-b749-4366-ae2f-b03511f7d0a9
+2026-09-07 21:52:20,409 INFO status has been updated to accepted
+2026-09-07 21:52:20,409 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:52:42,934 INFO status has been updated to successful
+2026-09-07 21:52:42,934 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:52:43,469 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/e7fd43301451730a7b419717cdf66271.zip
+e7fd43301451730a7b419717cdf66271.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]e7fd43301451730a7b419717cdf66271.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 43.8kB/s]                                                                                          2026-09-07 21:52:46,172 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:52:46,175 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -62.14, -30.34, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:52:46,825 INFO Request ID is f031e00a-6d3b-445d-bc4d-93fb9ba8b877
+2026-09-07 21:52:46,825 INFO ecmwf.datastores.legacy_client: Request ID is f031e00a-6d3b-445d-bc4d-93fb9ba8b877
+2026-09-07 21:52:47,112 INFO status has been updated to accepted
+2026-09-07 21:52:47,112 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:53:01,813 INFO status has been updated to running
+2026-09-07 21:53:01,813 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:53:09,698 INFO status has been updated to successful
+2026-09-07 21:53:09,698 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:53:10,463 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/5fc9b158c4afb3c91f2708927fb16ac8.zip
+5fc9b158c4afb3c91f2708927fb16ac8.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]5fc9b158c4afb3c91f2708927fb16ac8.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 21:53:13,100 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:53:13,103 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -62.14, -30.04, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:53:13,680 INFO Request ID is f3fbb288-6183-4cb0-b26a-9bdbe198b52e
+2026-09-07 21:53:13,680 INFO ecmwf.datastores.legacy_client: Request ID is f3fbb288-6183-4cb0-b26a-9bdbe198b52e
+2026-09-07 21:53:13,965 INFO status has been updated to accepted
+2026-09-07 21:53:13,965 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:53:36,789 INFO status has been updated to successful
+2026-09-07 21:53:36,789 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:53:37,968 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/285ab621aee3548f608861a1a2f24894.zip
+285ab621aee3548f608861a1a2f24894.zip:   0%|          | 0.00/67.4k [00:00<?, ?B/s]285ab621aee3548f608861a1a2f24894.zip: 100%|##########| 67.4k/67.4k [00:01<00:00, 46.5kB/s]                                                                                          2026-09-07 21:53:40,784 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:53:40,788 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -62.14, -29.74, -61.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:53:41,397 INFO Request ID is ea09f314-a712-48f0-a661-0f5d39249424
+2026-09-07 21:53:41,397 INFO ecmwf.datastores.legacy_client: Request ID is ea09f314-a712-48f0-a661-0f5d39249424
+2026-09-07 21:53:41,694 INFO status has been updated to accepted
+2026-09-07 21:53:41,694 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:53:56,324 INFO status has been updated to running
+2026-09-07 21:53:56,324 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:54:04,190 INFO status has been updated to successful
+2026-09-07 21:54:04,190 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:54:04,737 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/a56f6a60aeca980b33b20ba186f5182f.zip
+a56f6a60aeca980b33b20ba186f5182f.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]a56f6a60aeca980b33b20ba186f5182f.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 44.6kB/s]                                                                                          2026-09-07 21:54:07,369 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:54:07,375 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-34.160000000000004, -61.839999999999996, -34.54, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:54:07,972 INFO Request ID is 4f7c405e-2e0f-493c-ae24-7a76529f9c24
+2026-09-07 21:54:07,972 INFO ecmwf.datastores.legacy_client: Request ID is 4f7c405e-2e0f-493c-ae24-7a76529f9c24
+2026-09-07 21:54:10,249 INFO status has been updated to accepted
+2026-09-07 21:54:10,249 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:54:24,940 INFO status has been updated to running
+2026-09-07 21:54:24,940 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:54:33,026 INFO status has been updated to successful
+2026-09-07 21:54:33,026 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:54:33,565 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/72c428d748e491df94fd9b2d07ee769c.zip
+72c428d748e491df94fd9b2d07ee769c.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]72c428d748e491df94fd9b2d07ee769c.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 43.6kB/s]                                                                                          2026-09-07 21:54:36,211 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:54:36,214 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.86000000000001, -61.839999999999996, -34.24, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:54:37,424 INFO Request ID is 9192a2c0-a80f-4c11-a0e1-c9b068c227e1
+2026-09-07 21:54:37,424 INFO ecmwf.datastores.legacy_client: Request ID is 9192a2c0-a80f-4c11-a0e1-c9b068c227e1
+2026-09-07 21:54:37,697 INFO status has been updated to accepted
+2026-09-07 21:54:37,697 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:55:00,291 INFO status has been updated to successful
+2026-09-07 21:55:00,291 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:55:00,864 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/42fa9f53debfbffee37c477b0cfc9d6f.zip
+42fa9f53debfbffee37c477b0cfc9d6f.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]42fa9f53debfbffee37c477b0cfc9d6f.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 44.7kB/s]                                                                                          2026-09-07 21:55:03,437 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:55:03,440 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -61.839999999999996, -33.94, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:55:04,034 INFO Request ID is 49dceff6-e04b-46f0-b854-f417f09c71d1
+2026-09-07 21:55:04,034 INFO ecmwf.datastores.legacy_client: Request ID is 49dceff6-e04b-46f0-b854-f417f09c71d1
+2026-09-07 21:55:06,341 INFO status has been updated to accepted
+2026-09-07 21:55:06,341 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:55:19,212 INFO status has been updated to running
+2026-09-07 21:55:19,212 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:55:32,438 INFO status has been updated to successful
+2026-09-07 21:55:32,438 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:55:33,059 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/7d87f3742a68b390d62ea2a76a676427.zip
+7d87f3742a68b390d62ea2a76a676427.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]7d87f3742a68b390d62ea2a76a676427.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 43.3kB/s]                                                                                          2026-09-07 21:55:35,721 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:55:35,724 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -61.839999999999996, -33.64, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:55:36,367 INFO Request ID is e60a5adf-05de-4025-b575-b9ee352c2546
+2026-09-07 21:55:36,367 INFO ecmwf.datastores.legacy_client: Request ID is e60a5adf-05de-4025-b575-b9ee352c2546
+2026-09-07 21:55:36,636 INFO status has been updated to accepted
+2026-09-07 21:55:36,636 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:56:13,610 INFO status has been updated to successful
+2026-09-07 21:56:13,610 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:56:14,398 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/f39e67c3fdfafc7312818cbca1e74397.zip
+f39e67c3fdfafc7312818cbca1e74397.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]f39e67c3fdfafc7312818cbca1e74397.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 45.1kB/s]                                                                                          2026-09-07 21:56:17,004 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:56:17,007 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -61.839999999999996, -33.339999999999996, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:56:17,782 INFO Request ID is 36ee6f91-7253-40f8-a681-5ffe5a4db387
+2026-09-07 21:56:17,782 INFO ecmwf.datastores.legacy_client: Request ID is 36ee6f91-7253-40f8-a681-5ffe5a4db387
+2026-09-07 21:56:18,054 INFO status has been updated to accepted
+2026-09-07 21:56:18,054 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:56:40,516 INFO status has been updated to running
+2026-09-07 21:56:40,516 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:56:52,462 INFO status has been updated to successful
+2026-09-07 21:56:52,462 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:56:53,045 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/bef795e81591c6cbc250595b4ac3a151.zip
+bef795e81591c6cbc250595b4ac3a151.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]bef795e81591c6cbc250595b4ac3a151.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 21:56:55,615 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:56:55,618 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -61.839999999999996, -33.04, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:56:56,823 INFO Request ID is f4574bea-751e-40d4-bf18-ce8cc5a8112c
+2026-09-07 21:56:56,823 INFO ecmwf.datastores.legacy_client: Request ID is f4574bea-751e-40d4-bf18-ce8cc5a8112c
+2026-09-07 21:56:57,105 INFO status has been updated to accepted
+2026-09-07 21:56:57,105 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:57:19,909 INFO status has been updated to successful
+2026-09-07 21:57:19,909 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:57:22,593 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/6bd0ca77e97d610c244499d1e8cd554b.zip
+6bd0ca77e97d610c244499d1e8cd554b.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]6bd0ca77e97d610c244499d1e8cd554b.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 44.1kB/s]                                                                                          2026-09-07 21:57:25,244 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:57:25,247 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.36000000000001, -61.839999999999996, -32.74, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:57:26,816 INFO Request ID is 45181055-0af2-4ad2-80ca-d41c86f2a309
+2026-09-07 21:57:26,816 INFO ecmwf.datastores.legacy_client: Request ID is 45181055-0af2-4ad2-80ca-d41c86f2a309
+2026-09-07 21:57:27,111 INFO status has been updated to accepted
+2026-09-07 21:57:27,111 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:57:49,603 INFO status has been updated to successful
+2026-09-07 21:57:49,603 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:57:50,154 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/64ab7c7cf44fe2993af95c2e771b3436.zip
+64ab7c7cf44fe2993af95c2e771b3436.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]64ab7c7cf44fe2993af95c2e771b3436.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 45.2kB/s]                                                                                          2026-09-07 21:57:52,728 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:57:52,731 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.06, -61.839999999999996, -32.44, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:57:53,538 INFO Request ID is 189ae801-69d2-4f2f-b4d1-363456544439
+2026-09-07 21:57:53,538 INFO ecmwf.datastores.legacy_client: Request ID is 189ae801-69d2-4f2f-b4d1-363456544439
+2026-09-07 21:57:53,826 INFO status has been updated to accepted
+2026-09-07 21:57:53,826 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:58:16,266 INFO status has been updated to running
+2026-09-07 21:58:16,266 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:58:27,930 INFO status has been updated to successful
+2026-09-07 21:58:27,930 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:58:28,483 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/9a3141fc26fb3dc6d763af1c073991ed.zip
+9a3141fc26fb3dc6d763af1c073991ed.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]9a3141fc26fb3dc6d763af1c073991ed.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 44.5kB/s]                                                                                          2026-09-07 21:58:31,111 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:58:31,117 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -61.839999999999996, -31.84, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:58:31,699 INFO Request ID is 384f21e7-9c9f-4ee9-af6f-43cf28725e5d
+2026-09-07 21:58:31,699 INFO ecmwf.datastores.legacy_client: Request ID is 384f21e7-9c9f-4ee9-af6f-43cf28725e5d
+2026-09-07 21:58:31,981 INFO status has been updated to accepted
+2026-09-07 21:58:31,981 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:58:46,551 INFO status has been updated to running
+2026-09-07 21:58:46,551 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:58:54,423 INFO status has been updated to successful
+2026-09-07 21:58:54,423 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:58:54,983 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/ab57909eab42f78af732a0d3c462b5b7.zip
+ab57909eab42f78af732a0d3c462b5b7.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]ab57909eab42f78af732a0d3c462b5b7.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 44.5kB/s]                                                                                          2026-09-07 21:58:57,927 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:58:57,930 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -61.839999999999996, -31.54, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:58:58,533 INFO Request ID is 7215eb64-7148-418d-b2b6-51c5f5a9ecda
+2026-09-07 21:58:58,533 INFO ecmwf.datastores.legacy_client: Request ID is 7215eb64-7148-418d-b2b6-51c5f5a9ecda
+2026-09-07 21:58:58,816 INFO status has been updated to accepted
+2026-09-07 21:58:58,816 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:59:21,286 INFO status has been updated to running
+2026-09-07 21:59:21,286 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:59:32,951 INFO status has been updated to successful
+2026-09-07 21:59:32,951 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 21:59:33,608 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/689fcf358d5d26753a4c35c0558d5cae.zip
+689fcf358d5d26753a4c35c0558d5cae.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]689fcf358d5d26753a4c35c0558d5cae.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 43.3kB/s]                                                                                          2026-09-07 21:59:36,231 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 21:59:36,237 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -61.839999999999996, -31.24, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 21:59:37,056 INFO Request ID is c9c7b78d-188e-47fc-bc95-b5bcc465b4f8
+2026-09-07 21:59:37,056 INFO ecmwf.datastores.legacy_client: Request ID is c9c7b78d-188e-47fc-bc95-b5bcc465b4f8
+2026-09-07 21:59:37,328 INFO status has been updated to accepted
+2026-09-07 21:59:37,328 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 21:59:51,928 INFO status has been updated to running
+2026-09-07 21:59:51,928 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 21:59:59,796 INFO status has been updated to successful
+2026-09-07 21:59:59,796 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:00:03,752 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/94259483d7a18463a3c3d3891b0a1cce.zip
+94259483d7a18463a3c3d3891b0a1cce.zip:   0%|          | 0.00/68.1k [00:00<?, ?B/s]94259483d7a18463a3c3d3891b0a1cce.zip: 100%|##########| 68.1k/68.1k [00:01<00:00, 45.2kB/s]                                                                                          2026-09-07 22:00:06,342 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:00:06,346 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -61.839999999999996, -30.939999999999998, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:00:08,632 INFO Request ID is be567fd6-75a2-4189-94e1-97392972c364
+2026-09-07 22:00:08,632 INFO ecmwf.datastores.legacy_client: Request ID is be567fd6-75a2-4189-94e1-97392972c364
+2026-09-07 22:00:08,913 INFO status has been updated to accepted
+2026-09-07 22:00:08,913 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:00:33,283 INFO status has been updated to running
+2026-09-07 22:00:33,283 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:00:44,963 INFO status has been updated to successful
+2026-09-07 22:00:44,963 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:00:46,878 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/a83d3578f5acd18bc08bfa3e44846a7.zip
+a83d3578f5acd18bc08bfa3e44846a7.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]a83d3578f5acd18bc08bfa3e44846a7.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 44.7kB/s]                                                                                         2026-09-07 22:00:49,522 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:00:49,525 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -61.839999999999996, -30.64, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:00:50,267 INFO Request ID is 81fee680-c726-43f1-a125-6b8de7e94a1b
+2026-09-07 22:00:50,267 INFO ecmwf.datastores.legacy_client: Request ID is 81fee680-c726-43f1-a125-6b8de7e94a1b
+2026-09-07 22:00:50,535 INFO status has been updated to accepted
+2026-09-07 22:00:50,535 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:01:24,725 INFO status has been updated to running
+2026-09-07 22:01:24,725 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:01:42,299 INFO status has been updated to successful
+2026-09-07 22:01:42,299 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:01:43,780 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/2ff04c2d561b6035f0ddc758c2c2771c.zip
+2ff04c2d561b6035f0ddc758c2c2771c.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]2ff04c2d561b6035f0ddc758c2c2771c.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 46.0kB/s]                                                                                          2026-09-07 22:01:46,382 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:01:46,385 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -61.839999999999996, -30.34, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:01:47,042 INFO Request ID is b50c2b7b-2b3e-4c2d-a55e-c6e7547d878b
+2026-09-07 22:01:47,042 INFO ecmwf.datastores.legacy_client: Request ID is b50c2b7b-2b3e-4c2d-a55e-c6e7547d878b
+2026-09-07 22:01:47,319 INFO status has been updated to accepted
+2026-09-07 22:01:47,319 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:02:01,937 INFO status has been updated to running
+2026-09-07 22:02:01,937 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:02:09,825 INFO status has been updated to successful
+2026-09-07 22:02:09,825 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:02:11,925 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/509ccb0fd9a4baf317d3716e09c2c8bd.zip
+509ccb0fd9a4baf317d3716e09c2c8bd.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]509ccb0fd9a4baf317d3716e09c2c8bd.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 44.9kB/s]                                                                                          2026-09-07 22:02:14,564 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:02:14,567 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -61.839999999999996, -30.04, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:02:15,633 INFO Request ID is 44e54e9f-ca8f-488a-a6bb-c73bdd785a57
+2026-09-07 22:02:15,633 INFO ecmwf.datastores.legacy_client: Request ID is 44e54e9f-ca8f-488a-a6bb-c73bdd785a57
+2026-09-07 22:02:18,166 INFO status has been updated to accepted
+2026-09-07 22:02:18,166 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:02:54,891 INFO status has been updated to running
+2026-09-07 22:02:54,891 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:03:12,267 INFO status has been updated to successful
+2026-09-07 22:03:12,267 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:03:14,103 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/5ee809fec486bca031cf6648a945e8b5.zip
+5ee809fec486bca031cf6648a945e8b5.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]5ee809fec486bca031cf6648a945e8b5.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:03:16,659 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:03:16,662 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -61.839999999999996, -29.74, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:03:18,269 INFO Request ID is 96af356e-780f-4a94-ba16-d4f56cd39d4a
+2026-09-07 22:03:18,269 INFO ecmwf.datastores.legacy_client: Request ID is 96af356e-780f-4a94-ba16-d4f56cd39d4a
+2026-09-07 22:03:18,560 INFO status has been updated to accepted
+2026-09-07 22:03:18,560 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:03:41,626 INFO status has been updated to running
+2026-09-07 22:03:41,626 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:03:53,304 INFO status has been updated to successful
+2026-09-07 22:03:53,304 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:03:53,923 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/914be5cf47d8e008e1ce7afe0a283c95.zip
+914be5cf47d8e008e1ce7afe0a283c95.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]914be5cf47d8e008e1ce7afe0a283c95.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 43.2kB/s]                                                                                          2026-09-07 22:03:56,514 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:03:56,517 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -61.839999999999996, -29.439999999999998, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:03:58,856 INFO Request ID is 083baba9-d3ed-4bd0-b859-e5298e9b4965
+2026-09-07 22:03:58,856 INFO ecmwf.datastores.legacy_client: Request ID is 083baba9-d3ed-4bd0-b859-e5298e9b4965
+2026-09-07 22:03:59,126 INFO status has been updated to accepted
+2026-09-07 22:03:59,126 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:04:33,291 INFO status has been updated to running
+2026-09-07 22:04:33,291 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:04:50,663 INFO status has been updated to successful
+2026-09-07 22:04:50,663 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:04:51,235 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/a8eed2ee65bddf7813b95b612cf6d9c5.zip
+a8eed2ee65bddf7813b95b612cf6d9c5.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]a8eed2ee65bddf7813b95b612cf6d9c5.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 43.5kB/s]                                                                                          2026-09-07 22:04:54,183 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:04:54,189 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -61.839999999999996, -28.84, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:04:57,770 INFO Request ID is 22c78762-15fe-472d-95ab-64c018609797
+2026-09-07 22:04:57,770 INFO ecmwf.datastores.legacy_client: Request ID is 22c78762-15fe-472d-95ab-64c018609797
+2026-09-07 22:04:58,042 INFO status has been updated to accepted
+2026-09-07 22:04:58,042 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:05:16,063 INFO status has been updated to running
+2026-09-07 22:05:16,063 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:05:23,923 INFO status has been updated to successful
+2026-09-07 22:05:23,923 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:05:24,811 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/994ac36c14d29082ea0157e9a2090c8a.zip
+994ac36c14d29082ea0157e9a2090c8a.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]994ac36c14d29082ea0157e9a2090c8a.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 46.4kB/s]                                                                                          2026-09-07 22:05:27,355 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:05:27,362 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -61.839999999999996, -28.54, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:05:29,600 INFO Request ID is 0f3d9823-27b4-4e2b-b8ec-5c9a26758836
+2026-09-07 22:05:29,600 INFO ecmwf.datastores.legacy_client: Request ID is 0f3d9823-27b4-4e2b-b8ec-5c9a26758836
+2026-09-07 22:05:29,886 INFO status has been updated to accepted
+2026-09-07 22:05:29,886 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:05:52,313 INFO status has been updated to successful
+2026-09-07 22:05:52,313 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:05:56,138 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/e0f58be128766ad4a397bf5081bb80e4.zip
+e0f58be128766ad4a397bf5081bb80e4.zip:   0%|          | 0.00/66.9k [00:00<?, ?B/s]e0f58be128766ad4a397bf5081bb80e4.zip: 100%|##########| 66.9k/66.9k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:05:58,741 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:05:58,744 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -61.839999999999996, -28.24, -61.46], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:05:59,606 INFO Request ID is 7227140a-052c-4cd1-a458-5cfb37a78acf
+2026-09-07 22:05:59,606 INFO ecmwf.datastores.legacy_client: Request ID is 7227140a-052c-4cd1-a458-5cfb37a78acf
+2026-09-07 22:05:59,883 INFO status has been updated to accepted
+2026-09-07 22:05:59,883 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:06:23,864 INFO status has been updated to successful
+2026-09-07 22:06:23,864 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:06:24,410 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/a00a701495e4dfca587bdb05f2339fdb.zip
+a00a701495e4dfca587bdb05f2339fdb.zip:   0%|          | 0.00/67.0k [00:00<?, ?B/s]a00a701495e4dfca587bdb05f2339fdb.zip: 100%|##########| 67.0k/67.0k [00:01<00:00, 42.7kB/s]                                                                                          2026-09-07 22:06:27,109 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:06:27,112 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-34.160000000000004, -61.54, -34.54, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:06:28,487 INFO Request ID is f7247713-2a5f-4b2e-9273-1a28a99a6e57
+2026-09-07 22:06:28,487 INFO ecmwf.datastores.legacy_client: Request ID is f7247713-2a5f-4b2e-9273-1a28a99a6e57
+2026-09-07 22:06:28,773 INFO status has been updated to accepted
+2026-09-07 22:06:28,773 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:07:04,338 INFO status has been updated to running
+2026-09-07 22:07:04,338 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:07:21,714 INFO status has been updated to successful
+2026-09-07 22:07:21,714 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:07:22,252 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/50342a7d35e4d863fe4dd371fd8d84c0.zip
+50342a7d35e4d863fe4dd371fd8d84c0.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]50342a7d35e4d863fe4dd371fd8d84c0.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:07:24,904 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:07:24,908 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.86000000000001, -61.54, -34.24, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:07:26,378 INFO Request ID is 155d3c5b-0ef8-4183-8926-80b61a5ba8d3
+2026-09-07 22:07:26,378 INFO ecmwf.datastores.legacy_client: Request ID is 155d3c5b-0ef8-4183-8926-80b61a5ba8d3
+2026-09-07 22:07:26,647 INFO status has been updated to accepted
+2026-09-07 22:07:26,647 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:07:49,122 INFO status has been updated to successful
+2026-09-07 22:07:49,122 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:07:49,677 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/363d05916c6dd979d553798e13a8d28d.zip
+363d05916c6dd979d553798e13a8d28d.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]363d05916c6dd979d553798e13a8d28d.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 46.2kB/s]                                                                                          2026-09-07 22:07:52,208 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:07:52,211 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -61.54, -33.94, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:07:52,822 INFO Request ID is 89a2ae4f-4cfd-4dbc-83b9-9128b290b4e3
+2026-09-07 22:07:52,822 INFO ecmwf.datastores.legacy_client: Request ID is 89a2ae4f-4cfd-4dbc-83b9-9128b290b4e3
+2026-09-07 22:07:53,123 INFO status has been updated to accepted
+2026-09-07 22:07:53,123 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:08:15,598 INFO status has been updated to successful
+2026-09-07 22:08:15,598 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:08:16,138 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/31b5e479a63580dba5211f2d6901c950.zip
+31b5e479a63580dba5211f2d6901c950.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]31b5e479a63580dba5211f2d6901c950.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 47.2kB/s]                                                                                          2026-09-07 22:08:18,608 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:08:18,614 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -61.54, -33.64, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:08:19,239 INFO Request ID is 951e9322-58be-48f8-9179-e13d118c5db6
+2026-09-07 22:08:19,239 INFO ecmwf.datastores.legacy_client: Request ID is 951e9322-58be-48f8-9179-e13d118c5db6
+2026-09-07 22:08:20,233 INFO status has been updated to accepted
+2026-09-07 22:08:20,233 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:08:42,684 INFO status has been updated to successful
+2026-09-07 22:08:42,684 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:08:43,219 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/2a8c1eb8897e28de203f0b1b36e5feb7.zip
+2a8c1eb8897e28de203f0b1b36e5feb7.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]2a8c1eb8897e28de203f0b1b36e5feb7.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 47.5kB/s]                                                                                          2026-09-07 22:08:45,780 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:08:45,783 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -61.54, -33.339999999999996, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:08:46,441 INFO Request ID is 717f8302-a662-4579-99c0-30a4f352b107
+2026-09-07 22:08:46,441 INFO ecmwf.datastores.legacy_client: Request ID is 717f8302-a662-4579-99c0-30a4f352b107
+2026-09-07 22:08:46,727 INFO status has been updated to accepted
+2026-09-07 22:08:46,727 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:09:01,599 INFO status has been updated to running
+2026-09-07 22:09:01,599 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:09:09,469 INFO status has been updated to successful
+2026-09-07 22:09:09,469 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:09:10,025 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/f68daf7adc9b2841f0b1ad4bc2a48f33.zip
+f68daf7adc9b2841f0b1ad4bc2a48f33.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]f68daf7adc9b2841f0b1ad4bc2a48f33.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 45.9kB/s]                                                                                          2026-09-07 22:09:12,633 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:09:12,636 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -61.54, -33.04, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:09:13,494 INFO Request ID is e41dd7f7-639d-4e9c-a0c9-a98dec71382c
+2026-09-07 22:09:13,494 INFO ecmwf.datastores.legacy_client: Request ID is e41dd7f7-639d-4e9c-a0c9-a98dec71382c
+2026-09-07 22:09:13,764 INFO status has been updated to accepted
+2026-09-07 22:09:13,764 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:09:28,415 INFO status has been updated to running
+2026-09-07 22:09:28,415 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:09:36,295 INFO status has been updated to successful
+2026-09-07 22:09:36,295 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:09:37,062 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/2fa373aaf5a288f5abdade34d83ef11f.zip
+2fa373aaf5a288f5abdade34d83ef11f.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]2fa373aaf5a288f5abdade34d83ef11f.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 47.6kB/s]                                                                                          2026-09-07 22:09:39,594 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:09:39,597 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.36000000000001, -61.54, -32.74, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:09:40,200 INFO Request ID is b620da06-8d13-455e-a3d8-5f0873d236f6
+2026-09-07 22:09:40,200 INFO ecmwf.datastores.legacy_client: Request ID is b620da06-8d13-455e-a3d8-5f0873d236f6
+2026-09-07 22:09:40,499 INFO status has been updated to accepted
+2026-09-07 22:09:40,499 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:10:03,029 INFO status has been updated to running
+2026-09-07 22:10:03,029 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:10:14,710 INFO status has been updated to successful
+2026-09-07 22:10:14,710 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:10:15,258 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/9a4ae4abff014c2f42f99b142dde8de0.zip
+9a4ae4abff014c2f42f99b142dde8de0.zip:   0%|          | 0.00/68.1k [00:00<?, ?B/s]9a4ae4abff014c2f42f99b142dde8de0.zip: 100%|##########| 68.1k/68.1k [00:01<00:00, 46.7kB/s]                                                                                          2026-09-07 22:10:18,031 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:10:18,034 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.06, -61.54, -32.44, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:10:19,989 INFO Request ID is 590820d6-2605-4479-9e42-0e5bc84f604a
+2026-09-07 22:10:19,989 INFO ecmwf.datastores.legacy_client: Request ID is 590820d6-2605-4479-9e42-0e5bc84f604a
+2026-09-07 22:10:20,259 INFO status has been updated to accepted
+2026-09-07 22:10:20,259 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:10:35,374 INFO status has been updated to running
+2026-09-07 22:10:35,374 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:10:54,926 INFO status has been updated to successful
+2026-09-07 22:10:54,926 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:10:55,482 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/12a35c1acef72867b24399556b79d4a9.zip
+12a35c1acef72867b24399556b79d4a9.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]12a35c1acef72867b24399556b79d4a9.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 43.4kB/s]                                                                                          2026-09-07 22:10:58,139 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:10:58,144 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -61.54, -31.84, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:10:59,184 INFO Request ID is 2fab66a3-9198-4368-8a20-8a7e0f7d9d3b
+2026-09-07 22:10:59,184 INFO ecmwf.datastores.legacy_client: Request ID is 2fab66a3-9198-4368-8a20-8a7e0f7d9d3b
+2026-09-07 22:10:59,455 INFO status has been updated to accepted
+2026-09-07 22:10:59,455 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:11:21,903 INFO status has been updated to successful
+2026-09-07 22:11:21,903 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:11:23,560 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/c01629c83f0310a790d395ff9241fe35.zip
+c01629c83f0310a790d395ff9241fe35.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]c01629c83f0310a790d395ff9241fe35.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.1kB/s]                                                                                          2026-09-07 22:11:26,237 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:11:26,240 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -61.54, -31.54, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:11:26,860 INFO Request ID is f9740fa6-0333-4e34-a958-98c39ffa13e5
+2026-09-07 22:11:26,860 INFO ecmwf.datastores.legacy_client: Request ID is f9740fa6-0333-4e34-a958-98c39ffa13e5
+2026-09-07 22:11:27,160 INFO status has been updated to accepted
+2026-09-07 22:11:27,160 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:11:42,064 INFO status has been updated to running
+2026-09-07 22:11:42,064 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:11:49,929 INFO status has been updated to successful
+2026-09-07 22:11:49,929 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:11:50,468 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/a9eba85525e97594c254bec7a6926b22.zip
+a9eba85525e97594c254bec7a6926b22.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]a9eba85525e97594c254bec7a6926b22.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 43.7kB/s]                                                                                          2026-09-07 22:11:53,120 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:11:53,128 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -61.54, -31.24, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:11:56,030 INFO Request ID is 973b2d3f-ce86-437d-ad97-a15dbf3382e6
+2026-09-07 22:11:56,030 INFO ecmwf.datastores.legacy_client: Request ID is 973b2d3f-ce86-437d-ad97-a15dbf3382e6
+2026-09-07 22:11:56,356 INFO status has been updated to accepted
+2026-09-07 22:11:56,356 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:12:21,007 INFO status has been updated to successful
+2026-09-07 22:12:21,007 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:12:21,599 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/2bda4d75c978397e2dfd24966fb108fd.zip
+2bda4d75c978397e2dfd24966fb108fd.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]2bda4d75c978397e2dfd24966fb108fd.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 45.7kB/s]                                                                                          2026-09-07 22:12:24,161 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:12:24,167 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -61.54, -30.939999999999998, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:12:24,783 INFO Request ID is c231e9c3-db30-47eb-8838-cf77bfda61ec
+2026-09-07 22:12:24,783 INFO ecmwf.datastores.legacy_client: Request ID is c231e9c3-db30-47eb-8838-cf77bfda61ec
+2026-09-07 22:12:25,316 INFO status has been updated to accepted
+2026-09-07 22:12:25,316 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:12:39,900 INFO status has been updated to running
+2026-09-07 22:12:39,900 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:12:47,964 INFO status has been updated to successful
+2026-09-07 22:12:47,964 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:12:48,516 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/2d4e1fd1b605fd101dc0aa0da3897236.zip
+2d4e1fd1b605fd101dc0aa0da3897236.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]2d4e1fd1b605fd101dc0aa0da3897236.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 41.6kB/s]                                                                                          2026-09-07 22:12:51,245 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:12:51,251 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -61.54, -30.64, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:12:51,875 INFO Request ID is e4632a8a-94d3-4fec-a0b2-e85ad3f5e9d3
+2026-09-07 22:12:51,875 INFO ecmwf.datastores.legacy_client: Request ID is e4632a8a-94d3-4fec-a0b2-e85ad3f5e9d3
+2026-09-07 22:12:52,155 INFO status has been updated to accepted
+2026-09-07 22:12:52,155 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:13:14,649 INFO status has been updated to running
+2026-09-07 22:13:14,649 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:13:26,307 INFO status has been updated to successful
+2026-09-07 22:13:26,307 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:13:26,877 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/1f47b8097f08f72e677c869608fdf3cb.zip
+1f47b8097f08f72e677c869608fdf3cb.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]1f47b8097f08f72e677c869608fdf3cb.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 46.0kB/s]                                                                                          2026-09-07 22:13:29,418 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:13:29,423 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -61.54, -30.34, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:13:30,280 INFO Request ID is 3e6b2251-5d16-4d6b-9456-728d1c84ca51
+2026-09-07 22:13:30,280 INFO ecmwf.datastores.legacy_client: Request ID is 3e6b2251-5d16-4d6b-9456-728d1c84ca51
+2026-09-07 22:13:30,593 INFO status has been updated to accepted
+2026-09-07 22:13:30,593 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:13:53,060 INFO status has been updated to successful
+2026-09-07 22:13:53,060 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:13:53,613 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/f0f81453bbf654f1334c6938b9d8e240.zip
+f0f81453bbf654f1334c6938b9d8e240.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]f0f81453bbf654f1334c6938b9d8e240.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 45.8kB/s]                                                                                          2026-09-07 22:13:56,235 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:13:56,240 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -61.54, -30.04, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:13:57,822 INFO Request ID is 441d73c0-6f09-4134-a67e-56a90c3b61ba
+2026-09-07 22:13:57,822 INFO ecmwf.datastores.legacy_client: Request ID is 441d73c0-6f09-4134-a67e-56a90c3b61ba
+2026-09-07 22:13:58,116 INFO status has been updated to accepted
+2026-09-07 22:13:58,116 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:14:21,304 INFO status has been updated to successful
+2026-09-07 22:14:21,304 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:14:21,856 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/627f7910f0300e7b5e1ffb027a12a5db.zip
+627f7910f0300e7b5e1ffb027a12a5db.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]627f7910f0300e7b5e1ffb027a12a5db.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 44.5kB/s]                                                                                          2026-09-07 22:14:24,415 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:14:24,420 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -61.54, -29.74, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:14:25,118 INFO Request ID is 4414492e-1ff1-401a-957f-d9c4197c13d8
+2026-09-07 22:14:25,118 INFO ecmwf.datastores.legacy_client: Request ID is 4414492e-1ff1-401a-957f-d9c4197c13d8
+2026-09-07 22:14:25,430 INFO status has been updated to accepted
+2026-09-07 22:14:25,430 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:14:40,017 INFO status has been updated to running
+2026-09-07 22:14:40,017 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:14:47,881 INFO status has been updated to successful
+2026-09-07 22:14:47,881 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:14:48,432 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/e0ec3d1f83b231e838ebab5f47f6b074.zip
+e0ec3d1f83b231e838ebab5f47f6b074.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]e0ec3d1f83b231e838ebab5f47f6b074.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 46.1kB/s]                                                                                          2026-09-07 22:14:50,984 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:14:50,991 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -61.54, -29.439999999999998, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:14:53,033 INFO Request ID is 8dccf911-f528-4e4d-8d13-cae93168c3f6
+2026-09-07 22:14:53,033 INFO ecmwf.datastores.legacy_client: Request ID is 8dccf911-f528-4e4d-8d13-cae93168c3f6
+2026-09-07 22:14:53,303 INFO status has been updated to accepted
+2026-09-07 22:14:53,303 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:15:18,590 INFO status has been updated to running
+2026-09-07 22:15:18,590 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:15:30,283 INFO status has been updated to successful
+2026-09-07 22:15:30,283 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:15:32,480 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/868d93fd79730e6655c68a8f2fb9599e.zip
+868d93fd79730e6655c68a8f2fb9599e.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]868d93fd79730e6655c68a8f2fb9599e.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 44.6kB/s]                                                                                          2026-09-07 22:15:35,308 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:15:35,319 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -61.54, -28.84, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:15:35,941 INFO Request ID is 48a69384-84db-420f-a191-bb77bd3abaac
+2026-09-07 22:15:35,941 INFO ecmwf.datastores.legacy_client: Request ID is 48a69384-84db-420f-a191-bb77bd3abaac
+2026-09-07 22:15:36,490 INFO status has been updated to accepted
+2026-09-07 22:15:36,490 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:16:11,524 INFO status has been updated to running
+2026-09-07 22:16:11,524 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:16:28,899 INFO status has been updated to successful
+2026-09-07 22:16:28,899 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:16:29,473 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/fa35ae3e4ca5e39d868d762a0056da50.zip
+fa35ae3e4ca5e39d868d762a0056da50.zip:   0%|          | 0.00/67.0k [00:00<?, ?B/s]fa35ae3e4ca5e39d868d762a0056da50.zip: 100%|##########| 67.0k/67.0k [00:01<00:00, 43.4kB/s]                                                                                          2026-09-07 22:16:32,103 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:16:32,114 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -61.54, -28.54, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:16:32,691 INFO Request ID is 9856c501-1b41-475d-b549-e9b379cd93c4
+2026-09-07 22:16:32,691 INFO ecmwf.datastores.legacy_client: Request ID is 9856c501-1b41-475d-b549-e9b379cd93c4
+2026-09-07 22:16:32,963 INFO status has been updated to accepted
+2026-09-07 22:16:32,963 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:16:56,513 INFO status has been updated to successful
+2026-09-07 22:16:56,513 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:16:57,050 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/e93dd2484b36145d8856970cbacbe53e.zip
+e93dd2484b36145d8856970cbacbe53e.zip:   0%|          | 0.00/66.7k [00:00<?, ?B/s]e93dd2484b36145d8856970cbacbe53e.zip: 100%|##########| 66.7k/66.7k [00:01<00:00, 46.2kB/s]                                                                                          2026-09-07 22:16:59,580 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:16:59,586 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -61.54, -28.24, -61.160000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:17:00,470 INFO Request ID is 08cba492-bf8c-4c76-8a83-aa62e46ce61e
+2026-09-07 22:17:00,470 INFO ecmwf.datastores.legacy_client: Request ID is 08cba492-bf8c-4c76-8a83-aa62e46ce61e
+2026-09-07 22:17:00,758 INFO status has been updated to accepted
+2026-09-07 22:17:00,758 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:17:37,660 INFO status has been updated to successful
+2026-09-07 22:17:37,660 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:17:41,532 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/d12411fa4c7a80888ba84e3e3fd90aff.zip
+d12411fa4c7a80888ba84e3e3fd90aff.zip:   0%|          | 0.00/66.8k [00:00<?, ?B/s]d12411fa4c7a80888ba84e3e3fd90aff.zip: 100%|##########| 66.8k/66.8k [00:01<00:00, 44.3kB/s]                                                                                          2026-09-07 22:17:44,164 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:17:44,170 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -61.24, -33.94, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:17:47,326 INFO Request ID is cc100e38-28a6-47d1-a58e-57ada9f960b2
+2026-09-07 22:17:47,326 INFO ecmwf.datastores.legacy_client: Request ID is cc100e38-28a6-47d1-a58e-57ada9f960b2
+2026-09-07 22:17:47,595 INFO status has been updated to accepted
+2026-09-07 22:17:47,595 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:18:12,274 INFO status has been updated to successful
+2026-09-07 22:18:12,274 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:18:12,814 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/72056ada0ed90e6a65c99f8da32b2320.zip
+72056ada0ed90e6a65c99f8da32b2320.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]72056ada0ed90e6a65c99f8da32b2320.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 46.1kB/s]                                                                                          2026-09-07 22:18:15,349 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:18:15,352 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -61.24, -33.64, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:18:16,569 INFO Request ID is 245124ac-b6c1-49e1-bb94-f93cd51579b7
+2026-09-07 22:18:16,569 INFO ecmwf.datastores.legacy_client: Request ID is 245124ac-b6c1-49e1-bb94-f93cd51579b7
+2026-09-07 22:18:16,835 INFO status has been updated to accepted
+2026-09-07 22:18:16,835 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:18:39,523 INFO status has been updated to running
+2026-09-07 22:18:39,523 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:18:53,670 INFO status has been updated to successful
+2026-09-07 22:18:53,670 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:18:56,852 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/73efe7d9b4fe82cfa1076acc24b1fc3d.zip
+73efe7d9b4fe82cfa1076acc24b1fc3d.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]73efe7d9b4fe82cfa1076acc24b1fc3d.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 44.9kB/s]                                                                                          2026-09-07 22:18:59,466 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:18:59,469 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -61.24, -33.339999999999996, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:19:00,097 INFO Request ID is ea174f6d-96bc-4e63-8e30-45633bc1092d
+2026-09-07 22:19:00,097 INFO ecmwf.datastores.legacy_client: Request ID is ea174f6d-96bc-4e63-8e30-45633bc1092d
+2026-09-07 22:19:00,369 INFO status has been updated to accepted
+2026-09-07 22:19:00,369 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:19:16,211 INFO status has been updated to running
+2026-09-07 22:19:16,211 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:19:24,352 INFO status has been updated to successful
+2026-09-07 22:19:24,352 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:19:25,588 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/71b96bcee4ff978a2b9ab1d749ff8e3.zip
+71b96bcee4ff978a2b9ab1d749ff8e3.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]71b96bcee4ff978a2b9ab1d749ff8e3.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.8kB/s]                                                                                         2026-09-07 22:19:28,234 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:19:28,237 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -61.24, -33.04, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:19:28,848 INFO Request ID is 61a78b01-0937-4c67-96fe-0a5d5e1517af
+2026-09-07 22:19:28,848 INFO ecmwf.datastores.legacy_client: Request ID is 61a78b01-0937-4c67-96fe-0a5d5e1517af
+2026-09-07 22:19:29,140 INFO status has been updated to accepted
+2026-09-07 22:19:29,140 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:19:52,855 INFO status has been updated to running
+2026-09-07 22:19:52,855 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:20:05,499 INFO status has been updated to successful
+2026-09-07 22:20:05,499 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:20:06,076 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/3ff64472c623d519b88bb0f78c41ea50.zip
+3ff64472c623d519b88bb0f78c41ea50.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]3ff64472c623d519b88bb0f78c41ea50.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 42.8kB/s]                                                                                          2026-09-07 22:20:08,750 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:20:08,753 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.36000000000001, -61.24, -32.74, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:20:09,377 INFO Request ID is 07d64a23-3876-4d11-b5da-25fdcaf61a32
+2026-09-07 22:20:09,377 INFO ecmwf.datastores.legacy_client: Request ID is 07d64a23-3876-4d11-b5da-25fdcaf61a32
+2026-09-07 22:20:10,573 INFO status has been updated to accepted
+2026-09-07 22:20:10,573 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:20:33,080 INFO status has been updated to running
+2026-09-07 22:20:33,080 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:20:44,757 INFO status has been updated to successful
+2026-09-07 22:20:44,757 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:20:45,323 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/25187e3360191f1fe242e1fd85fa5dfd.zip
+25187e3360191f1fe242e1fd85fa5dfd.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]25187e3360191f1fe242e1fd85fa5dfd.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 44.6kB/s]                                                                                          2026-09-07 22:20:48,225 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:20:48,228 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.06, -61.24, -32.44, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:20:48,869 INFO Request ID is 8347df33-be4f-4bd9-8189-dbcf67a2951b
+2026-09-07 22:20:48,869 INFO ecmwf.datastores.legacy_client: Request ID is 8347df33-be4f-4bd9-8189-dbcf67a2951b
+2026-09-07 22:20:49,139 INFO status has been updated to accepted
+2026-09-07 22:20:49,139 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:21:11,596 INFO status has been updated to successful
+2026-09-07 22:21:11,596 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:21:12,371 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/94a100c7752551e9a9d57c3fc1631b97.zip
+94a100c7752551e9a9d57c3fc1631b97.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]94a100c7752551e9a9d57c3fc1631b97.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 43.9kB/s]                                                                                          2026-09-07 22:21:14,988 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:21:14,994 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -61.24, -31.84, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:21:15,735 INFO Request ID is 5f6d35b8-529a-4665-b6e3-aecf5cbfa995
+2026-09-07 22:21:15,735 INFO ecmwf.datastores.legacy_client: Request ID is 5f6d35b8-529a-4665-b6e3-aecf5cbfa995
+2026-09-07 22:21:16,011 INFO status has been updated to accepted
+2026-09-07 22:21:16,011 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:21:26,938 INFO status has been updated to running
+2026-09-07 22:21:26,938 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:21:32,270 INFO status has been updated to successful
+2026-09-07 22:21:32,270 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:21:33,104 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/47e01c0b2d37fc8d88de7fbda9262e6b.zip
+47e01c0b2d37fc8d88de7fbda9262e6b.zip:   0%|          | 0.00/68.5k [00:00<?, ?B/s]47e01c0b2d37fc8d88de7fbda9262e6b.zip: 100%|##########| 68.5k/68.5k [00:01<00:00, 46.1kB/s]                                                                                          2026-09-07 22:21:35,720 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:21:35,723 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -61.24, -31.54, -60.86000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:21:36,365 INFO Request ID is ba9d7e25-d22f-46a4-bda5-ec8a7687b186
+2026-09-07 22:21:36,365 INFO ecmwf.datastores.legacy_client: Request ID is ba9d7e25-d22f-46a4-bda5-ec8a7687b186
+2026-09-07 22:21:36,637 INFO status has been updated to accepted
+2026-09-07 22:21:36,637 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:21:59,418 INFO status has been updated to successful
+2026-09-07 22:21:59,418 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:21:59,980 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/377c7a41cdb08865d94544d8ca120982.zip
+377c7a41cdb08865d94544d8ca120982.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]377c7a41cdb08865d94544d8ca120982.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 45.1kB/s]                                                                                          2026-09-07 22:22:02,601 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:22:02,604 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -60.94, -33.94, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:22:03,269 INFO Request ID is e78fa11a-b8c6-4568-aa57-797bf7ad3548
+2026-09-07 22:22:03,269 INFO ecmwf.datastores.legacy_client: Request ID is e78fa11a-b8c6-4568-aa57-797bf7ad3548
+2026-09-07 22:22:03,563 INFO status has been updated to accepted
+2026-09-07 22:22:03,563 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:22:18,263 INFO status has been updated to successful
+2026-09-07 22:22:18,263 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:22:18,799 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/1c4392112c98d715d6425d3235406160.zip
+1c4392112c98d715d6425d3235406160.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]1c4392112c98d715d6425d3235406160.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 43.5kB/s]                                                                                          2026-09-07 22:22:21,481 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:22:21,484 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -60.94, -33.64, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:22:22,096 INFO Request ID is 1c90236a-3441-47b0-ac35-514c872a5ea1
+2026-09-07 22:22:22,096 INFO ecmwf.datastores.legacy_client: Request ID is 1c90236a-3441-47b0-ac35-514c872a5ea1
+2026-09-07 22:22:22,384 INFO status has been updated to accepted
+2026-09-07 22:22:22,384 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:22:36,961 INFO status has been updated to running
+2026-09-07 22:22:36,961 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:22:44,842 INFO status has been updated to successful
+2026-09-07 22:22:44,842 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:22:45,846 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/ed1ea3bdeac9c35a3a4bfc924269041.zip
+ed1ea3bdeac9c35a3a4bfc924269041.zip:   0%|          | 0.00/67.7k [00:00<?, ?B/s]ed1ea3bdeac9c35a3a4bfc924269041.zip: 100%|##########| 67.7k/67.7k [00:01<00:00, 44.9kB/s]                                                                                         2026-09-07 22:22:48,451 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:22:48,454 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -60.94, -33.339999999999996, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:22:49,072 INFO Request ID is 52cfdc52-9d01-4fc4-8dd4-e9554e5291c7
+2026-09-07 22:22:49,072 INFO ecmwf.datastores.legacy_client: Request ID is 52cfdc52-9d01-4fc4-8dd4-e9554e5291c7
+2026-09-07 22:22:49,359 INFO status has been updated to accepted
+2026-09-07 22:22:49,359 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:23:13,573 INFO status has been updated to successful
+2026-09-07 22:23:13,573 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:23:14,178 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/9b0562d310d99e85f46a63402785aaff.zip
+9b0562d310d99e85f46a63402785aaff.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]9b0562d310d99e85f46a63402785aaff.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.7kB/s]                                                                                          2026-09-07 22:23:16,792 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:23:16,795 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -60.94, -33.04, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:23:17,408 INFO Request ID is 2fe842ee-46d6-49dc-b4f2-5df2b89e726c
+2026-09-07 22:23:17,408 INFO ecmwf.datastores.legacy_client: Request ID is 2fe842ee-46d6-49dc-b4f2-5df2b89e726c
+2026-09-07 22:23:17,677 INFO status has been updated to accepted
+2026-09-07 22:23:17,677 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:23:32,238 INFO status has been updated to running
+2026-09-07 22:23:32,238 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:23:40,117 INFO status has been updated to successful
+2026-09-07 22:23:40,117 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:23:40,667 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/6d183cad5b4dd1ac50a0f283abf1a68f.zip
+6d183cad5b4dd1ac50a0f283abf1a68f.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]6d183cad5b4dd1ac50a0f283abf1a68f.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:23:43,349 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:23:43,352 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.36000000000001, -60.94, -32.74, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:23:43,946 INFO Request ID is cb17ebe0-8121-480e-89c2-6102f7458ff1
+2026-09-07 22:23:43,946 INFO ecmwf.datastores.legacy_client: Request ID is cb17ebe0-8121-480e-89c2-6102f7458ff1
+2026-09-07 22:23:44,231 INFO status has been updated to accepted
+2026-09-07 22:23:44,231 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:24:19,690 INFO status has been updated to successful
+2026-09-07 22:24:19,690 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:24:20,264 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/243ce1ee39026919d51871e0fdb54b8b.zip
+243ce1ee39026919d51871e0fdb54b8b.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]243ce1ee39026919d51871e0fdb54b8b.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 42.4kB/s]                                                                                          2026-09-07 22:24:22,943 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:24:22,946 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.06, -60.94, -32.44, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:24:23,572 INFO Request ID is c66c602a-19f3-4dc2-84bf-f7b3857432a2
+2026-09-07 22:24:23,572 INFO ecmwf.datastores.legacy_client: Request ID is c66c602a-19f3-4dc2-84bf-f7b3857432a2
+2026-09-07 22:24:23,864 INFO status has been updated to accepted
+2026-09-07 22:24:23,864 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:24:48,495 INFO status has been updated to successful
+2026-09-07 22:24:48,495 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:24:49,027 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/c9396939ba894be4f7f88525af2d8faf.zip
+c9396939ba894be4f7f88525af2d8faf.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]c9396939ba894be4f7f88525af2d8faf.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 46.7kB/s]                                                                                          2026-09-07 22:24:51,570 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:24:51,578 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -60.94, -31.84, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:24:52,215 INFO Request ID is 356ceeaf-5ee3-4570-aeb6-a2c4e606ec9d
+2026-09-07 22:24:52,215 INFO ecmwf.datastores.legacy_client: Request ID is 356ceeaf-5ee3-4570-aeb6-a2c4e606ec9d
+2026-09-07 22:24:52,515 INFO status has been updated to accepted
+2026-09-07 22:24:52,515 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:25:15,109 INFO status has been updated to running
+2026-09-07 22:25:15,109 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:25:26,793 INFO status has been updated to successful
+2026-09-07 22:25:26,793 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:25:27,366 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/52f033508478a0353d7295dddc3034bc.zip
+52f033508478a0353d7295dddc3034bc.zip:   0%|          | 0.00/68.1k [00:00<?, ?B/s]52f033508478a0353d7295dddc3034bc.zip: 100%|##########| 68.1k/68.1k [00:01<00:00, 44.6kB/s]                                                                                          2026-09-07 22:25:29,942 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:25:29,945 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -60.94, -31.54, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:25:30,546 INFO Request ID is cd931862-449b-46ec-8f5d-27607f52d0f3
+2026-09-07 22:25:30,546 INFO ecmwf.datastores.legacy_client: Request ID is cd931862-449b-46ec-8f5d-27607f52d0f3
+2026-09-07 22:25:30,899 INFO status has been updated to accepted
+2026-09-07 22:25:30,899 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:25:54,538 INFO status has been updated to running
+2026-09-07 22:25:54,538 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:26:06,490 INFO status has been updated to successful
+2026-09-07 22:26:06,490 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:26:07,024 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/3f076b76ecd4e4e116899e4325b842af.zip
+3f076b76ecd4e4e116899e4325b842af.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]3f076b76ecd4e4e116899e4325b842af.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:26:09,942 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:26:09,948 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -60.94, -31.24, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:26:10,547 INFO Request ID is ed88362e-45b8-46a5-8c03-db91bb4ff790
+2026-09-07 22:26:10,547 INFO ecmwf.datastores.legacy_client: Request ID is ed88362e-45b8-46a5-8c03-db91bb4ff790
+2026-09-07 22:26:10,837 INFO status has been updated to accepted
+2026-09-07 22:26:10,837 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:26:33,349 INFO status has been updated to successful
+2026-09-07 22:26:33,349 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:26:33,918 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/1d96ad6cd1fe6bbe2254169883b99fc8.zip
+1d96ad6cd1fe6bbe2254169883b99fc8.zip:   0%|          | 0.00/68.2k [00:00<?, ?B/s]1d96ad6cd1fe6bbe2254169883b99fc8.zip: 100%|##########| 68.2k/68.2k [00:01<00:00, 47.6kB/s]                                                                                          2026-09-07 22:26:36,514 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:26:36,517 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -60.94, -30.939999999999998, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:26:37,099 INFO Request ID is a69d44ff-ce25-45b6-8b0f-ab3e663953a8
+2026-09-07 22:26:37,099 INFO ecmwf.datastores.legacy_client: Request ID is a69d44ff-ce25-45b6-8b0f-ab3e663953a8
+2026-09-07 22:26:37,385 INFO status has been updated to accepted
+2026-09-07 22:26:37,385 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:26:53,661 INFO status has been updated to running
+2026-09-07 22:26:53,661 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:27:01,526 INFO status has been updated to successful
+2026-09-07 22:27:01,526 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:27:02,075 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/314ce1b25a559d1a268b86ef9b00303b.zip
+314ce1b25a559d1a268b86ef9b00303b.zip:   0%|          | 0.00/67.5k [00:00<?, ?B/s]314ce1b25a559d1a268b86ef9b00303b.zip: 100%|##########| 67.5k/67.5k [00:01<00:00, 45.5kB/s]                                                                                          2026-09-07 22:27:04,634 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:27:04,637 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -60.94, -30.64, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:27:05,230 INFO Request ID is 7bfcd119-8b4d-4c16-90b4-4ca59390b9f5
+2026-09-07 22:27:05,230 INFO ecmwf.datastores.legacy_client: Request ID is 7bfcd119-8b4d-4c16-90b4-4ca59390b9f5
+2026-09-07 22:27:05,520 INFO status has been updated to accepted
+2026-09-07 22:27:05,520 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:27:31,743 INFO status has been updated to successful
+2026-09-07 22:27:31,743 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:27:32,283 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/6d39769ed5876d0c6696171452f0ad1c.zip
+6d39769ed5876d0c6696171452f0ad1c.zip:   0%|          | 0.00/67.4k [00:00<?, ?B/s]6d39769ed5876d0c6696171452f0ad1c.zip: 100%|##########| 67.4k/67.4k [00:01<00:00, 44.3kB/s]                                                                                          2026-09-07 22:27:34,910 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:27:34,913 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -60.94, -30.34, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:27:40,428 INFO Request ID is 44601d0e-242e-4cce-8798-4e039d225cba
+2026-09-07 22:27:40,428 INFO ecmwf.datastores.legacy_client: Request ID is 44601d0e-242e-4cce-8798-4e039d225cba
+2026-09-07 22:27:41,126 INFO status has been updated to accepted
+2026-09-07 22:27:41,126 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:28:03,889 INFO status has been updated to running
+2026-09-07 22:28:03,889 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:28:15,573 INFO status has been updated to successful
+2026-09-07 22:28:15,573 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:28:16,546 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/6b24c7c05980a3ba9e3f4110c8116889.zip
+6b24c7c05980a3ba9e3f4110c8116889.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]6b24c7c05980a3ba9e3f4110c8116889.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 43.8kB/s]                                                                                          2026-09-07 22:28:19,184 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:28:19,187 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -60.94, -30.04, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:28:19,745 INFO Request ID is 43c4dcef-d5e0-4e91-9bd3-3c4e0253a6fd
+2026-09-07 22:28:19,745 INFO ecmwf.datastores.legacy_client: Request ID is 43c4dcef-d5e0-4e91-9bd3-3c4e0253a6fd
+2026-09-07 22:28:20,059 INFO status has been updated to accepted
+2026-09-07 22:28:20,059 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:29:14,149 INFO status has been updated to running
+2026-09-07 22:29:14,149 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:29:40,072 INFO status has been updated to successful
+2026-09-07 22:29:40,072 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:29:40,636 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/f533bdd19ddc2c86525d8c52e3e32ea1.zip
+f533bdd19ddc2c86525d8c52e3e32ea1.zip:   0%|          | 0.00/66.9k [00:00<?, ?B/s]f533bdd19ddc2c86525d8c52e3e32ea1.zip: 100%|##########| 66.9k/66.9k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:29:43,250 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:29:43,253 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -60.94, -29.74, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:29:43,872 INFO Request ID is efb25ae3-471f-40a6-a845-261ce7bc52bc
+2026-09-07 22:29:43,872 INFO ecmwf.datastores.legacy_client: Request ID is efb25ae3-471f-40a6-a845-261ce7bc52bc
+2026-09-07 22:29:44,168 INFO status has been updated to accepted
+2026-09-07 22:29:44,168 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:30:06,691 INFO status has been updated to running
+2026-09-07 22:30:06,691 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:30:18,352 INFO status has been updated to successful
+2026-09-07 22:30:18,352 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:30:18,890 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/320c657ba87db318e43289a51fabfe04.zip
+320c657ba87db318e43289a51fabfe04.zip:   0%|          | 0.00/67.0k [00:00<?, ?B/s]320c657ba87db318e43289a51fabfe04.zip: 100%|##########| 67.0k/67.0k [00:01<00:00, 43.6kB/s]                                                                                          2026-09-07 22:30:21,512 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:30:21,515 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -60.94, -29.439999999999998, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:30:22,147 INFO Request ID is dcab8160-30d4-45c8-8a68-3a1b5e36ac7c
+2026-09-07 22:30:22,147 INFO ecmwf.datastores.legacy_client: Request ID is dcab8160-30d4-45c8-8a68-3a1b5e36ac7c
+2026-09-07 22:30:22,421 INFO status has been updated to accepted
+2026-09-07 22:30:22,421 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:30:49,008 INFO status has been updated to running
+2026-09-07 22:30:49,008 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:31:00,763 INFO status has been updated to successful
+2026-09-07 22:31:00,763 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:31:01,328 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/e23187e7f04b6d818af5c3affcdac287.zip
+e23187e7f04b6d818af5c3affcdac287.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]e23187e7f04b6d818af5c3affcdac287.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 45.6kB/s]                                                                                          2026-09-07 22:31:03,843 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:31:03,851 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -60.94, -28.84, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:31:04,477 INFO Request ID is 29ed4c0f-5985-4d45-8c87-9d9d20731663
+2026-09-07 22:31:04,477 INFO ecmwf.datastores.legacy_client: Request ID is 29ed4c0f-5985-4d45-8c87-9d9d20731663
+2026-09-07 22:31:04,931 INFO status has been updated to accepted
+2026-09-07 22:31:04,931 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:31:27,692 INFO status has been updated to successful
+2026-09-07 22:31:27,692 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:31:28,361 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/970dc9db85e00e39d09925519ff17609.zip
+970dc9db85e00e39d09925519ff17609.zip:   0%|          | 0.00/66.4k [00:00<?, ?B/s]970dc9db85e00e39d09925519ff17609.zip: 100%|##########| 66.4k/66.4k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:31:31,251 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:31:31,257 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -60.94, -28.54, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:31:31,884 INFO Request ID is f950ef2a-391b-4d87-939b-a564586e31b8
+2026-09-07 22:31:31,884 INFO ecmwf.datastores.legacy_client: Request ID is f950ef2a-391b-4d87-939b-a564586e31b8
+2026-09-07 22:31:32,162 INFO status has been updated to accepted
+2026-09-07 22:31:32,162 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:31:56,022 INFO status has been updated to running
+2026-09-07 22:31:56,022 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:32:07,697 INFO status has been updated to successful
+2026-09-07 22:32:07,697 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:32:09,089 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/3c4f6fb7230f04b0a1fa06b3bdb81837.zip
+3c4f6fb7230f04b0a1fa06b3bdb81837.zip:   0%|          | 0.00/66.2k [00:00<?, ?B/s]3c4f6fb7230f04b0a1fa06b3bdb81837.zip: 100%|##########| 66.2k/66.2k [00:01<00:00, 45.8kB/s]                                                                                          2026-09-07 22:32:11,637 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:32:11,640 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -60.94, -28.24, -60.56], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:32:13,587 INFO Request ID is 6af71958-f30b-46d6-b3b4-afe7de670091
+2026-09-07 22:32:13,587 INFO ecmwf.datastores.legacy_client: Request ID is 6af71958-f30b-46d6-b3b4-afe7de670091
+2026-09-07 22:32:15,885 INFO status has been updated to accepted
+2026-09-07 22:32:15,885 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:32:32,935 INFO status has been updated to running
+2026-09-07 22:32:32,935 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:32:40,822 INFO status has been updated to successful
+2026-09-07 22:32:40,822 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:32:41,365 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/7d33e2d01956366add53e5e19d96acf1.zip
+7d33e2d01956366add53e5e19d96acf1.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]7d33e2d01956366add53e5e19d96acf1.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:32:43,951 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:32:43,955 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.56, -60.64, -33.94, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:32:44,695 INFO Request ID is c7c931d9-73d7-4a3f-8505-84671dc4f59d
+2026-09-07 22:32:44,695 INFO ecmwf.datastores.legacy_client: Request ID is c7c931d9-73d7-4a3f-8505-84671dc4f59d
+2026-09-07 22:32:44,965 INFO status has been updated to accepted
+2026-09-07 22:32:44,965 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:33:07,528 INFO status has been updated to running
+2026-09-07 22:33:07,528 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:33:19,214 INFO status has been updated to successful
+2026-09-07 22:33:19,214 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:33:19,951 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/8d9841f5ae3824794ab642a2ba43dfbb.zip
+8d9841f5ae3824794ab642a2ba43dfbb.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]8d9841f5ae3824794ab642a2ba43dfbb.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 46.9kB/s]                                                                                          2026-09-07 22:33:22,487 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:33:22,490 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-33.260000000000005, -60.64, -33.64, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:33:23,108 INFO Request ID is bf2dd915-2e64-4004-85a0-df377d060ddb
+2026-09-07 22:33:23,108 INFO ecmwf.datastores.legacy_client: Request ID is bf2dd915-2e64-4004-85a0-df377d060ddb
+2026-09-07 22:33:25,055 INFO status has been updated to accepted
+2026-09-07 22:33:25,055 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:33:48,973 INFO status has been updated to running
+2026-09-07 22:33:48,973 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:34:00,652 INFO status has been updated to successful
+2026-09-07 22:34:00,652 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:34:01,210 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/dd700ab4fec5aa0d7143ec2217a04130.zip
+dd700ab4fec5aa0d7143ec2217a04130.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]dd700ab4fec5aa0d7143ec2217a04130.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:34:03,849 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:34:03,852 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -60.64, -33.339999999999996, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:34:04,454 INFO Request ID is 68df71f3-1871-495d-93c5-fc32b27d857f
+2026-09-07 22:34:04,454 INFO ecmwf.datastores.legacy_client: Request ID is 68df71f3-1871-495d-93c5-fc32b27d857f
+2026-09-07 22:34:04,737 INFO status has been updated to accepted
+2026-09-07 22:34:04,737 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:34:27,148 INFO status has been updated to running
+2026-09-07 22:34:27,148 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:34:38,833 INFO status has been updated to successful
+2026-09-07 22:34:38,833 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:34:39,382 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/1a30a60533640692ef40f112a5fd21d5.zip
+1a30a60533640692ef40f112a5fd21d5.zip:   0%|          | 0.00/68.1k [00:00<?, ?B/s]1a30a60533640692ef40f112a5fd21d5.zip: 100%|##########| 68.1k/68.1k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:34:42,049 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:34:42,052 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.660000000000004, -60.64, -33.04, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:34:42,722 INFO Request ID is 91a63687-77b4-44cb-86a1-e51c187c1ea4
+2026-09-07 22:34:42,722 INFO ecmwf.datastores.legacy_client: Request ID is 91a63687-77b4-44cb-86a1-e51c187c1ea4
+2026-09-07 22:34:43,003 INFO status has been updated to accepted
+2026-09-07 22:34:43,003 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:35:19,714 INFO status has been updated to successful
+2026-09-07 22:35:19,714 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:35:22,858 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/38b8a591aa923448ba1eb8d9337e2e1a.zip
+38b8a591aa923448ba1eb8d9337e2e1a.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]38b8a591aa923448ba1eb8d9337e2e1a.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 46.2kB/s]                                                                                          2026-09-07 22:35:25,435 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:35:25,438 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.46, -60.64, -31.84, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:35:26,250 INFO Request ID is 6d130c06-ab90-4c3d-8d30-4e9f73989707
+2026-09-07 22:35:26,250 INFO ecmwf.datastores.legacy_client: Request ID is 6d130c06-ab90-4c3d-8d30-4e9f73989707
+2026-09-07 22:35:26,522 INFO status has been updated to accepted
+2026-09-07 22:35:26,522 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:35:49,283 INFO status has been updated to running
+2026-09-07 22:35:49,283 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:36:00,959 INFO status has been updated to successful
+2026-09-07 22:36:00,959 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:36:01,517 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/ff43025e621aab9b1a75efd5d3db0519.zip
+ff43025e621aab9b1a75efd5d3db0519.zip:   0%|          | 0.00/68.1k [00:00<?, ?B/s]ff43025e621aab9b1a75efd5d3db0519.zip: 100%|##########| 68.1k/68.1k [00:01<00:00, 43.5kB/s]                                                                                          2026-09-07 22:36:04,222 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:36:04,226 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -60.64, -31.54, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:36:05,088 INFO Request ID is 4aab8ce7-7687-4a2a-bb57-c3b1e571e270
+2026-09-07 22:36:05,088 INFO ecmwf.datastores.legacy_client: Request ID is 4aab8ce7-7687-4a2a-bb57-c3b1e571e270
+2026-09-07 22:36:05,407 INFO status has been updated to accepted
+2026-09-07 22:36:05,407 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:36:28,988 INFO status has been updated to running
+2026-09-07 22:36:28,988 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:36:40,686 INFO status has been updated to successful
+2026-09-07 22:36:40,686 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:36:41,233 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/b2371ab4200e5b4821509d9a02b9279f.zip
+b2371ab4200e5b4821509d9a02b9279f.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]b2371ab4200e5b4821509d9a02b9279f.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 39.0kB/s]                                                                                          2026-09-07 22:36:44,309 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:36:44,315 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -60.64, -31.24, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:36:44,910 INFO Request ID is dd2d6998-504a-400e-9563-bcd94f482539
+2026-09-07 22:36:44,910 INFO ecmwf.datastores.legacy_client: Request ID is dd2d6998-504a-400e-9563-bcd94f482539
+2026-09-07 22:36:45,184 INFO status has been updated to accepted
+2026-09-07 22:36:45,184 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:36:59,744 INFO status has been updated to running
+2026-09-07 22:36:59,744 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:37:07,622 INFO status has been updated to successful
+2026-09-07 22:37:07,622 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:37:08,537 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/c6160aaaee2983e6c03446bcbd1ed96f.zip
+c6160aaaee2983e6c03446bcbd1ed96f.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]c6160aaaee2983e6c03446bcbd1ed96f.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 47.3kB/s]                                                                                          2026-09-07 22:37:11,080 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:37:11,083 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -60.64, -30.939999999999998, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:37:11,694 INFO Request ID is 6ad0f3f4-9325-4898-8b73-f12408c18f86
+2026-09-07 22:37:11,694 INFO ecmwf.datastores.legacy_client: Request ID is 6ad0f3f4-9325-4898-8b73-f12408c18f86
+2026-09-07 22:37:11,975 INFO status has been updated to accepted
+2026-09-07 22:37:11,975 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:37:34,435 INFO status has been updated to successful
+2026-09-07 22:37:34,435 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:37:34,989 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/f3138da55af1fa903ac629ced672223d.zip
+f3138da55af1fa903ac629ced672223d.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]f3138da55af1fa903ac629ced672223d.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 47.2kB/s]                                                                                          2026-09-07 22:37:37,492 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:37:37,495 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -60.64, -30.64, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:37:38,083 INFO Request ID is 6c841874-514f-4f02-9ca1-3d138a39b922
+2026-09-07 22:37:38,083 INFO ecmwf.datastores.legacy_client: Request ID is 6c841874-514f-4f02-9ca1-3d138a39b922
+2026-09-07 22:37:38,346 INFO status has been updated to accepted
+2026-09-07 22:37:38,346 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:38:01,497 INFO status has been updated to successful
+2026-09-07 22:38:01,497 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:38:02,049 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/8e7a69196439f77140e4156f205b0023.zip
+8e7a69196439f77140e4156f205b0023.zip:   0%|          | 0.00/67.4k [00:00<?, ?B/s]8e7a69196439f77140e4156f205b0023.zip: 100%|##########| 67.4k/67.4k [00:01<00:00, 35.4kB/s]                                                                                          2026-09-07 22:38:05,069 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:38:05,072 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -60.64, -30.34, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:38:05,668 INFO Request ID is 1e08fa7d-8fc1-4966-bdea-35e5f814cfa0
+2026-09-07 22:38:05,668 INFO ecmwf.datastores.legacy_client: Request ID is 1e08fa7d-8fc1-4966-bdea-35e5f814cfa0
+2026-09-07 22:38:05,935 INFO status has been updated to accepted
+2026-09-07 22:38:05,935 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:38:28,374 INFO status has been updated to running
+2026-09-07 22:38:28,374 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:38:40,360 INFO status has been updated to successful
+2026-09-07 22:38:40,360 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:38:40,909 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/96657e1099072fb020aec67bdc7daaab.zip
+96657e1099072fb020aec67bdc7daaab.zip:   0%|          | 0.00/67.4k [00:00<?, ?B/s]96657e1099072fb020aec67bdc7daaab.zip: 100%|##########| 67.4k/67.4k [00:01<00:00, 44.3kB/s]                                                                                          2026-09-07 22:38:43,541 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:38:43,545 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -60.64, -30.04, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:38:44,138 INFO Request ID is e483a6b7-f092-40e2-bbc7-59050e964792
+2026-09-07 22:38:44,138 INFO ecmwf.datastores.legacy_client: Request ID is e483a6b7-f092-40e2-bbc7-59050e964792
+2026-09-07 22:38:44,431 INFO status has been updated to accepted
+2026-09-07 22:38:44,431 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:39:07,124 INFO status has been updated to successful
+2026-09-07 22:39:07,124 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:39:07,650 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/acac630f7388a81fdbbc8a57c12a9505.zip
+acac630f7388a81fdbbc8a57c12a9505.zip:   0%|          | 0.00/66.8k [00:00<?, ?B/s]acac630f7388a81fdbbc8a57c12a9505.zip: 100%|##########| 66.8k/66.8k [00:01<00:00, 46.5kB/s]                                                                                          2026-09-07 22:39:10,163 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:39:10,166 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -60.64, -29.74, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:39:11,088 INFO Request ID is b9677be9-a7c1-4e9b-b03b-c88003b03270
+2026-09-07 22:39:11,088 INFO ecmwf.datastores.legacy_client: Request ID is b9677be9-a7c1-4e9b-b03b-c88003b03270
+2026-09-07 22:39:11,356 INFO status has been updated to accepted
+2026-09-07 22:39:11,356 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:39:27,126 INFO status has been updated to successful
+2026-09-07 22:39:27,126 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:39:30,207 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/8d9518904c8eebfb5dac72caf133911c.zip
+8d9518904c8eebfb5dac72caf133911c.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]8d9518904c8eebfb5dac72caf133911c.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 43.6kB/s]                                                                                          2026-09-07 22:39:32,831 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:39:32,835 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -60.64, -29.439999999999998, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:39:33,621 INFO Request ID is d9709418-4447-4414-8733-b7ad2e59d15f
+2026-09-07 22:39:33,621 INFO ecmwf.datastores.legacy_client: Request ID is d9709418-4447-4414-8733-b7ad2e59d15f
+2026-09-07 22:39:34,742 INFO status has been updated to accepted
+2026-09-07 22:39:34,742 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:39:49,375 INFO status has been updated to running
+2026-09-07 22:39:49,375 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:39:57,237 INFO status has been updated to successful
+2026-09-07 22:39:57,237 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:39:57,781 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/6286fa1814837709afcfbbf5bd04b2fc.zip
+6286fa1814837709afcfbbf5bd04b2fc.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]6286fa1814837709afcfbbf5bd04b2fc.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 44.3kB/s]                                                                                          2026-09-07 22:40:00,359 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:40:00,366 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -60.64, -28.84, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:40:01,058 INFO Request ID is 97c522e6-0a04-4e23-9660-3e87d12e58c3
+2026-09-07 22:40:01,058 INFO ecmwf.datastores.legacy_client: Request ID is 97c522e6-0a04-4e23-9660-3e87d12e58c3
+2026-09-07 22:40:01,349 INFO status has been updated to accepted
+2026-09-07 22:40:01,349 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:40:25,183 INFO status has been updated to running
+2026-09-07 22:40:25,183 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:40:36,867 INFO status has been updated to successful
+2026-09-07 22:40:36,867 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:40:37,421 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/70caafa0b849a3a9eb5d5fe0f60e94f5.zip
+70caafa0b849a3a9eb5d5fe0f60e94f5.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]70caafa0b849a3a9eb5d5fe0f60e94f5.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 43.3kB/s]                                                                                          2026-09-07 22:40:40,033 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:40:40,036 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -60.64, -28.54, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:40:40,661 INFO Request ID is de6c0a03-5c42-4541-86d1-3beb433ab3f5
+2026-09-07 22:40:40,661 INFO ecmwf.datastores.legacy_client: Request ID is de6c0a03-5c42-4541-86d1-3beb433ab3f5
+2026-09-07 22:40:40,928 INFO status has been updated to accepted
+2026-09-07 22:40:40,928 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:41:03,321 INFO status has been updated to successful
+2026-09-07 22:41:03,321 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:41:04,718 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/3b54c89c2518e777c261f51b087ba689.zip
+3b54c89c2518e777c261f51b087ba689.zip:   0%|          | 0.00/66.2k [00:00<?, ?B/s]3b54c89c2518e777c261f51b087ba689.zip: 100%|##########| 66.2k/66.2k [00:01<00:00, 43.3kB/s]                                                                                          2026-09-07 22:41:07,299 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:41:07,305 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -60.64, -28.24, -60.260000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:41:07,945 INFO Request ID is 77135efa-1c7f-41ea-b044-8ef30d908b01
+2026-09-07 22:41:07,945 INFO ecmwf.datastores.legacy_client: Request ID is 77135efa-1c7f-41ea-b044-8ef30d908b01
+2026-09-07 22:41:08,215 INFO status has been updated to accepted
+2026-09-07 22:41:08,215 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:41:22,802 INFO status has been updated to running
+2026-09-07 22:41:22,802 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:41:30,712 INFO status has been updated to successful
+2026-09-07 22:41:30,712 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:41:31,293 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/2a0e4a03dd982e703f371a56404661a4.zip
+2a0e4a03dd982e703f371a56404661a4.zip:   0%|          | 0.00/66.4k [00:00<?, ?B/s]2a0e4a03dd982e703f371a56404661a4.zip: 100%|##########| 66.4k/66.4k [00:01<00:00, 45.1kB/s]                                                                                          2026-09-07 22:41:33,933 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:41:33,937 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-32.96, -60.339999999999996, -33.339999999999996, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:41:34,552 INFO Request ID is bfbc67ea-db0d-4bca-af48-a16521f159ff
+2026-09-07 22:41:34,552 INFO ecmwf.datastores.legacy_client: Request ID is bfbc67ea-db0d-4bca-af48-a16521f159ff
+2026-09-07 22:41:34,822 INFO status has been updated to accepted
+2026-09-07 22:41:34,822 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:41:59,323 INFO status has been updated to running
+2026-09-07 22:41:59,323 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:42:11,004 INFO status has been updated to successful
+2026-09-07 22:42:11,004 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:42:11,551 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/6c03cae44d6febaafbdec4287161ba4b.zip
+6c03cae44d6febaafbdec4287161ba4b.zip:   0%|          | 0.00/67.9k [00:00<?, ?B/s]6c03cae44d6febaafbdec4287161ba4b.zip: 100%|##########| 67.9k/67.9k [00:01<00:00, 42.5kB/s]                                                                                          2026-09-07 22:42:14,547 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:42:14,553 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-31.16, -60.339999999999996, -31.54, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:42:15,133 INFO Request ID is 2371123f-b34d-439f-abf2-5f3dea847085
+2026-09-07 22:42:15,133 INFO ecmwf.datastores.legacy_client: Request ID is 2371123f-b34d-439f-abf2-5f3dea847085
+2026-09-07 22:42:15,401 INFO status has been updated to accepted
+2026-09-07 22:42:15,401 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:42:38,313 INFO status has been updated to successful
+2026-09-07 22:42:38,313 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:42:38,844 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/ef7b1ea5d6134fd1f65eb0dc348f1810.zip
+ef7b1ea5d6134fd1f65eb0dc348f1810.zip:   0%|          | 0.00/67.8k [00:00<?, ?B/s]ef7b1ea5d6134fd1f65eb0dc348f1810.zip: 100%|##########| 67.8k/67.8k [00:01<00:00, 44.4kB/s]                                                                                          2026-09-07 22:42:41,435 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:42:41,439 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -60.339999999999996, -31.24, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:42:44,314 INFO Request ID is cb8c9a7d-ea46-4858-b53c-f031efc8f0e5
+2026-09-07 22:42:44,314 INFO ecmwf.datastores.legacy_client: Request ID is cb8c9a7d-ea46-4858-b53c-f031efc8f0e5
+2026-09-07 22:42:45,483 INFO status has been updated to accepted
+2026-09-07 22:42:45,483 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:43:00,154 INFO status has been updated to running
+2026-09-07 22:43:00,154 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:43:08,018 INFO status has been updated to successful
+2026-09-07 22:43:08,018 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:43:11,618 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/5ef586b76969d3ebb9f3bc21a3cd5128.zip
+5ef586b76969d3ebb9f3bc21a3cd5128.zip:   0%|          | 0.00/68.0k [00:00<?, ?B/s]5ef586b76969d3ebb9f3bc21a3cd5128.zip: 100%|##########| 68.0k/68.0k [00:01<00:00, 43.5kB/s]                                                                                          2026-09-07 22:43:14,270 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:43:14,277 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -60.339999999999996, -30.939999999999998, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:43:16,418 INFO Request ID is f6320b00-d45c-4366-88a1-945544c20a47
+2026-09-07 22:43:16,418 INFO ecmwf.datastores.legacy_client: Request ID is f6320b00-d45c-4366-88a1-945544c20a47
+2026-09-07 22:43:16,706 INFO status has been updated to accepted
+2026-09-07 22:43:16,706 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:43:51,039 INFO status has been updated to successful
+2026-09-07 22:43:51,039 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:43:51,600 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/a9fd205c5c2bbc04c1298c754bd460f0.zip
+a9fd205c5c2bbc04c1298c754bd460f0.zip:   0%|          | 0.00/67.3k [00:00<?, ?B/s]a9fd205c5c2bbc04c1298c754bd460f0.zip: 100%|##########| 67.3k/67.3k [00:01<00:00, 45.1kB/s]                                                                                          2026-09-07 22:43:54,198 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:43:54,201 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -60.339999999999996, -30.64, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:43:54,999 INFO Request ID is 79f72175-4484-410b-84ce-9b1eaad0a2ff
+2026-09-07 22:43:54,999 INFO ecmwf.datastores.legacy_client: Request ID is 79f72175-4484-410b-84ce-9b1eaad0a2ff
+2026-09-07 22:43:55,285 INFO status has been updated to accepted
+2026-09-07 22:43:55,285 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:44:17,734 INFO status has been updated to running
+2026-09-07 22:44:17,734 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:44:29,397 INFO status has been updated to successful
+2026-09-07 22:44:29,397 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:44:29,981 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/24fb72ad438f6ff00e50ee347daef4ee.zip
+24fb72ad438f6ff00e50ee347daef4ee.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]24fb72ad438f6ff00e50ee347daef4ee.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 43.8kB/s]                                                                                          2026-09-07 22:44:32,688 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:44:32,691 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -60.339999999999996, -30.34, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:44:35,574 INFO Request ID is b10abd2c-9e34-48a8-8134-5cb8a941cf62
+2026-09-07 22:44:35,574 INFO ecmwf.datastores.legacy_client: Request ID is b10abd2c-9e34-48a8-8134-5cb8a941cf62
+2026-09-07 22:44:35,915 INFO status has been updated to accepted
+2026-09-07 22:44:35,915 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:45:28,841 INFO status has been updated to successful
+2026-09-07 22:45:28,841 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:45:29,398 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/18cbf13b88d6a6b931caaecc73168674.zip
+18cbf13b88d6a6b931caaecc73168674.zip:   0%|          | 0.00/67.2k [00:00<?, ?B/s]18cbf13b88d6a6b931caaecc73168674.zip: 100%|##########| 67.2k/67.2k [00:01<00:00, 42.9kB/s]                                                                                          2026-09-07 22:45:32,115 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:45:32,118 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -60.339999999999996, -30.04, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:45:32,778 INFO Request ID is ba68feb5-0764-4616-b891-720bd89ee9c7
+2026-09-07 22:45:32,778 INFO ecmwf.datastores.legacy_client: Request ID is ba68feb5-0764-4616-b891-720bd89ee9c7
+2026-09-07 22:45:33,053 INFO status has been updated to accepted
+2026-09-07 22:45:33,053 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:46:26,417 INFO status has been updated to successful
+2026-09-07 22:46:26,417 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:46:26,965 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/bb285d96ac2c85dd2fa24a2437ae36db.zip
+bb285d96ac2c85dd2fa24a2437ae36db.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]bb285d96ac2c85dd2fa24a2437ae36db.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 44.1kB/s]                                                                                          2026-09-07 22:46:29,529 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:46:29,533 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -60.339999999999996, -29.74, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:46:30,179 INFO Request ID is e25b5128-cb17-4c33-afe5-4e9d67e7db01
+2026-09-07 22:46:30,179 INFO ecmwf.datastores.legacy_client: Request ID is e25b5128-cb17-4c33-afe5-4e9d67e7db01
+2026-09-07 22:46:30,463 INFO status has been updated to accepted
+2026-09-07 22:46:30,463 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:46:45,696 INFO status has been updated to running
+2026-09-07 22:46:45,696 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:46:53,560 INFO status has been updated to successful
+2026-09-07 22:46:53,560 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:46:54,155 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/af4de14b9be5e90234402e92c2916297.zip
+af4de14b9be5e90234402e92c2916297.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]af4de14b9be5e90234402e92c2916297.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 42.7kB/s]                                                                                          2026-09-07 22:46:56,791 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:46:56,794 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -60.339999999999996, -29.439999999999998, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:46:57,412 INFO Request ID is b7b0495e-9b91-4692-97d8-b0bb119d13c7
+2026-09-07 22:46:57,412 INFO ecmwf.datastores.legacy_client: Request ID is b7b0495e-9b91-4692-97d8-b0bb119d13c7
+2026-09-07 22:46:57,680 INFO status has been updated to accepted
+2026-09-07 22:46:57,680 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:47:12,572 INFO status has been updated to running
+2026-09-07 22:47:12,572 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:47:20,434 INFO status has been updated to successful
+2026-09-07 22:47:20,434 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:47:21,917 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/ea917bed787477f0519590fa4b7178ab.zip
+ea917bed787477f0519590fa4b7178ab.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]ea917bed787477f0519590fa4b7178ab.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:47:24,513 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:47:24,519 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -60.339999999999996, -28.84, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:47:25,091 INFO Request ID is 3d65491a-d410-4b41-9667-e120267415bc
+2026-09-07 22:47:25,091 INFO ecmwf.datastores.legacy_client: Request ID is 3d65491a-d410-4b41-9667-e120267415bc
+2026-09-07 22:47:25,356 INFO status has been updated to accepted
+2026-09-07 22:47:25,356 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:47:47,931 INFO status has been updated to running
+2026-09-07 22:47:47,931 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:47:59,607 INFO status has been updated to successful
+2026-09-07 22:47:59,607 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:48:00,158 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/5d4a2f456575cee38cf41bfe1f11f685.zip
+5d4a2f456575cee38cf41bfe1f11f685.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]5d4a2f456575cee38cf41bfe1f11f685.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 45.6kB/s]                                                                                          2026-09-07 22:48:02,687 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:48:02,690 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -60.339999999999996, -28.54, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:48:03,315 INFO Request ID is ab894e56-cfc5-4a26-bb49-d518f86ada5e
+2026-09-07 22:48:03,315 INFO ecmwf.datastores.legacy_client: Request ID is ab894e56-cfc5-4a26-bb49-d518f86ada5e
+2026-09-07 22:48:03,608 INFO status has been updated to accepted
+2026-09-07 22:48:03,608 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:48:26,206 INFO status has been updated to successful
+2026-09-07 22:48:26,206 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:48:26,735 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/28ff30529aaf2d5b94097f25c8170017.zip
+28ff30529aaf2d5b94097f25c8170017.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]28ff30529aaf2d5b94097f25c8170017.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 44.2kB/s]                                                                                          2026-09-07 22:48:29,311 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:48:29,317 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -60.339999999999996, -28.24, -59.96], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:48:31,287 INFO Request ID is aaba5fda-8bd6-43ea-9e43-7c88bffb2ad2
+2026-09-07 22:48:31,287 INFO ecmwf.datastores.legacy_client: Request ID is aaba5fda-8bd6-43ea-9e43-7c88bffb2ad2
+2026-09-07 22:48:31,580 INFO status has been updated to accepted
+2026-09-07 22:48:31,580 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:48:46,379 INFO status has been updated to running
+2026-09-07 22:48:46,379 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:48:54,403 INFO status has been updated to successful
+2026-09-07 22:48:54,403 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:48:54,955 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/7105b6060b051e58757363cb555ebf8.zip
+7105b6060b051e58757363cb555ebf8.zip:   0%|          | 0.00/66.6k [00:00<?, ?B/s]7105b6060b051e58757363cb555ebf8.zip: 100%|##########| 66.6k/66.6k [00:01<00:00, 44.1kB/s]                                                                                         2026-09-07 22:48:57,611 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:48:57,614 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.86, -60.04, -31.24, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:48:58,227 INFO Request ID is b5e5166a-6de1-4c71-a340-c139c6d070bc
+2026-09-07 22:48:58,227 INFO ecmwf.datastores.legacy_client: Request ID is b5e5166a-6de1-4c71-a340-c139c6d070bc
+2026-09-07 22:48:58,494 INFO status has been updated to accepted
+2026-09-07 22:48:58,494 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:49:20,968 INFO status has been updated to running
+2026-09-07 22:49:20,968 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:49:32,657 INFO status has been updated to successful
+2026-09-07 22:49:32,657 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:49:33,224 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/2c5060b24b5c0b966a1814728fa1c4c5.zip
+2c5060b24b5c0b966a1814728fa1c4c5.zip:   0%|          | 0.00/67.6k [00:00<?, ?B/s]2c5060b24b5c0b966a1814728fa1c4c5.zip: 100%|##########| 67.6k/67.6k [00:01<00:00, 44.7kB/s]                                                                                          2026-09-07 22:49:36,095 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:49:36,101 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.56, -60.04, -30.939999999999998, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:49:36,691 INFO Request ID is c99964c6-a1fe-4570-9160-411d30527b14
+2026-09-07 22:49:36,691 INFO ecmwf.datastores.legacy_client: Request ID is c99964c6-a1fe-4570-9160-411d30527b14
+2026-09-07 22:49:36,973 INFO status has been updated to accepted
+2026-09-07 22:49:36,973 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:49:59,780 INFO status has been updated to running
+2026-09-07 22:49:59,780 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:50:12,501 INFO status has been updated to successful
+2026-09-07 22:50:12,501 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:50:13,107 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/e88965a64037b1694c61e39e4930c491.zip
+e88965a64037b1694c61e39e4930c491.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]e88965a64037b1694c61e39e4930c491.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 45.5kB/s]                                                                                          2026-09-07 22:50:15,639 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:50:15,648 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-30.26, -60.04, -30.64, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:50:16,243 INFO Request ID is 13e644c2-468f-4dcb-ab50-26c44d143fdb
+2026-09-07 22:50:16,243 INFO ecmwf.datastores.legacy_client: Request ID is 13e644c2-468f-4dcb-ab50-26c44d143fdb
+2026-09-07 22:50:16,532 INFO status has been updated to accepted
+2026-09-07 22:50:16,532 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:50:39,889 INFO status has been updated to running
+2026-09-07 22:50:39,889 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:50:51,550 INFO status has been updated to successful
+2026-09-07 22:50:51,550 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:50:52,083 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/fc1679e1d7f15fd03efa8d4d2623552b.zip
+fc1679e1d7f15fd03efa8d4d2623552b.zip:   0%|          | 0.00/67.0k [00:00<?, ?B/s]fc1679e1d7f15fd03efa8d4d2623552b.zip: 100%|##########| 67.0k/67.0k [00:01<00:00, 42.7kB/s]                                                                                          2026-09-07 22:50:54,761 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:50:54,766 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.96, -60.04, -30.34, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:50:55,363 INFO Request ID is 2dc2b126-6135-45b8-8b1c-a1b560d71702
+2026-09-07 22:50:55,363 INFO ecmwf.datastores.legacy_client: Request ID is 2dc2b126-6135-45b8-8b1c-a1b560d71702
+2026-09-07 22:51:00,174 INFO status has been updated to accepted
+2026-09-07 22:51:00,174 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:51:14,878 INFO status has been updated to running
+2026-09-07 22:51:14,878 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:51:22,754 INFO status has been updated to successful
+2026-09-07 22:51:22,754 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:51:23,302 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/f48cf26beedfa7481d45c54c8b7f6252.zip
+f48cf26beedfa7481d45c54c8b7f6252.zip:   0%|          | 0.00/67.1k [00:00<?, ?B/s]f48cf26beedfa7481d45c54c8b7f6252.zip: 100%|##########| 67.1k/67.1k [00:01<00:00, 46.4kB/s]                                                                                          2026-09-07 22:51:25,843 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:51:25,849 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.66, -60.04, -30.04, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:51:26,462 INFO Request ID is 20b24136-12d5-40fb-8a55-8aae32d7b662
+2026-09-07 22:51:26,462 INFO ecmwf.datastores.legacy_client: Request ID is 20b24136-12d5-40fb-8a55-8aae32d7b662
+2026-09-07 22:51:26,760 INFO status has been updated to accepted
+2026-09-07 22:51:26,760 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:51:51,292 INFO status has been updated to running
+2026-09-07 22:51:51,292 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:52:02,974 INFO status has been updated to successful
+2026-09-07 22:52:02,974 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:52:04,316 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/9ec839482842bfa5c569fc91287cb954.zip
+9ec839482842bfa5c569fc91287cb954.zip:   0%|          | 0.00/66.4k [00:00<?, ?B/s]9ec839482842bfa5c569fc91287cb954.zip: 100%|##########| 66.4k/66.4k [00:01<00:00, 45.9kB/s]                                                                                          2026-09-07 22:52:06,853 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:52:06,860 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.36, -60.04, -29.74, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:52:11,700 INFO Request ID is 0e52be83-cc69-43be-86eb-c42b36b0268a
+2026-09-07 22:52:11,700 INFO ecmwf.datastores.legacy_client: Request ID is 0e52be83-cc69-43be-86eb-c42b36b0268a
+2026-09-07 22:52:12,015 INFO status has been updated to accepted
+2026-09-07 22:52:12,015 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:52:50,281 INFO status has been updated to successful
+2026-09-07 22:52:50,281 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:52:50,848 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/1ffd5d590368d0810a4fc4836adeb22c.zip
+1ffd5d590368d0810a4fc4836adeb22c.zip:   0%|          | 0.00/66.6k [00:00<?, ?B/s]1ffd5d590368d0810a4fc4836adeb22c.zip: 100%|##########| 66.6k/66.6k [00:01<00:00, 46.4kB/s]                                                                                          2026-09-07 22:52:53,389 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:52:53,395 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -60.04, -29.439999999999998, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:52:54,919 INFO Request ID is 00454722-78df-420f-bcec-3ad751243e9e
+2026-09-07 22:52:54,919 INFO ecmwf.datastores.legacy_client: Request ID is 00454722-78df-420f-bcec-3ad751243e9e
+2026-09-07 22:52:55,191 INFO status has been updated to accepted
+2026-09-07 22:52:55,191 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:53:18,041 INFO status has been updated to running
+2026-09-07 22:53:18,041 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:53:29,698 INFO status has been updated to successful
+2026-09-07 22:53:29,698 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:53:30,232 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/c0c143d5055e00f4450c267c27d4804.zip
+c0c143d5055e00f4450c267c27d4804.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]c0c143d5055e00f4450c267c27d4804.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 43.9kB/s]                                                                                         2026-09-07 22:53:32,829 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:53:32,840 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -60.04, -28.84, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:53:33,601 INFO Request ID is 6543e45d-177f-4939-9951-910f4abff65b
+2026-09-07 22:53:33,601 INFO ecmwf.datastores.legacy_client: Request ID is 6543e45d-177f-4939-9951-910f4abff65b
+2026-09-07 22:53:33,886 INFO status has been updated to accepted
+2026-09-07 22:53:33,886 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:53:48,445 INFO status has been updated to running
+2026-09-07 22:53:48,445 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:53:56,861 INFO status has been updated to successful
+2026-09-07 22:53:56,861 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:53:57,395 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/a893335dc6eb5bfbe34dccd4d24ec533.zip
+a893335dc6eb5bfbe34dccd4d24ec533.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]a893335dc6eb5bfbe34dccd4d24ec533.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 44.9kB/s]                                                                                          2026-09-07 22:53:59,980 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:53:59,987 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -60.04, -28.54, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:54:00,621 INFO Request ID is e066a9ff-856c-4cda-9ba5-3d825cec6db3
+2026-09-07 22:54:00,621 INFO ecmwf.datastores.legacy_client: Request ID is e066a9ff-856c-4cda-9ba5-3d825cec6db3
+2026-09-07 22:54:00,905 INFO status has been updated to accepted
+2026-09-07 22:54:00,905 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:54:24,647 INFO status has been updated to running
+2026-09-07 22:54:24,647 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:54:36,316 INFO status has been updated to successful
+2026-09-07 22:54:36,316 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:54:36,888 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/c360d48312c3c383872e6bc4a118a1f.zip
+c360d48312c3c383872e6bc4a118a1f.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]c360d48312c3c383872e6bc4a118a1f.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 43.3kB/s]                                                                                         2026-09-07 22:54:39,587 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:54:39,598 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -60.04, -28.24, -59.660000000000004], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:54:40,179 INFO Request ID is dcc2e357-f9f9-4eab-9156-573339c9199b
+2026-09-07 22:54:40,179 INFO ecmwf.datastores.legacy_client: Request ID is dcc2e357-f9f9-4eab-9156-573339c9199b
+2026-09-07 22:54:40,444 INFO status has been updated to accepted
+2026-09-07 22:54:40,444 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:55:32,479 INFO status has been updated to running
+2026-09-07 22:55:32,479 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:55:58,391 INFO status has been updated to successful
+2026-09-07 22:55:58,391 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:55:58,937 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/dfc1548e2c9083eba164ee04f2040c76.zip
+dfc1548e2c9083eba164ee04f2040c76.zip:   0%|          | 0.00/66.7k [00:00<?, ?B/s]dfc1548e2c9083eba164ee04f2040c76.zip: 100%|##########| 66.7k/66.7k [00:02<00:00, 28.2kB/s]                                                                                          2026-09-07 22:56:02,422 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:56:02,428 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-29.06, -59.74, -29.439999999999998, -59.36000000000001], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:56:03,029 INFO Request ID is 8e9517cb-fa7c-419c-acf2-6c4a0397725f
+2026-09-07 22:56:03,029 INFO ecmwf.datastores.legacy_client: Request ID is 8e9517cb-fa7c-419c-acf2-6c4a0397725f
+2026-09-07 22:56:03,302 INFO status has been updated to accepted
+2026-09-07 22:56:03,302 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:56:25,862 INFO status has been updated to successful
+2026-09-07 22:56:25,862 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:56:26,575 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/620cf63e36f69038d7e91784fba038.zip
+620cf63e36f69038d7e91784fba038.zip:   0%|          | 0.00/66.2k [00:00<?, ?B/s]620cf63e36f69038d7e91784fba038.zip: 100%|##########| 66.2k/66.2k [00:01<00:00, 44.4kB/s]                                                                                        2026-09-07 22:56:29,182 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:56:29,185 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.76, -59.44, -29.14, -59.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:56:29,804 INFO Request ID is fcab604e-c0d4-4feb-9499-7fe7feee1ffd
+2026-09-07 22:56:29,804 INFO ecmwf.datastores.legacy_client: Request ID is fcab604e-c0d4-4feb-9499-7fe7feee1ffd
+2026-09-07 22:56:30,076 INFO status has been updated to accepted
+2026-09-07 22:56:30,076 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:56:44,857 INFO status has been updated to successful
+2026-09-07 22:56:44,857 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:56:45,387 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/704e157cec4e5cf3fe227dd8ae8d541d.zip
+704e157cec4e5cf3fe227dd8ae8d541d.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]704e157cec4e5cf3fe227dd8ae8d541d.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 45.6kB/s]                                                                                          2026-09-07 22:56:47,885 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:56:47,891 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.46, -59.44, -28.84, -59.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:56:48,476 INFO Request ID is 90621190-76c3-4cd8-883a-3a0d2bb14786
+2026-09-07 22:56:48,476 INFO ecmwf.datastores.legacy_client: Request ID is 90621190-76c3-4cd8-883a-3a0d2bb14786
+2026-09-07 22:56:48,746 INFO status has been updated to accepted
+2026-09-07 22:56:48,746 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:57:03,341 INFO status has been updated to running
+2026-09-07 22:57:03,341 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:57:14,841 INFO status has been updated to successful
+2026-09-07 22:57:14,841 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:57:15,408 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/36950caa36941d2587960cca4489d68d.zip
+36950caa36941d2587960cca4489d68d.zip:   0%|          | 0.00/66.3k [00:00<?, ?B/s]36950caa36941d2587960cca4489d68d.zip: 100%|##########| 66.3k/66.3k [00:01<00:00, 43.4kB/s]                                                                                          2026-09-07 22:57:18,011 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:57:18,017 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -59.44, -28.54, -59.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:57:18,673 INFO Request ID is c631ea0f-2f96-4cc0-9bcb-6761d15d6ab1
+2026-09-07 22:57:18,673 INFO ecmwf.datastores.legacy_client: Request ID is c631ea0f-2f96-4cc0-9bcb-6761d15d6ab1
+2026-09-07 22:57:18,961 INFO status has been updated to accepted
+2026-09-07 22:57:18,961 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:57:44,173 INFO status has been updated to successful
+2026-09-07 22:57:44,173 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:57:44,718 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/a91508af808cbb4a9c262c2a8774fa6b.zip
+a91508af808cbb4a9c262c2a8774fa6b.zip:   0%|          | 0.00/66.2k [00:00<?, ?B/s]a91508af808cbb4a9c262c2a8774fa6b.zip: 100%|##########| 66.2k/66.2k [00:01<00:00, 42.4kB/s]                                                                                          2026-09-07 22:57:47,405 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:57:47,411 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -59.44, -28.24, -59.06], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:57:49,427 INFO Request ID is 830cb16d-e126-4f1d-8eec-7d4cbde4be68
+2026-09-07 22:57:49,427 INFO ecmwf.datastores.legacy_client: Request ID is 830cb16d-e126-4f1d-8eec-7d4cbde4be68
+2026-09-07 22:57:49,713 INFO status has been updated to accepted
+2026-09-07 22:57:49,713 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:58:15,942 INFO status has been updated to running
+2026-09-07 22:58:15,942 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:58:27,606 INFO status has been updated to successful
+2026-09-07 22:58:27,606 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:58:28,593 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-09-08/7f9d22c30a3ece6ca827f239680a6db1.zip
+7f9d22c30a3ece6ca827f239680a6db1.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]7f9d22c30a3ece6ca827f239680a6db1.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 43.6kB/s]                                                                                          2026-09-07 22:58:31,242 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:58:31,245 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-28.16, -59.14, -28.54, -58.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:58:33,057 INFO Request ID is df92d27c-195f-4228-9815-f5c7c06b5ccf
+2026-09-07 22:58:33,057 INFO ecmwf.datastores.legacy_client: Request ID is df92d27c-195f-4228-9815-f5c7c06b5ccf
+2026-09-07 22:58:33,326 INFO status has been updated to accepted
+2026-09-07 22:58:33,326 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:58:55,918 INFO status has been updated to successful
+2026-09-07 22:58:55,918 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:58:56,503 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-09-08/5e048a4c2ba939e0ba5d0dab1c746552.zip
+5e048a4c2ba939e0ba5d0dab1c746552.zip:   0%|          | 0.00/66.5k [00:00<?, ?B/s]5e048a4c2ba939e0ba5d0dab1c746552.zip: 100%|##########| 66.5k/66.5k [00:01<00:00, 42.2kB/s]                                                                                          2026-09-07 22:58:59,196 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:58:59,199 INFO src.api.copernicus_era5_land: Requesting CDS dataset=reanalysis-era5-land-timeseries (area mode) request={'variable': ['surface_solar_radiation_downwards'], 'area': [-27.86, -59.14, -28.24, -58.760000000000005], 'date': ['2024-01-01/2024-01-31'], 'data_format': 'csv'}
+2026-09-07 22:59:00,031 INFO Request ID is b9f041fb-19be-414f-b8da-07f1d838eccd
+2026-09-07 22:59:00,031 INFO ecmwf.datastores.legacy_client: Request ID is b9f041fb-19be-414f-b8da-07f1d838eccd
+2026-09-07 22:59:00,316 INFO status has been updated to accepted
+2026-09-07 22:59:00,316 INFO ecmwf.datastores.legacy_client: status has been updated to accepted
+2026-09-07 22:59:14,960 INFO status has been updated to running
+2026-09-07 22:59:14,960 INFO ecmwf.datastores.legacy_client: status has been updated to running
+2026-09-07 22:59:22,819 INFO status has been updated to successful
+2026-09-07 22:59:22,819 INFO ecmwf.datastores.legacy_client: status has been updated to successful
+2026-09-07 22:59:23,348 INFO multiurl.base: Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-09-08/2f8b25800d1e32c26dac3686eb22c787.zip
+2f8b25800d1e32c26dac3686eb22c787.zip:   0%|          | 0.00/66.8k [00:00<?, ?B/s]2f8b25800d1e32c26dac3686eb22c787.zip: 100%|##########| 66.8k/66.8k [00:01<00:00, 42.6kB/s]                                                                                          2026-09-07 22:59:25,991 INFO src.api.copernicus_era5_land: Area request returned 16 distinct ERA5-Land points.
+2026-09-07 22:59:26,016 INFO src.pipeline.preprocess: Candidate locations: 54 valid / 190 total (136 excluded: urban, 0 excluded: missing climate)
+Candidatos: 54 válidos de 190 celdas de grilla.
+2026-09-07 22:59:28,979 INFO src.pipeline.reporting: Wrote run outputs: C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\results_test
+
+TOP 10 UBICACIONES
+============================================================
+# 1  cell_id=73     lat=-33.87568 lon=-61.21475  fitness=0.7846  solar=0.828  linea=0.0km (1.000)  transf=101.4km (0.569)
+# 2  cell_id=25     lat=-34.23758 lon=-61.75315  fitness=0.7658  solar=0.906  linea=0.0km (1.000)  transf=146.9km (0.375)
+# 3  cell_id=6      lat=-33.56306 lon=-62.24458  fitness=0.7492  solar=0.880  linea=0.0km (1.000)  transf=149.5km (0.364)
+# 4  cell_id=2      lat=-34.06601 lon=-62.59601  fitness=0.7373  solar=0.981  linea=0.0km (1.000)  transf=198.3km (0.157)
+# 5  cell_id=12     lat=-32.65263 lon=-61.93170  fitness=0.6768  solar=0.638  linea=2.1km (0.965)  transf=106.0km (0.549)
+# 6  cell_id=19     lat=-30.61489 lon=-61.96445  fitness=0.6194  solar=0.627  linea=0.0km (1.000)  transf=152.2km (0.353)
+# 7  cell_id=69     lat=-28.83329 lon=-61.50293  fitness=0.6170  solar=0.651  linea=0.0km (1.000)  transf=163.4km (0.305)
+# 8  cell_id=72     lat=-28.07800 lon=-61.51407  fitness=0.6064  solar=0.755  linea=0.0km (1.000)  transf=212.6km (0.096)
+# 9  cell_id=93     lat=-28.55887 lon=-61.20019  fitness=0.6012  solar=0.588  linea=0.0km (1.000)  transf=151.0km (0.358)
+#10  cell_id=94     lat=-28.28820 lon=-61.20476  fitness=0.5993  solar=0.633  linea=0.0km (1.000)  transf=170.2km (0.276)
+============================================================
+
+Nota: estas son ubicaciones potencialmente favorables según las variables espaciales y climáticas consideradas — no una determinación de óptimo económico.
+  ranking_csv: C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\results_test\ranking.csv
+  candidate_locations_csv: C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\results_test\candidate_locations.csv
+  optimization_run_json: C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\results_test\optimization_run.json
+  map_html: C:\Users\creis\OneDrive\Escritorio\AG-ParqueSolar-2026\results_test\map.html
+EXIT: 0

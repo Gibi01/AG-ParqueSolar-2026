@@ -16,6 +16,7 @@ import geopandas as gpd
 import pandas as pd
 
 from src.climate.era5_land import CellPoint, Era5LandRadiationService
+from src.climate.climatology import annual_solar_kwh_m2
 from src.config.settings import Settings
 from src.data.validators import validate_layer_present, validate_not_empty
 from src.database.repository import Repository
@@ -75,13 +76,12 @@ def run_preprocessing(
     solar_df = pd.DataFrame(
         {
             "grid_cell_id": [r.grid_cell_id for r in solar_records],
+            "year": [r.year for r in solar_records],
             "month": [r.month for r in solar_records],
             "radiation_kwh_m2": [r.radiation_kwh_m2 for r in solar_records],
         }
     )
-    representative_solar = (
-        solar_df.groupby("grid_cell_id")["radiation_kwh_m2"].mean().reindex(grid.gdf["cell_id"])
-    )
+    representative_solar = annual_solar_kwh_m2(solar_df, settings.climate.months).reindex(grid.gdf["cell_id"])
 
     missing_climate = representative_solar.isna().reset_index(drop=True)
 

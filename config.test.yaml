@@ -1,0 +1,75 @@
+# Config de VALIDACIÓN, no de entrega. Idéntica a config.yaml salvo:
+#   - grid.resolution_km bajado a 30 y climate.months a un solo mes, para
+#     validar el modo área de ERA5-Land (fetch_area_hourly + agrupamiento
+#     en tiles) integrado en el pipeline completo con datos reales: a 30km
+#     hay 190 puntos ERA5 únicos que se agrupan en 131 tiles de 0.3°
+#     (algunos con 2-4 puntos, así que sí ejercita el agrupamiento) -> 131
+#     solicitudes para 1 mes, ~1h. Antes de esto ya se probó
+#     fetch_area_hourly aislado contra la API real (funcionó, ver README)
+#     y la lógica de agrupamiento/caché con mocks (tests/test_era5_area_batching.py);
+#     esto valida la integración completa: ingesta -> grilla -> distancias
+#     -> clima real por área -> AG -> ranking -> mapa.
+#   - database/results apuntan a archivos separados para no pisar una
+#     corrida real hecha con config.yaml.
+# Borrar este archivo (y data/processed/parque_solar_test.sqlite,
+# results_test/) una vez que se valide y ya no se necesite.
+
+region:
+  name: "Santa Fe"
+  admin_source:
+    provider: "IGN"
+    shapefile_zip_url: "http://www.ign.gob.ar/descargas/geodatos/SHAPES/ign_provincia.zip"
+    shapefile_member: "Provincia/ign_provincia.shp"
+    name_field: "NAM"
+    code_field: "IN1"
+    code_value: "82"
+    native_crs: "EPSG:4326"
+
+grid:
+  resolution_km: 30
+
+park:
+  area_hectares: 2
+
+urban_exclusion:
+  buffer_km: 3.0
+  include_types: ["LOCALIDAD"]
+
+climate:
+  dataset: "reanalysis-era5-land-timeseries"
+  variable: "surface_solar_radiation_downwards"
+  years: [2024]
+  months: [1]
+  point_bbox_epsilon_deg: 0.06
+  area_tile_size_deg: 0.3
+
+infrastructure:
+  urban_areas:
+    resource_id: "c1fc1f5b-dfe3-5231-9f3b-f7c703b906c7"
+  power_lines:
+    resource_id: "3d5eda86-6822-5c39-b366-f89360b0363a"
+  transformers:
+    source_url: "http://datos.energia.gob.ar/dataset/5ae5fbf9-5ab3-407b-a047-625bf27835aa/resource/cedb62c4-4a4c-4124-bdc9-48f611a59862/download/transporte-elctrico-at-estaciones-transformadoras.csv"
+    native_crs: "EPSG:4326"
+
+fitness:
+  weight_solar: 0.50
+  weight_grid_distance: 0.20
+  weight_transformer_distance: 0.30
+
+genetic_algorithm:
+  population_size: 50
+  generations: 100
+  crossover_probability: 0.75
+  mutation_probability: 0.05
+  elitism: 2
+  tournament_size: 3
+  random_seed: 42
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  era5_cache: "data/cache/era5_land_cache"
+  database: "data/processed/parque_solar_test.sqlite"
+  results: "results_test"
+  logs: "logs"

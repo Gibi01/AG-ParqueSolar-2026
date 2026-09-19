@@ -9,6 +9,7 @@ la provincia que esté configurada (ver README "Cambiar de provincia").
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -61,9 +62,18 @@ class UrbanExclusionConfig(BaseModel):
 class ClimateConfig(BaseModel):
     dataset: str
     variable: str
-    years: list[int]
+    start_year: int = Field(ge=1950)
+    end_year: int | str = "latest"
     months: list[int]
-    point_bbox_epsilon_deg: float = Field(gt=0, lt=0.05)
+    point_bbox_epsilon_deg: float = Field(gt=0, lt=0.5)
+    # CDS documenta 1.0° como máximo geográfico para el modo área, pero
+    # además aplica un límite de "costo" (puntos x horas del rango de
+    # fechas pedido) más restrictivo y no documentado — calibrado
+    # empíricamente contra la API real: 0.3° (~16 puntos x 744h) funciona,
+    # 0.4° (~25 puntos x 744h) ya falla con "cost limits exceeded". Ver el
+    # detalle completo en el comentario de climate.area_tile_size_deg en
+    # config.yaml. Se limita acá a <=0.5 como red de seguridad práctica.
+    area_tile_size_deg: float = Field(gt=0, le=0.5)
 
     @field_validator("dataset")
     @classmethod
@@ -96,13 +106,35 @@ class ClimateConfig(BaseModel):
                 raise ValueError(f"Invalid month {m}; must be 1-12.")
         return v
 
-    @field_validator("years")
-    @classmethod
-    def _years_plausible(cls, v: list[int]) -> list[int]:
-        for y in v:
-            if y < 1950 or y > 2100:
-                raise ValueError(f"Invalid year {y}; ERA5-Land time-series starts in 1950.")
-        return v
+    @model_validator(mode="after")
+    def _validate_period(self) -> "ClimateConfig":
+        if self.end_year != "latest" and (not isinstance(self.end_year, int) or self.end_year < self.start_year):
+            raise ValueError("climate.end_year must be 'latest' or an integer >= start_year")
+        if len(set(self.months)) != len(self.months) or not self.months:
+            raise ValueError("climate.months must contain distinct representative months")
+        if set(self.months) != {1, 4, 7, 10}:
+            raise ValueError("climate.months must contain January, April, July and October for the annual estimate")
+        return self
+
+    @property
+    def year_months(self) -> list[tuple[int, int]]:
+        """Meses completos, con un mes de margen para la publicación de CDS."""
+        now = datetime.now(timezone.utc)
+        cutoff_year, cutoff_month = now.year, now.month - 2
+        if cutoff_month <= 0:
+            cutoff_year -= 1
+            cutoff_month += 12
+        last_year = cutoff_year if self.end_year == "latest" else min(self.end_year, cutoff_year)
+        return [
+            (year, month)
+            for year in range(self.start_year, last_year + 1)
+            for month in self.months
+            if (year, month) <= (cutoff_year, cutoff_month)
+        ]
+
+    @property
+    def years(self) -> list[int]:
+        return sorted({year for year, _ in self.year_months})
 
 
 class UrbanAreasSource(BaseModel):

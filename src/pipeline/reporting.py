@@ -14,6 +14,7 @@ import geopandas as gpd
 import pandas as pd
 
 from src.config.settings import Settings
+from src.climate.climatology import annual_solar_kwh_m2, monthly_climatology
 from src.database.repository import Repository
 from src.gis.spatial_operations import buffer_points_km
 from src.optimization.genetic_algorithm import GAResult
@@ -48,9 +49,8 @@ RESULT_DISCLAIMER = (
 )
 
 
-def enrich_with_monthly_solar(top10: pd.DataFrame, solar_radiation_df: pd.DataFrame, year: int) -> pd.DataFrame:
-    subset = solar_radiation_df[solar_radiation_df["year"] == year]
-    pivot = subset.pivot_table(index="grid_cell_id", columns="month", values="radiation_kwh_m2")
+def enrich_with_monthly_solar(top10: pd.DataFrame, solar_radiation_df: pd.DataFrame, months: list[int]) -> pd.DataFrame:
+    pivot = monthly_climatology(solar_radiation_df, months)
     pivot = pivot.rename(columns=MONTH_COLUMN_NAMES)
     month_cols = [c for c in pivot.columns if c in MONTH_COLUMN_NAMES.values()]
     enriched = top10.merge(pivot[month_cols], left_on="grid_cell_id", right_index=True, how="left")
@@ -74,7 +74,9 @@ def write_run_outputs(
     results_dir.mkdir(parents=True, exist_ok=True)
 
     solar_radiation_df = repo.get_solar_radiation_df()
-    ranking = enrich_with_monthly_solar(ga_result.top10, solar_radiation_df, settings.climate.years[0])
+    ranking = enrich_with_monthly_solar(ga_result.top10, solar_radiation_df, settings.climate.months)
+    annual_solar = annual_solar_kwh_m2(solar_radiation_df, settings.climate.months)
+    ranking["solar_annual_kwh_m2"] = ranking["grid_cell_id"].map(annual_solar)
 
     ranking_path = results_dir / "ranking.csv"
     ranking.to_csv(ranking_path, index=False)
@@ -99,6 +101,10 @@ def write_run_outputs(
             "variable": settings.climate.variable,
             "years": settings.climate.years,
             "months": settings.climate.months,
+            "period_start": f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}",
+            "period_end": f"{settings.climate.year_months[-1][0]}-{settings.climate.year_months[-1][1]:02d}",
+            "aggregation": "mean_monthly_total_across_years / days_in_month * days_in_represented_season; sum_four_seasons",
+            "annual_solar_unit": "kWh/m2/year",
             "spatial_selection_method": "nearest_neighbour",
         },
         "fitness_weights": settings.fitness.model_dump(),
@@ -138,6 +144,12 @@ def write_run_outputs(
         transformers_gdf=transformers_gdf,
         top10_df=ranking,
         output_path=results_dir / "map.html",
+        grid_resolution_km=settings.grid.resolution_km,
+        climate_period=(
+            f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}"
+            f" a {settings.climate.year_months[-1][0]}-{settings.climate.year_months[-1][1]:02d}"
+            f" (meses {settings.climate.months})"
+        ),
     )
 
     logger.info("Wrote run outputs: %s", results_dir)

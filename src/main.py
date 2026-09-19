@@ -72,7 +72,10 @@ def cmd_setup(settings: Settings) -> None:
         )
     )
     print(f"Clima: {settings.climate.dataset} / {settings.climate.variable}")
-    print(f"       años={settings.climate.years} meses={settings.climate.months}")
+    print(
+        f"       período={settings.climate.year_months[0]} a {settings.climate.year_months[-1]} "
+        f"meses representativos={settings.climate.months}"
+    )
     if settings.cds_api_key:
         print("CDS_API_KEY: configurada (no se muestra el valor).")
     else:
@@ -166,7 +169,7 @@ def cmd_test_era5(settings: Settings) -> None:
 
     centroid = region_gdf.geometry.union_all().centroid
     lat, lon = float(centroid.y), float(centroid.x)
-    year, month = settings.climate.years[0], settings.climate.months[0]
+    year, month = settings.climate.year_months[-1]
 
     print(f"Coordenada solicitada: lat={lat:.5f}, lon={lon:.5f} (centroide de {settings.region.name})")
     print(f"Dataset: {settings.climate.dataset}")
@@ -178,12 +181,15 @@ def cmd_test_era5(settings: Settings) -> None:
         api_url=settings.cds_api_url,
         raw_download_dir=settings.paths.data_raw / "era5_downloads",
     )
+    import calendar
+
+    last_day = calendar.monthrange(year, month)[1]
     request = Era5PointRequest(
         variable=settings.climate.variable,
         latitude=lat,
         longitude=lon,
         start_date=date(year, month, 1),
-        end_date=date(year, month, 28),
+        end_date=date(year, month, last_day),
         bbox_epsilon_deg=settings.climate.point_bbox_epsilon_deg,
     )
     try:

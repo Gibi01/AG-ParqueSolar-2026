@@ -27,7 +27,3 @@ SQLAlchemy>=2.0
 
 # Visualización
 folium>=0.15
-
-# Tests
-pytest>=8.0
-pytest-mock>=3.12

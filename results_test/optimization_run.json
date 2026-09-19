@@ -1,0 +1,49 @@
+{
+  "run_id": "run-20260908T015926Z",
+  "timestamp": "2026-09-08T01:59:26.295019+00:00",
+  "region": "Santa Fe",
+  "grid_resolution_km": 30.0,
+  "park_area_hectares": 2.0,
+  "park_area_note": "Se guarda solo para trazabilidad; este MVP todavia no verifica que existan 20.000 m^2 contiguos de terreno utilizable y sin obstrucciones dentro de una celda candidata (todavia no hay capa de cobertura de suelo).",
+  "climate": {
+    "dataset": "reanalysis-era5-land-timeseries",
+    "variable": "surface_solar_radiation_downwards",
+    "years": [
+      2024
+    ],
+    "months": [
+      1
+    ],
+    "spatial_selection_method": "nearest_neighbour"
+  },
+  "fitness_weights": {
+    "weight_solar": 0.5,
+    "weight_grid_distance": 0.2,
+    "weight_transformer_distance": 0.3
+  },
+  "genetic_algorithm_config": {
+    "population_size": 50,
+    "generations": 100,
+    "crossover_probability": 0.75,
+    "mutation_probability": 0.05,
+    "elitism": 2,
+    "tournament_size": 3,
+    "random_seed": 42
+  },
+  "n_candidates_considered": 54,
+  "generations_run": 100,
+  "population_size": 50,
+  "top10_grid_cell_ids": [
+    73,
+    25,
+    6,
+    2,
+    12,
+    19,
+    69,
+    72,
+    93,
+    94
+  ],
+  "disclaimer": "Estos resultados representan ubicaciones potencialmente favorables segun las variables espaciales y climaticas consideradas en este MVP. No constituyen una determinacion de la ubicacion economicamente optima: no incorporan costo de terreno, costo de conexion, capacidad disponible de subestacion o linea, permisos, cobertura de suelo completa, pendiente, areas protegidas, hidrografia ni un analisis financiero. Los pesos de la funcion de fitness son valores iniciales del MVP, no pesos cientificamente validados."
+}
