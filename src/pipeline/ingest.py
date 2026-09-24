@@ -1,29 +1,21 @@
 """Ingesta: APIs -> GeoDataFrames crudos, cacheados en disco.
 
-Cada función acá es agnóstica de la región: lee `settings.region` para
-decidir *qué* obtener y *cómo recortarlo*, nunca un nombre de provincia
-hardcodeado. Cambiar `region` en config.yaml (name + admin_source) alcanza
-para apuntar todo el paso de ingesta a otra provincia, siempre que los
-mismos datasets nacionales (BAHRA, líneas eléctricas, estaciones
-transformadoras) la cubran — ver README "Cambiar de provincia" para las
-partes que TODAVÍA no están generalizadas (p. ej. estaciones
-transformadoras es una fuente de la Secretaría de Energía a nivel país,
-lo cual está bien; un país distinto necesitaría un
-`infrastructure.transformers.source_url` diferente).
+Cada función lee `settings.region` para decidir qué obtener y cómo
+recortarlo. La configuración de esta versión valida que la región sea
+Santa Fe; esta separación conserva la base técnica para admitir otras
+provincias en el futuro, junto con fuentes eléctricas adecuadas.
 
-Los datasets nacionales de puntos/líneas (localidades BAHRA, líneas
-eléctricas, estaciones transformadoras) se obtienen completos y luego se
-recortan espacialmente al límite de la región, en vez de filtrarse por un
-campo de texto con el nombre de provincia. Esto evita el matching de
-texto frágil (acentos, mayúsculas) contra las variantes de escritura del
-nombre de provincia específicas de cada fuente, y generaliza limpiamente
-a cualquier provincia.
+Las capas de puntos/líneas se obtienen completas desde su fuente y luego
+se recortan espacialmente al límite provincial, en vez de depender de
+coincidencias de texto con el nombre de Santa Fe. La fuente BAHRA es
+nacional; el recurso configurado de líneas corresponde a Santa Fe.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -37,9 +29,10 @@ from shapely.geometry import shape
 
 from src.api.datos_gob_ar import DatosGobArClient
 from src.config.settings import Settings
-from src.data.cache import RawLayerCache
+from src.data.cache import RawLayerCache, layer_cache_for_settings
 from src.data.downloader import download_and_extract_zip
 from src.data.validators import (
+    ValidationError,
     validate_crs_is_set,
     validate_geometries_valid,
     validate_no_empty_geometries,
@@ -71,15 +64,15 @@ def ingest_region_boundary(
     Fuente: dataset "Unidades Territoriales" del Instituto Geográfico
     Nacional (IGN), capa provincia (WGS84 / EPSG:4326 según su archivo .prj).
     """
-    cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
+    cache = cache or layer_cache_for_settings(settings)
     name = "region_boundary"
     if cache.exists(name) and not force:
         gdf, metadata = cache.load(name)
         return LayerBundle(gdf, metadata)
 
     admin = settings.region.admin_source
-    zip_path = settings.paths.data_raw / "downloads" / "ign_provincia.zip"
-    extract_dir = settings.paths.data_raw / "downloads" / "ign_provincia"
+    zip_path = cache.cache_dir / "ign_provincia.zip"
+    extract_dir = cache.cache_dir / "ign_provincia"
     extract_dir = download_and_extract_zip(
         admin.shapefile_zip_url, zip_path, extract_dir, session=session, force=force
     )
@@ -90,15 +83,24 @@ def ingest_region_boundary(
         all_provinces = all_provinces.set_crs(admin.native_crs)
 
     match = all_provinces[all_provinces[admin.code_field].astype(str) == str(admin.code_value)]
-    if len(match) == 0:
-        match = all_provinces[
-            all_provinces[admin.name_field].str.strip().str.upper() == settings.region.name.strip().upper()
-        ]
     if len(match) != 1:
-        raise ValueError(
+        raise ValidationError(
             f"Expected exactly one boundary feature for region "
             f"'{settings.region.name}' (code {admin.code_value}) in {shp_path}, "
             f"found {len(match)}."
+        )
+
+    def normalized(value: str) -> str:
+        return "".join(
+            char for char in unicodedata.normalize("NFKD", value.strip().casefold())
+            if not unicodedata.combining(char)
+        )
+
+    actual_name = str(match.iloc[0][admin.name_field])
+    if normalized(actual_name) != normalized(settings.region.name):
+        raise ValidationError(
+            f"region.name={settings.region.name!r} no coincide con el código "
+            f"{admin.code_value!r}, que corresponde a {actual_name!r}."
         )
 
     boundary = match[[admin.name_field, admin.code_field, "geometry"]].rename(
@@ -158,7 +160,7 @@ def ingest_urban_areas(
     PUNTO (campo `geojson` con tipo "Point"), nunca polígonos — ver README
     para saber por qué las zonas urbanas se aproximan entonces con un buffer.
     """
-    cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
+    cache = cache or layer_cache_for_settings(settings)
     name = "urban_areas_points"
     if cache.exists(name) and not force:
         gdf, metadata = cache.load(name)
@@ -217,15 +219,11 @@ def ingest_power_lines(
     la página del dataset): pese a su nombre genérico "Consejo Federal",
     los ~46 mil registros de este recurso ya están TODOS ubicados dentro
     del bounding box de Santa Fe — en realidad no cubre el resto del país.
-    Es una buena fuente para la región de este MVP, pero cambiar `region`
-    a otra provincia muy probablemente devuelva cero features de línea
-    eléctrica recortadas para este mismo resource_id, y habrá que
-    configurar una fuente distinta. Esto es exactamente el tipo de
-    limitación específica de la fuente que el diseño agnóstico de región
-    intenta hacer visible en vez de esconder en silencio (un resultado
-    recortado vacío igual falla explícitamente vía validate_not_empty más abajo).
+    Es la fuente de líneas para Santa Fe. Si más adelante se habilitan
+    otras provincias, habrá que revisar la fuente de líneas activa; un
+    recorte vacío falla explícitamente vía validate_not_empty.
     """
-    cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
+    cache = cache or layer_cache_for_settings(settings)
     name = "power_lines"
     if cache.exists(name) and not force:
         gdf, metadata = cache.load(name)
@@ -298,7 +296,7 @@ def ingest_transformers(
     pipeline debe fallar explícitamente en vez de seguir en silencio sin
     el criterio de proximidad a transformadores.
     """
-    cache = cache or RawLayerCache(settings.paths.data_raw / "layers")
+    cache = cache or layer_cache_for_settings(settings)
     name = "transformers"
     if cache.exists(name) and not force:
         gdf, metadata = cache.load(name)

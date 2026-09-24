@@ -17,7 +17,7 @@ import pandas as pd
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
-from src.climate.era5_land import SolarRadiationRecord
+from src.climate.records import SolarRadiationRecord
 from src.database.models import (
     Base,
     CandidateLocation,
@@ -90,6 +90,9 @@ class Repository:
         )
         self._replace_table(PowerLine, df)
 
+    def clear_power_lines(self) -> None:
+        self._replace_table(PowerLine, pd.DataFrame())
+
     def replace_transformers(self, transformers_gdf: gpd.GeoDataFrame) -> None:
         df = pd.DataFrame(
             {
@@ -106,6 +109,9 @@ class Repository:
             }
         )
         self._replace_table(Transformer, df)
+
+    def clear_transformers(self) -> None:
+        self._replace_table(Transformer, pd.DataFrame())
 
     def replace_solar_radiation(self, records: Iterable[SolarRadiationRecord]) -> None:
         df = pd.DataFrame(

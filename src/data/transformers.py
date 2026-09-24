@@ -19,6 +19,6 @@ def joules_per_m2_to_kwh_per_m2(value_j_per_m2: float) -> float:
     conversión de unidad pura — no dice nada sobre *qué* representa la
     cifra en J/m^2 (instantánea, acumulada por hora, u otra cosa); esa
     determinación semántica se hace en src/climate/radiation.py en base
-    a la documentación oficial de CDS para el dataset específico en uso.
+    a la documentación oficial de ERA5-Land para la fuente en uso.
     """
     return value_j_per_m2 / JOULES_PER_KWH

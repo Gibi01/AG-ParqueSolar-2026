@@ -1,11 +1,8 @@
 """Preprocesamiento: capas ingeridas -> grilla -> métricas -> candidate_locations.
 
-Este es el paso de ETL que convierte los GeoDataFrames crudos ingeridos
-en la tabla local `candidate_locations`, lista para el AG (Fase 20 de los
-requisitos). Nada acá llama a una API externa — la obtención de clima
-(que sí llama a la API de CDS, cacheada) es la única excepción, invocada
-a través de `Era5LandRadiationService`, que a su vez nunca vuelve a
-obtener un punto/mes ya cacheado.
+Este paso convierte los GeoDataFrames ingeridos en la tabla local
+`candidate_locations`. La radiación se obtiene del almacén ARCO cuando
+el criterio solar está activo.
 """
 
 from __future__ import annotations
@@ -13,9 +10,11 @@ from __future__ import annotations
 import logging
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 
-from src.climate.era5_land import CellPoint, Era5LandRadiationService
+from src.climate.arco import ArcoSolarService
+from src.climate.records import CellPoint
 from src.climate.climatology import annual_solar_kwh_m2
 from src.config.settings import Settings
 from src.data.validators import validate_layer_present, validate_not_empty
@@ -35,12 +34,13 @@ def run_preprocessing(
     urban_gdf: gpd.GeoDataFrame,
     power_lines_gdf: gpd.GeoDataFrame,
     transformers_gdf: gpd.GeoDataFrame,
-    era5_service: Era5LandRadiationService | None = None,
+    era5_service: ArcoSolarService | None = None,
 ) -> pd.DataFrame:
-    # Chequeos previos de la Fase 32: fallar explícitamente, nunca seguir
-    # en silencio sin una capa requerida (transformadores en particular — Fase 16).
-    validate_layer_present(power_lines_gdf, "power_lines")
-    validate_layer_present(transformers_gdf, "transformers")
+    # Una fuente faltante solo es error cuando su criterio tiene peso positivo.
+    if settings.fitness.use_power_lines:
+        validate_layer_present(power_lines_gdf, "power_lines")
+    if settings.fitness.use_transformers:
+        validate_layer_present(transformers_gdf, "transformers")
 
     grid: Grid = build_grid(region_gdf, settings.grid.resolution_km)
     logger.info("Built grid: %d cells (%s)", len(grid.gdf), grid.projected_crs)
@@ -59,35 +59,57 @@ def run_preprocessing(
         sorted(excluded_types),
     )
 
-    repo.replace_power_lines(power_lines_gdf)
-    repo.replace_transformers(transformers_gdf)
+    if settings.fitness.use_power_lines:
+        repo.replace_power_lines(power_lines_gdf)
+    else:
+        repo.clear_power_lines()
+    if settings.fitness.use_transformers:
+        repo.replace_transformers(transformers_gdf)
+    else:
+        repo.clear_transformers()
 
-    d_lines_km = nearest_distance_km(grid.gdf, power_lines_gdf, grid.projected_crs)
-    d_trafo_km = nearest_distance_km(grid.gdf, transformers_gdf, grid.projected_crs)
-
-    era5_service = era5_service or Era5LandRadiationService(settings)
-    cell_points = [
-        CellPoint(grid_cell_id=int(row.cell_id), latitude=float(row.latitude), longitude=float(row.longitude))
-        for row in grid.gdf.itertuples()
-    ]
-    solar_records = era5_service.get_monthly_radiation(cell_points)
-    repo.replace_solar_radiation(solar_records)
-
-    solar_df = pd.DataFrame(
-        {
-            "grid_cell_id": [r.grid_cell_id for r in solar_records],
-            "year": [r.year for r in solar_records],
-            "month": [r.month for r in solar_records],
-            "radiation_kwh_m2": [r.radiation_kwh_m2 for r in solar_records],
-        }
+    n_cells = len(grid.gdf)
+    d_lines_km = (
+        nearest_distance_km(grid.gdf, power_lines_gdf, grid.projected_crs)
+        if settings.fitness.use_power_lines else np.full(n_cells, np.nan)
     )
-    representative_solar = annual_solar_kwh_m2(solar_df, settings.climate.months).reindex(grid.gdf["cell_id"])
+    d_trafo_km = (
+        nearest_distance_km(grid.gdf, transformers_gdf, grid.projected_crs)
+        if settings.fitness.use_transformers else np.full(n_cells, np.nan)
+    )
 
-    missing_climate = representative_solar.isna().reset_index(drop=True)
+    if settings.fitness.use_solar:
+        era5_service = era5_service or ArcoSolarService(settings)
+        cell_points = [
+            CellPoint(grid_cell_id=int(row.cell_id), latitude=float(row.latitude), longitude=float(row.longitude))
+            for row in grid.gdf.itertuples()
+        ]
+        solar_records = era5_service.get_monthly_radiation(cell_points)
+        repo.replace_solar_radiation(solar_records)
+        solar_df = pd.DataFrame(
+            {
+                "grid_cell_id": [r.grid_cell_id for r in solar_records],
+                "year": [r.year for r in solar_records],
+                "month": [r.month for r in solar_records],
+                "radiation_kwh_m2": [r.radiation_kwh_m2 for r in solar_records],
+            }
+        )
+        representative_solar = annual_solar_kwh_m2(solar_df, settings.climate.months).reindex(grid.gdf["cell_id"])
+        missing_climate = representative_solar.isna().reset_index(drop=True)
+        solar_norm = normalize_min_max(representative_solar.fillna(representative_solar.mean()).to_numpy(), invert=False)
+    else:
+        repo.replace_solar_radiation([])
+        missing_climate = pd.Series(False, index=range(n_cells))
+        solar_norm = np.full(n_cells, np.nan)
 
-    solar_norm = normalize_min_max(representative_solar.fillna(representative_solar.mean()).to_numpy(), invert=False)
-    grid_prox_norm = normalize_min_max(d_lines_km, invert=True)
-    trafo_prox_norm = normalize_min_max(d_trafo_km, invert=True)
+    grid_prox_norm = (
+        normalize_min_max(d_lines_km, invert=True)
+        if settings.fitness.use_power_lines else np.full(n_cells, np.nan)
+    )
+    trafo_prox_norm = (
+        normalize_min_max(d_trafo_km, invert=True)
+        if settings.fitness.use_transformers else np.full(n_cells, np.nan)
+    )
 
     candidates = pd.DataFrame(
         {

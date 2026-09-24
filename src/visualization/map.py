@@ -13,6 +13,8 @@ import folium
 import geopandas as gpd
 import pandas as pd
 import shapely
+from branca.element import Element, Template
+from folium.utilities import camelize
 
 from src.gis.crs import GEOGRAPHIC_CRS
 
@@ -21,6 +23,35 @@ from src.gis.crs import GEOGRAPHIC_CRS
 # ende el tamaño de archivo) que folium/GeoJson heredaría de la
 # reproyección de pyproj.
 MAP_COORDINATE_PRECISION_DEG = 0.00001
+OSM_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+OSM_APP_ID = "AG-ParqueSolar-2026"
+OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+
+class IdentifiedOsmTileLayer(folium.TileLayer):
+    """Capa OSM identificada para HTML abierto directamente desde file://."""
+
+    _template = Template(
+        """
+        {% macro script(this, kwargs) %}
+        var {{ this.get_name() }} = createIdentifiedOsmTileLayer(
+            L, {{ this.tiles|tojson }}, {{ this.js_options|tojson }}, {{ this.app_id|tojson }}
+        );
+        {% if this.show %}{{ this.get_name() }}.addTo({{ this._parent.get_name() }});{% endif %}
+        {% endmacro %}
+        """
+    )
+
+    def __init__(self) -> None:
+        super().__init__(tiles=OSM_TILE_URL, attr=OSM_ATTRIBUTION, name="OpenStreetMap")
+        self.app_id = OSM_APP_ID
+        self.js_options = {camelize(key): value for key, value in self.options.items()}
+
+
+def add_identified_osm_layer(fmap: folium.Map) -> None:
+    source = Path(__file__).with_name("osm_tiles.js").read_text(encoding="utf-8")
+    fmap.get_root().header.add_child(Element(f"<script>\n{source}\n</script>"))
+    IdentifiedOsmTileLayer().add_to(fmap)
 
 
 def _to_geographic(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -47,7 +78,8 @@ def build_map(
     region_geo = _to_geographic(region_gdf)
     center = region_geo.geometry.union_all().centroid
 
-    fmap = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="OpenStreetMap")
+    fmap = folium.Map(location=[center.y, center.x], zoom_start=7, tiles=None)
+    add_identified_osm_layer(fmap)
     if climate_period:
         folium.Element(
             f'<div style="position:fixed;top:12px;left:50px;z-index:9999;background:white;'
@@ -85,46 +117,44 @@ def build_map(
         ).add_to(urban_layer)
         urban_layer.add_to(fmap)
 
-    lines_layer = folium.FeatureGroup(name="Líneas eléctricas (por tensión)", show=True)
-    # Disolver ~46 mil segmentos individuales en un MultiLineString por
-    # nivel de tensión reduce la cantidad de features renderizadas en más
-    # de 4 órdenes de magnitud (si no, map.html pesaría decenas de MB) y,
-    # de yapa, permite que el mapa codifique el voltaje visualmente. La
-    # simplificación sucede en el CRS métrico de la grilla, así que la
-    # tolerancia está realmente en metros.
-    lines_proj = power_lines_gdf.to_crs(grid_gdf.crs)
-    dissolved = lines_proj.dissolve(by="tension_v").reset_index()
-    dissolved["geometry"] = dissolved.geometry.simplify(simplify_tolerance_m)
-    dissolved_geo = _to_geographic(dissolved)
-    voltage_styles = {  # el grosor escala aproximadamente con el nivel de tensión
-        7620: {"color": "#fdd0a2", "weight": 1},
-        13200: {"color": "#fdae6b", "weight": 1.5},
-        33000: {"color": "#e6550d", "weight": 2.5},
-        132000: {"color": "#a63603", "weight": 4},
-    }
-    default_style = {"color": "#ff7f0e", "weight": 1.5}
-    for _, row in dissolved_geo.iterrows():
-        style = voltage_styles.get(row["tension_v"], default_style)
-        folium.GeoJson(
-            gpd.GeoSeries([row.geometry], crs=GEOGRAPHIC_CRS).__geo_interface__,
-            style_function=(lambda s: (lambda _: s))(style),
-            tooltip=f"{row['tension_v']:.0f} V",
-        ).add_to(lines_layer)
-    lines_layer.add_to(fmap)
+    if len(power_lines_gdf) > 0:
+        lines_layer = folium.FeatureGroup(name="Líneas eléctricas (por tensión)", show=True)
+        # Disolver segmentos por tensión reduce las features del mapa; la
+        # simplificación solo afecta la visualización, no el análisis.
+        lines_proj = power_lines_gdf.to_crs(grid_gdf.crs)
+        dissolved = lines_proj.dissolve(by="tension_v").reset_index()
+        dissolved["geometry"] = dissolved.geometry.simplify(simplify_tolerance_m)
+        dissolved_geo = _to_geographic(dissolved)
+        voltage_styles = {
+            7620: {"color": "#fdd0a2", "weight": 1},
+            13200: {"color": "#fdae6b", "weight": 1.5},
+            33000: {"color": "#e6550d", "weight": 2.5},
+            132000: {"color": "#a63603", "weight": 4},
+        }
+        default_style = {"color": "#ff7f0e", "weight": 1.5}
+        for _, row in dissolved_geo.iterrows():
+            style = voltage_styles.get(row["tension_v"], default_style)
+            folium.GeoJson(
+                gpd.GeoSeries([row.geometry], crs=GEOGRAPHIC_CRS).__geo_interface__,
+                style_function=(lambda s: (lambda _: s))(style),
+                tooltip=f"{row['tension_v']:.0f} V",
+            ).add_to(lines_layer)
+        lines_layer.add_to(fmap)
 
-    transformers_layer = folium.FeatureGroup(name="Centros / subestaciones transformadoras", show=True)
-    for _, row in _to_geographic(transformers_gdf).iterrows():
-        popup = row.get("nombre", "Estación transformadora")
-        folium.CircleMarker(
-            location=[row.geometry.y, row.geometry.x],
-            radius=6,
-            color="#6a3d9a",
-            fill=True,
-            fill_color="#6a3d9a",
-            fill_opacity=0.9,
-            popup=str(popup),
-        ).add_to(transformers_layer)
-    transformers_layer.add_to(fmap)
+    if len(transformers_gdf) > 0:
+        transformers_layer = folium.FeatureGroup(name="Centros / subestaciones transformadoras", show=True)
+        for _, row in _to_geographic(transformers_gdf).iterrows():
+            popup = row.get("nombre", "Estación transformadora")
+            folium.CircleMarker(
+                location=[row.geometry.y, row.geometry.x],
+                radius=6,
+                color="#6a3d9a",
+                fill=True,
+                fill_color="#6a3d9a",
+                fill_opacity=0.9,
+                popup=str(popup),
+            ).add_to(transformers_layer)
+        transformers_layer.add_to(fmap)
 
     top_layer = folium.FeatureGroup(name="TOP 10 ubicaciones", show=True)
     for _, row in top10_df.iterrows():
@@ -132,13 +162,13 @@ def build_map(
             f"<b>Rank {int(row['rank'])}</b> — Cell ID {int(row['grid_cell_id'])}<br>"
             f"Lat/Lon: {row['latitude']:.5f}, {row['longitude']:.5f}<br>"
             f"Fitness: {row['fitness']:.4f}<br>"
-            f"Radiación anual estimada: {row['solar_annual_kwh_m2']:.1f} kWh/m²/año<br>"
-            f"Solar score: {row['solar_score']:.3f}<br>"
-            f"Línea: {row['distance_to_power_line_km']:.2f} km "
-            f"(score {row['grid_proximity_score']:.3f})<br>"
-            f"Transformador: {row['distance_to_transformer_km']:.2f} km "
-            f"(score {row['transformer_proximity_score']:.3f})"
         )
+        if pd.notna(row["solar_score"]):
+            popup_html += f"Radiación anual estimada: {row['solar_annual_kwh_m2']:.1f} kWh/m²/año<br>Solar score: {row['solar_score']:.3f}<br>"
+        if pd.notna(row["grid_proximity_score"]):
+            popup_html += f"Línea: {row['distance_to_power_line_km']:.2f} km (score {row['grid_proximity_score']:.3f})<br>"
+        if pd.notna(row["transformer_proximity_score"]):
+            popup_html += f"Transformador: {row['distance_to_transformer_km']:.2f} km (score {row['transformer_proximity_score']:.3f})"
         folium.Marker(
             location=[row["latitude"], row["longitude"]],
             popup=folium.Popup(popup_html, max_width=320),

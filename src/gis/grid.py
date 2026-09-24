@@ -7,7 +7,7 @@ metros, recortar al límite, asignar IDs y centroides. Esta grilla es una
 unidad de discretización espacial para el problema de optimización — es
 independiente de, y más gruesa/fina que, la resolución nativa de
 cualquier fuente de datos climáticos en particular (ver
-src/climate/era5_land.py para cómo los puntos de ~9km de ERA5-Land se
+src/climate/arco.py para cómo los puntos de ~9km de ERA5-Land se
 asocian a estas celdas de 5km).
 """
 

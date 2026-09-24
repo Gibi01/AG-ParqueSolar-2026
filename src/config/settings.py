@@ -1,9 +1,8 @@
 """Acceso tipado y validado a config.yaml + variables de entorno.
 
-Esta es la única fuente de verdad para todo parámetro configurable del
-pipeline. Nada acá hardcodea una región: `region.name` y
-`region.admin_source` describen completamente cómo obtener el límite de
-la provincia que esté configurada (ver README "Cambiar de provincia").
+Esta es la única fuente de verdad para los parámetros configurables del
+pipeline. La implementación espacial conserva la estructura de región,
+pero esta versión solo admite Santa Fe y valida esa restricción al cargar.
 """
 
 from __future__ import annotations
@@ -15,7 +14,7 @@ from typing import Optional
 
 import yaml
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -36,6 +35,15 @@ class RegionAdminSource(BaseModel):
 class RegionConfig(BaseModel):
     name: str
     admin_source: RegionAdminSource
+
+    @model_validator(mode="after")
+    def _only_santa_fe(self) -> "RegionConfig":
+        if self.name != "Santa Fe" or self.admin_source.code_value != "82":
+            raise ValueError(
+                "Esta versión solo admite Santa Fe: usá "
+                "region.name='Santa Fe' y region.admin_source.code_value='82'."
+            )
+        return self
 
 
 class GridConfig(BaseModel):
@@ -60,20 +68,13 @@ class UrbanExclusionConfig(BaseModel):
 
 
 class ClimateConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     dataset: str
     variable: str
     start_year: int = Field(ge=1950)
     end_year: int | str = "latest"
     months: list[int]
-    point_bbox_epsilon_deg: float = Field(gt=0, lt=0.5)
-    # CDS documenta 1.0° como máximo geográfico para el modo área, pero
-    # además aplica un límite de "costo" (puntos x horas del rango de
-    # fechas pedido) más restrictivo y no documentado — calibrado
-    # empíricamente contra la API real: 0.3° (~16 puntos x 744h) funciona,
-    # 0.4° (~25 puntos x 744h) ya falla con "cost limits exceeded". Ver el
-    # detalle completo en el comentario de climate.area_tile_size_deg en
-    # config.yaml. Se limita acá a <=0.5 como red de seguridad práctica.
-    area_tile_size_deg: float = Field(gt=0, le=0.5)
 
     @field_validator("dataset")
     @classmethod
@@ -118,7 +119,7 @@ class ClimateConfig(BaseModel):
 
     @property
     def year_months(self) -> list[tuple[int, int]]:
-        """Meses completos, con un mes de margen para la publicación de CDS."""
+        """Meses completos, con un mes de margen para la publicación de datos."""
         now = datetime.now(timezone.utc)
         cutoff_year, cutoff_month = now.year, now.month - 2
         if cutoff_month <= 0:
@@ -173,17 +174,18 @@ class FitnessWeights(BaseModel):
             )
         return self
 
-    @model_validator(mode="after")
-    def _transformer_weight_dominates_line_weight(self) -> "FitnessWeights":
-        if self.weight_transformer_distance < self.weight_grid_distance:
-            raise ValueError(
-                "weight_transformer_distance must be >= weight_grid_distance "
-                "(proximity to transformers/substations must be weighted at "
-                "least as much as proximity to plain power lines, per project "
-                f"requirements). Got transformer={self.weight_transformer_distance} "
-                f"< grid={self.weight_grid_distance}."
-            )
-        return self
+
+    @property
+    def use_solar(self) -> bool:
+        return self.weight_solar > 0
+
+    @property
+    def use_power_lines(self) -> bool:
+        return self.weight_grid_distance > 0
+
+    @property
+    def use_transformers(self) -> bool:
+        return self.weight_transformer_distance > 0
 
 
 class GeneticAlgorithmConfig(BaseModel):
@@ -211,15 +213,17 @@ class GeneticAlgorithmConfig(BaseModel):
 
 
 class PathsConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     data_raw: Path
     data_processed: Path
-    era5_cache: Path
+    arco_cache: Path
     database: Path
     results: Path
     logs: Path
 
     @field_validator(
-        "data_raw", "data_processed", "era5_cache", "database", "results", "logs", mode="before"
+        "data_raw", "data_processed", "arco_cache", "database", "results", "logs", mode="before"
     )
     @classmethod
     def _resolve_relative_to_root(cls, v: str) -> Path:
@@ -238,16 +242,15 @@ class Settings(BaseModel):
     genetic_algorithm: GeneticAlgorithmConfig
     paths: PathsConfig
 
-    # No es parte de config.yaml — se carga desde el entorno, nunca desde el
-    # repositorio, y nunca se le da un valor por defecto literal acá.
+    # Token usado por ARCO; se conserva el nombre de variable CDS_API_KEY
+    # para compatibilidad con los archivos .env existentes.
     cds_api_key: Optional[str] = None
-    cds_api_url: Optional[str] = None
 
     def ensure_directories(self) -> None:
         for p in (
             self.paths.data_raw,
             self.paths.data_processed,
-            self.paths.era5_cache,
+            self.paths.arco_cache,
             self.paths.database.parent,
             self.paths.results,
             self.paths.logs,
@@ -258,7 +261,7 @@ class Settings(BaseModel):
 def load_settings(config_path: str | Path = "config.yaml") -> Settings:
     """Carga y valida la configuración desde YAML + variables de entorno.
 
-    La clave de la API de CDS deliberadamente nunca se lee de config.yaml:
+    La credencial de ARCO deliberadamente nunca se lee de config.yaml:
     se lee del entorno del proceso (poblado desde `.env` vía python-dotenv,
     o desde una variable de entorno real / secreto de CI).
     """
@@ -273,5 +276,4 @@ def load_settings(config_path: str | Path = "config.yaml") -> Settings:
 
     settings = Settings.model_validate(raw)
     settings.cds_api_key = os.environ.get("CDS_API_KEY") or None
-    settings.cds_api_url = os.environ.get("CDS_API_URL") or "https://cds.climate.copernicus.eu/api"
     return settings

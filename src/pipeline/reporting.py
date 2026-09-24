@@ -74,9 +74,13 @@ def write_run_outputs(
     results_dir.mkdir(parents=True, exist_ok=True)
 
     solar_radiation_df = repo.get_solar_radiation_df()
-    ranking = enrich_with_monthly_solar(ga_result.top10, solar_radiation_df, settings.climate.months)
-    annual_solar = annual_solar_kwh_m2(solar_radiation_df, settings.climate.months)
-    ranking["solar_annual_kwh_m2"] = ranking["grid_cell_id"].map(annual_solar)
+    if settings.fitness.use_solar:
+        ranking = enrich_with_monthly_solar(ga_result.top10, solar_radiation_df, settings.climate.months)
+        annual_solar = annual_solar_kwh_m2(solar_radiation_df, settings.climate.months)
+        ranking["solar_annual_kwh_m2"] = ranking["grid_cell_id"].map(annual_solar)
+    else:
+        ranking = ga_result.top10.copy()
+        ranking["solar_annual_kwh_m2"] = float("nan")
 
     ranking_path = results_dir / "ranking.csv"
     ranking.to_csv(ranking_path, index=False)
@@ -99,6 +103,8 @@ def write_run_outputs(
         "climate": {
             "dataset": settings.climate.dataset,
             "variable": settings.climate.variable,
+            "access_mode": "arco",
+            "used_for_fitness": settings.fitness.use_solar,
             "years": settings.climate.years,
             "months": settings.climate.months,
             "period_start": f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}",
@@ -108,6 +114,13 @@ def write_run_outputs(
             "spatial_selection_method": "nearest_neighbour",
         },
         "fitness_weights": settings.fitness.model_dump(),
+        "active_criteria": [
+            name for name, active in (
+                ("solar", settings.fitness.use_solar),
+                ("power_lines", settings.fitness.use_power_lines),
+                ("transformers", settings.fitness.use_transformers),
+            ) if active
+        ],
         "genetic_algorithm_config": settings.genetic_algorithm.model_dump(),
         "n_candidates_considered": ga_result.n_candidates_considered,
         "generations_run": ga_result.generations_run,
@@ -149,7 +162,7 @@ def write_run_outputs(
             f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}"
             f" a {settings.climate.year_months[-1][0]}-{settings.climate.year_months[-1][1]:02d}"
             f" (meses {settings.climate.months})"
-        ),
+        ) if settings.fitness.use_solar else "",
     )
 
     logger.info("Wrote run outputs: %s", results_dir)

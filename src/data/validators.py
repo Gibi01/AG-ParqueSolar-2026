@@ -54,15 +54,9 @@ def validate_not_empty(gdf_or_df, label: str) -> None:
 
 
 def validate_layer_present(gdf: gpd.GeoDataFrame | None, label: str) -> None:
-    """Falla de forma explícita (nunca omite silenciosamente un criterio)
-    cuando falta una capa requerida — p. ej. la capa de estaciones
-    transformadoras, según la Fase 32/16.
-    """
+    """Falla si falta una capa correspondiente a un criterio activo."""
     if gdf is None or len(gdf) == 0:
         raise ValidationError(
-            f"{label}: required layer is missing or empty. Per project requirements, "
-            "the optimization must NOT run silently without this criterion — "
-            "either restore the data source or explicitly disable the criterion "
-            "in configuration (which is not currently supported and must be a "
-            "deliberate code change, not a silent fallback)."
+            f"{label}: la capa activa está vacía. Configurá una fuente válida "
+            "o poné el peso del criterio en 0 para desactivarlo."
         )

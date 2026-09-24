@@ -1,18 +1,5 @@
-# Config de VALIDACIÓN, no de entrega. Idéntica a config.yaml salvo:
-#   - grid.resolution_km bajado a 30 y climate.months a un solo mes, para
-#     validar el modo área de ERA5-Land (fetch_area_hourly + agrupamiento
-#     en tiles) integrado en el pipeline completo con datos reales: a 30km
-#     hay 190 puntos ERA5 únicos que se agrupan en 131 tiles de 0.3°
-#     (algunos con 2-4 puntos, así que sí ejercita el agrupamiento) -> 131
-#     solicitudes para 1 mes, ~1h. Antes de esto ya se probó
-#     fetch_area_hourly aislado contra la API real (funcionó, ver README)
-#     y la lógica de agrupamiento/caché con mocks (tests/test_era5_area_batching.py);
-#     esto valida la integración completa: ingesta -> grilla -> distancias
-#     -> clima real por área -> AG -> ranking -> mapa.
-#   - database/results apuntan a archivos separados para no pisar una
-#     corrida real hecha con config.yaml.
-# Borrar este archivo (y data/processed/parque_solar_test.sqlite,
-# results_test/) una vez que se valide y ya no se necesite.
+# Configuración de validación: grilla de 30 km, un año climático y salidas
+# separadas. Usa ARCO, igual que la configuración principal.
 
 region:
   name: "Santa Fe"
@@ -38,10 +25,9 @@ urban_exclusion:
 climate:
   dataset: "reanalysis-era5-land-timeseries"
   variable: "surface_solar_radiation_downwards"
-  years: [2024]
-  months: [1]
-  point_bbox_epsilon_deg: 0.06
-  area_tile_size_deg: 0.3
+  start_year: 2024
+  end_year: 2024
+  months: [1, 4, 7, 10]
 
 infrastructure:
   urban_areas:
@@ -69,7 +55,7 @@ genetic_algorithm:
 paths:
   data_raw: "data/raw"
   data_processed: "data/processed"
-  era5_cache: "data/cache/era5_land_cache"
+  arco_cache: "data/cache/arco_blocks"
   database: "data/processed/parque_solar_test.sqlite"
   results: "results_test"
   logs: "logs"

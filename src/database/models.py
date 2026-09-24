@@ -109,7 +109,9 @@ class CandidateLocation(Base):
 
 
 class OptimizationResult(Base):
-    __tablename__ = "optimization_results"
+    # Tabla nueva para permitir métricas ausentes sin alterar resultados
+    # históricos ni intentar una migración destructiva de SQLite.
+    __tablename__ = "optimization_results_flexible"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     run_id: Mapped[str] = mapped_column(String, nullable=False)
@@ -117,10 +119,10 @@ class OptimizationResult(Base):
     grid_cell_id: Mapped[int] = mapped_column(ForeignKey("grid_cells.cell_id"), nullable=False)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
-    solar_score: Mapped[float] = mapped_column(Float, nullable=False)
-    distance_to_power_line_km: Mapped[float] = mapped_column(Float, nullable=False)
-    distance_to_transformer_km: Mapped[float] = mapped_column(Float, nullable=False)
-    grid_proximity_score: Mapped[float] = mapped_column(Float, nullable=False)
-    transformer_proximity_score: Mapped[float] = mapped_column(Float, nullable=False)
+    solar_score: Mapped[float] = mapped_column(Float, nullable=True)
+    distance_to_power_line_km: Mapped[float] = mapped_column(Float, nullable=True)
+    distance_to_transformer_km: Mapped[float] = mapped_column(Float, nullable=True)
+    grid_proximity_score: Mapped[float] = mapped_column(Float, nullable=True)
+    transformer_proximity_score: Mapped[float] = mapped_column(Float, nullable=True)
     fitness: Mapped[float] = mapped_column(Float, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)

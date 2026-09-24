@@ -1,10 +1,7 @@
 # Configuración para el MVP de ubicación de parques solares.
 #
-# Nada específico de la región está hardcodeado en el código fuente: cambiando
-# `region` (y, si una futura provincia necesita una fuente administrativa
-# distinta, el bloque `region.admin_source`) alcanza para correr el mismo
-# pipeline sobre otra provincia argentina. Ver en README.md "Cambiar de
-# provincia" el checklist completo de qué cambia y qué no.
+# Región fija de esta versión: Santa Fe. No cambiar `region`; la estructura
+# queda preparada para admitir otras provincias en una versión futura.
 
 region:
   name: "Santa Fe"
@@ -60,45 +57,7 @@ climate:
   start_year: 1970
   end_year: latest  # último mes representativo completo con un mes de margen de publicación
   months: [1, 4, 7, 10]   # enero (verano), abril (otoño), julio (invierno), octubre (primavera)
-  # El schema formal de solicitud del dataset expone un bounding box `area`
-  # (no un par lat/lon suelto) como selector geográfico. Para pedir un único
-  # punto se envía un bounding box centrado en él. Un epsilon demasiado
-  # chico (se probó 0.001°) falla con "MultiAdaptorNoDataError: No data
-  # found" contra la API real, porque no hay garantía de que la grilla
-  # ARCO esté alineada exactamente en múltiplos de 0.1° respecto al punto
-  # pedido — el desfase real de fase de la grilla no está documentado.
-  # 0.06° da un bounding box de 0.12° de lado, más ancho que el espaciado
-  # nativo de 0.1°, así que contiene al menos un punto de grilla sin
-  # importar el desfase. Si el área devuelve más de un punto, el cliente
-  # se queda con el más cercano a la coordenada pedida (ver
-  # src/api/copernicus_era5_land.py).
-  point_bbox_epsilon_deg: 0.06
-  # Pedir la radiación punto por punto significa una solicitud HTTP por
-  # cada (punto ERA5, mes) — para la grilla real (miles de puntos) esto
-  # tarda decenas de horas, porque cada solicitud pasa por cola en el
-  # servidor de CDS (~20-35s observados). El dataset soporta pedir un
-  # bounding box y devuelve TODOS los puntos de grilla adentro en una
-  # sola respuesta, así que los puntos ERA5 únicos que necesita la
-  # grilla se agrupan en tiles de este tamaño (en grados) y se piden de
-  # a un tile por solicitud.
-  #
-  # OJO: el límite geográfico documentado por CDS para el modo área es
-  # 1.0° de lado (`maximum_extent`), PERO además hay un límite de "costo"
-  # no documentado (probablemente ~puntos × horas del rango de fechas)
-  # que es más restrictivo. Calibrado empíricamente contra la API real
-  # pidiendo un mes completo (744 horas):
-  #   - tile 0.2° (~9 puntos, 6.696 punto-horas)  -> OK
-  #   - tile 0.3° (~16 puntos, 11.904 punto-horas) -> OK
-  #   - tile 0.4° (~25 puntos, 18.600 punto-horas) -> falla: "cost limits
-  #     exceeded, Your request is too large, please reduce your selection"
-  #   - tile 0.9° (~100 puntos, 74.400 punto-horas) -> falla, mismo error
-  # 0.3° da un buen equilibrio (711 solicitudes en vez de 5424 para la
-  # grilla real de Santa Fe a 5km) con margen respecto al límite real
-  # (11.904 de 18.600 que ya falló). Si se sube este valor, validar antes
-  # con una sola solicitud de prueba — un valor demasiado alto no falla
-  # en silencio (CDS devuelve 403 con el mensaje de arriba), pero conviene
-  # no gastar tiempo de cola contra el límite real sin necesidad.
-  area_tile_size_deg: 0.3
+  # Fuente climática única: almacén ARCO Zarr de ERA5-Land.
 
 infrastructure:
   urban_areas:
@@ -124,15 +83,15 @@ infrastructure:
 fitness:
   # Pesos iniciales del MVP — valores provisorios para calibrar a futuro, no
   # una ponderación científicamente validada. Deben sumar 1.0 (+/- 1e-6).
-  # La proximidad a transformadores pesa más que la proximidad simple a
-  # líneas, según lo pedido en el proyecto.
+  # Peso 0 desactiva el criterio: no se descarga ni se calcula su fuente.
+  # La exclusión urbana sigue activa, separada del fitness.
   weight_solar: 0.50
   weight_grid_distance: 0.20
   weight_transformer_distance: 0.30
 
 genetic_algorithm:
   population_size: 50
-  generations: 100
+  generations: 200
   crossover_probability: 0.75
   mutation_probability: 0.05
   elitism: 2
@@ -142,7 +101,7 @@ genetic_algorithm:
 paths:
   data_raw: "data/raw"
   data_processed: "data/processed"
-  era5_cache: "data/cache/era5_land_cache"
+  arco_cache: "data/cache/arco_blocks"
   database: "data/processed/parque_solar.sqlite"
   results: "results"
   logs: "logs"

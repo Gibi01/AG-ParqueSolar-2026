@@ -42,16 +42,21 @@ def normalize_min_max(values: np.ndarray, invert: bool = False) -> np.ndarray:
 def compute_fitness(candidates: pd.DataFrame, weights: FitnessWeights) -> pd.Series:
     """Calcula el fitness ponderado para cada fila de `candidates`.
 
-    Espera las columnas: solar_score, grid_proximity_score,
-    transformer_proximity_score — todas ya normalizadas a [0, 1].
+    Solo exige las columnas cuyos pesos sean positivos; las desactivadas
+    pueden faltar o contener valores nulos.
     """
-    required = ["solar_score", "grid_proximity_score", "transformer_proximity_score"]
+    active = {
+        "solar_score": weights.weight_solar,
+        "grid_proximity_score": weights.weight_grid_distance,
+        "transformer_proximity_score": weights.weight_transformer_distance,
+    }
+    required = [column for column, weight in active.items() if weight > 0]
     missing = [c for c in required if c not in candidates.columns]
     if missing:
         raise ValueError(f"candidates is missing required column(s): {missing}")
-
-    return (
-        weights.weight_solar * candidates["solar_score"]
-        + weights.weight_grid_distance * candidates["grid_proximity_score"]
-        + weights.weight_transformer_distance * candidates["transformer_proximity_score"]
-    )
+    if candidates[required].isna().any().any():
+        raise ValueError("Active fitness criteria contain missing scores; rerun --process.")
+    result = pd.Series(0.0, index=candidates.index)
+    for column in required:
+        result += active[column] * candidates[column]
+    return result
