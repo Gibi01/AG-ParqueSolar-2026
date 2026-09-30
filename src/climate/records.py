@@ -2,6 +2,13 @@
 
 from dataclasses import dataclass
 from datetime import datetime
+import pandas as pd
+
+
+@dataclass
+class PixelClimate:
+    cell_pixels: pd.DataFrame
+    records: pd.DataFrame
 
 
 @dataclass(frozen=True)

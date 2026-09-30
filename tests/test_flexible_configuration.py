@@ -111,12 +111,9 @@ class FlexibleConfigurationTests(unittest.TestCase):
             weight_grid_distance=1,
             weight_transformer_distance=0,
         )
-        settings = SimpleNamespace(
-            fitness=weights,
-            grid=SimpleNamespace(resolution_km=9),
-            region=SimpleNamespace(name="Prueba"),
-            urban_exclusion=SimpleNamespace(include_types=["LOCALIDAD"], buffer_km=3),
-        )
+        settings = load_settings()
+        settings.fitness = weights
+        settings.grid.resolution_km = 9
         grid_gdf = gpd.GeoDataFrame(
             {"cell_id": [1, 2], "latitude": [-30.0, -30.1], "longitude": [-61.0, -61.1]},
             geometry=[box(0, 0, 9000, 9000), box(9000, 0, 18000, 9000)],
@@ -124,7 +121,7 @@ class FlexibleConfigurationTests(unittest.TestCase):
         )
         region = gpd.GeoDataFrame(geometry=[box(0, 0, 18000, 9000)], crs="EPSG:32720")
         urban = gpd.GeoDataFrame({"tipo": []}, geometry=[], crs="EPSG:4326")
-        lines = gpd.GeoDataFrame(geometry=[LineString([(0, 0), (0, 9000)])], crs="EPSG:32720")
+        lines = gpd.GeoDataFrame({'tension_v': [132000]}, geometry=[LineString([(0, 0), (0, 9000)])], crs="EPSG:32720")
         transformers = gpd.GeoDataFrame(geometry=[], crs="EPSG:4326")
         repo = MagicMock()
         climate_service = MagicMock()
@@ -135,11 +132,13 @@ class FlexibleConfigurationTests(unittest.TestCase):
             )
 
         climate_service.get_monthly_radiation.assert_not_called()
-        repo.clear_transformers.assert_called_once()
-        repo.replace_solar_radiation.assert_called_once_with([])
-        self.assertTrue(candidates["solar_score"].isna().all())
-        self.assertTrue(candidates["transformer_proximity_score"].isna().all())
-        self.assertTrue(candidates["grid_proximity_score"].notna().all())
+        repo.save_dataset.assert_called_once()
+        _, _, climate, layers, _ = repo.save_dataset.call_args.args
+        self.assertTrue(climate.empty)
+        self.assertTrue(layers['transformers'].empty)
+        self.assertFalse(layers['lines'].empty)
+        self.assertTrue(candidates['solar_annual_kwh_m2'].isna().all())
+        self.assertTrue(candidates['valid'].all())
 
     def test_download_skips_disabled_sources(self) -> None:
         settings = SimpleNamespace(fitness=FitnessWeights(

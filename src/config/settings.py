@@ -51,15 +51,9 @@ class GridConfig(BaseModel):
 
 
 class ParkConfig(BaseModel):
-    area_hectares: float = Field(gt=0)
-
-    @property
-    def area_m2(self) -> float:
-        return self.area_hectares * 10_000.0
-
-    @property
-    def area_km2(self) -> float:
-        return self.area_hectares / 100.0
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+    pv_power_density_mw_per_km2: float = Field(default=31.3, gt=0)
+    max_connection_capacity_mw: float = Field(default=80, gt=0)
 
 
 class UrbanExclusionConfig(BaseModel):
@@ -161,10 +155,11 @@ class FitnessWeights(BaseModel):
     weight_solar: float = Field(ge=0, le=1)
     weight_grid_distance: float = Field(ge=0, le=1)
     weight_transformer_distance: float = Field(ge=0, le=1)
+    weight_installed_power: float = Field(default=0, ge=0, le=1)
 
     @model_validator(mode="after")
     def _weights_sum_to_one(self) -> "FitnessWeights":
-        total = self.weight_solar + self.weight_grid_distance + self.weight_transformer_distance
+        total = self.weight_solar + self.weight_grid_distance + self.weight_transformer_distance + self.weight_installed_power
         if abs(total - 1.0) > 1e-6:
             raise ValueError(
                 "fitness weights must sum to 1.0 "
@@ -196,6 +191,11 @@ class GeneticAlgorithmConfig(BaseModel):
     elitism: int = Field(ge=0)
     tournament_size: int = Field(ge=2)
     random_seed: Optional[int] = None
+    territory_size_km: float = Field(default=50, gt=0)
+    duplicate_attempts: int = Field(default=8, ge=1, le=100)
+    mutation_attempts: int = Field(default=4, ge=1, le=100)
+    territorial_separation_km: float = Field(default=0, ge=0)
+    archive_per_territory: int = Field(default=10, ge=5, le=100)
 
     @model_validator(mode="after")
     def _elitism_smaller_than_population(self) -> "GeneticAlgorithmConfig":

@@ -49,6 +49,7 @@ def compute_fitness(candidates: pd.DataFrame, weights: FitnessWeights) -> pd.Ser
         "solar_score": weights.weight_solar,
         "grid_proximity_score": weights.weight_grid_distance,
         "transformer_proximity_score": weights.weight_transformer_distance,
+        "installed_power_score": weights.weight_installed_power,
     }
     required = [column for column, weight in active.items() if weight > 0]
     missing = [c for c in required if c not in candidates.columns]

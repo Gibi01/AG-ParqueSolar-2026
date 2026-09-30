@@ -7,6 +7,7 @@ en memoria a totales mensuales y se guarda en una caché pequeña para reanudar.
 from __future__ import annotations
 
 import calendar
+import hashlib
 import logging
 import os
 import tempfile
@@ -18,7 +19,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from src.climate.records import CellPoint, SolarRadiationRecord
+from src.climate.records import CellPoint, PixelClimate
 from src.config.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,16 @@ ARCO_SSRD_URL = (
     "reanalysis_era5_land/sfc-radiation-heat/geoChunked.zarr"
 )
 SOURCE_LABEL = "Copernicus ERA5-Land ARCO Zarr"
+
+
+def summarize_month(values, times, year, month):
+    """Only exact hourly calendars qualify; finite coverage is checked per pixel."""
+    expected = pd.date_range(f"{year}-{month:02d}-01", periods=calendar.monthrange(year, month)[1] * 24, freq="h")
+    counts = np.isfinite(values).sum(axis=0).astype(np.int16)
+    if not pd.DatetimeIndex(times).equals(expected):
+        counts[:] = 0
+    totals = np.nansum(values, axis=0, dtype=np.float64) / 3.6e6
+    return totals, counts
 
 
 class ArcoSolarService:
@@ -47,9 +58,9 @@ class ArcoSolarService:
             storage_options={"headers": {"Authorization": f"Bearer {self.settings.cds_api_key}"}},
         )
 
-    def get_monthly_radiation(self, cells: list[CellPoint]) -> list[SolarRadiationRecord]:
+    def get_monthly_radiation(self, cells: list[CellPoint]) -> PixelClimate:
         if not cells:
-            return []
+            raise ValueError("No optimization cells supplied")
         periods = self.settings.climate.year_months
         if not periods:
             raise RuntimeError("No hay meses climáticos configurados para consultar.")
@@ -59,17 +70,19 @@ class ArcoSolarService:
             lon_index = ds.indexes["longitude"]
             lat_chunk = ds.ssrd.chunks[1][0]
             lon_chunk = ds.ssrd.chunks[2][0]
-            blocks: dict[tuple[int, int], list[tuple[CellPoint, int, int]]] = defaultdict(list)
-            for cell in cells:
-                i = int(lat_index.get_indexer([cell.latitude], method="nearest")[0])
-                j = int(lon_index.get_indexer([cell.longitude], method="nearest")[0])
-                blocks[(i // lat_chunk, j // lon_chunk)].append((cell, i, j))
+            ii = lat_index.get_indexer([cell.latitude for cell in cells], method="nearest")
+            jj = lon_index.get_indexer([cell.longitude for cell in cells], method="nearest")
+            mapping = pd.DataFrame({"grid_cell_id": [cell.grid_cell_id for cell in cells],
+                                    "climate_pixel_id": [f"{i}:{j}" for i, j in zip(ii, jj)]})
+            blocks = defaultdict(list)
+            for i, j in sorted(set(zip(ii.tolist(), jj.tolist()))):
+                blocks[(i // lat_chunk, j // lon_chunk)].append((i, j))
 
             logger.info(
                 "ARCO: %d celdas, %d bloques espaciales, %d meses seleccionados",
                 len(cells), len(blocks), len(periods),
             )
-            records: list[SolarRadiationRecord] = []
+            records = []
             for number, (block, members) in enumerate(blocks.items(), 1):
                 try:
                     monthly, counts, retrieved_at = self._load_or_fetch_block(
@@ -77,30 +90,31 @@ class ArcoSolarService:
                     )
                 except Exception as exc:
                     raise RuntimeError(f"No se pudo leer el bloque ARCO {block}: {exc}") from exc
-                for cell, i, j in members:
+                for i, j in members:
                     lat = float(lat_index[i])
                     lon = float(lon_index[j])
                     for year, month in periods:
                         code = year * 100 + month
                         hours = calendar.monthrange(year, month)[1] * 24
                         used = int(counts[code][i % lat_chunk, j % lon_chunk])
-                        if used < hours * 0.95:
-                            raise RuntimeError(
-                                f"Cobertura ARCO insuficiente para {year}-{month:02d} "
-                                f"en ({lat}, {lon}): {used}/{hours} horas."
-                            )
-                        records.append(SolarRadiationRecord(
-                            grid_cell_id=cell.grid_cell_id,
+                        complete = used == hours
+                        records.append(dict(
+                            climate_pixel_id=f"{i}:{j}",
                             year=year,
                             month=month,
                             era5_latitude=lat,
                             era5_longitude=lon,
-                            radiation_kwh_m2=float(monthly[code][i % lat_chunk, j % lon_chunk]),
+                            radiation_kwh_m2=float(monthly[code][i % lat_chunk, j % lon_chunk]) if complete else np.nan,
+                            complete=complete,
+                            observed_hours=used,
+                            expected_hours=hours,
                             source=SOURCE_LABEL,
                             download_timestamp=retrieved_at,
                         ))
                 logger.info("ARCO: bloque %d/%d completado", number, len(blocks))
-            return records
+            frame = pd.DataFrame(records)
+            logger.info("ARCO: %d meses/píxel excluidos por cobertura incompleta", int((~frame.complete).sum()))
+            return PixelClimate(mapping, frame)
         finally:
             ds.close()
 
@@ -112,7 +126,9 @@ class ArcoSolarService:
         lon_chunk: int,
         periods: list[tuple[int, int]],
     ) -> tuple[dict[int, np.ndarray], dict[int, np.ndarray], datetime]:
-        path = self.cache_dir / f"ssrd_lat{block[0]}_lon{block[1]}.npz"
+        signature = hashlib.sha256(self.url.encode() + ds.latitude.values.tobytes() + ds.longitude.values.tobytes()
+                                   + str((lat_chunk, lon_chunk, "complete-v2")).encode()).hexdigest()[:16]
+        path = self.cache_dir / f"ssrd_{signature}_lat{block[0]}_lon{block[1]}.npz"
         monthly: dict[int, np.ndarray] = {}
         counts: dict[int, np.ndarray] = {}
         retrieved_at = datetime.now(timezone.utc)
@@ -125,27 +141,18 @@ class ArcoSolarService:
 
         missing = [(year, month) for year, month in periods if year * 100 + month not in monthly]
         if missing:
-            first_year, first_month = missing[0]
-            last_year, last_month = missing[-1]
-            last_day = calendar.monthrange(last_year, last_month)[1]
             lat_start = block[0] * lat_chunk
             lon_start = block[1] * lon_chunk
             selected = ds.ssrd.isel(
                 latitude=slice(lat_start, lat_start + lat_chunk),
                 longitude=slice(lon_start, lon_start + lon_chunk),
-            ).sel(time=slice(
-                f"{first_year}-{first_month:02d}-01",
-                f"{last_year}-{last_month:02d}-{last_day:02d}T23:00:00",
-            ))
+            )
             logger.info("ARCO: leyendo bloque %s, %s a %s", block, missing[0], missing[-1])
-            data = selected.to_numpy()
-            times = pd.DatetimeIndex(selected.time.values)
-            time_codes = times.year.to_numpy() * 100 + times.month.to_numpy()
             for year, month in missing:
                 code = year * 100 + month
-                values = data[time_codes == code]
-                counts[code] = np.isfinite(values).sum(axis=0).astype(np.int16)
-                monthly[code] = (np.nansum(values, axis=0, dtype=np.float64) / 3.6e6).astype(np.float32)
+                last_day = calendar.monthrange(year, month)[1]
+                part = selected.sel(time=slice(f"{year}-{month:02d}-01", f"{year}-{month:02d}-{last_day:02d}T23:00:00"))
+                monthly[code], counts[code] = summarize_month(part.to_numpy(), part.time.values, year, month)
             retrieved_at = datetime.now(timezone.utc)
             self._save_block(path, monthly, counts, retrieved_at)
         return monthly, counts, retrieved_at

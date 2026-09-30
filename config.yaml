@@ -21,16 +21,13 @@ grid:
   # Tamaño de celda de la grilla de análisis. Es una unidad de discretización
   # espacial para el problema de optimización — NO la resolución de ninguna
   # fuente de datos en particular.
-  resolution_km: 9
+  resolution_km: 0.5
 
 park:
-  # Superficie nominal de un único parque solar candidato.
-  # 2 ha = 20.000 m^2 = 0.02 km^2. Se guarda solo para trazabilidad: el MVP
-  # todavía NO verifica que existan 20.000 m^2 contiguos de terreno utilizable
-  # dentro de una celda candidata (todavía no hay capa de cobertura de suelo —
-  # ver README).
-  area_hectares: 2
-
+  # NREL: 7.9 acres/MWac de área total, aproximadamente 31.3 MWac/km².
+  pv_power_density_mw_per_km2: 31.3
+  # Restricción EXPERIMENTAL, no capacidad real de ninguna estación.
+  max_connection_capacity_mw: 80
 urban_exclusion:
   # La fuente de "localidades" de BAHRA (ver infrastructure.urban_areas más
   # abajo) provee PUNTOS, no polígonos. Para aproximar una huella urbana a
@@ -54,7 +51,7 @@ climate:
   # ERA5 simple, ERA5-Land mensual, ni el archivo horario bulk de ERA5-Land.
   dataset: "reanalysis-era5-land-timeseries"
   variable: "surface_solar_radiation_downwards"
-  start_year: 1970
+  start_year: 2024
   end_year: latest  # último mes representativo completo con un mes de margen de publicación
   months: [1, 4, 7, 10]   # enero (verano), abril (otoño), julio (invierno), octubre (primavera)
   # Fuente climática única: almacén ARCO Zarr de ERA5-Land.
@@ -85,23 +82,29 @@ fitness:
   # una ponderación científicamente validada. Deben sumar 1.0 (+/- 1e-6).
   # Peso 0 desactiva el criterio: no se descarga ni se calcula su fuente.
   # La exclusión urbana sigue activa, separada del fitness.
-  weight_solar: 0.50
-  weight_grid_distance: 0.20
-  weight_transformer_distance: 0.30
+  weight_solar: 0.40
+  weight_grid_distance: 0.10
+  weight_transformer_distance: 0.40
+  weight_installed_power: 0.10
 
 genetic_algorithm:
   population_size: 50
   generations: 200
   crossover_probability: 0.75
-  mutation_probability: 0.05
+  mutation_probability: 0.20
   elitism: 2
   tournament_size: 3
   random_seed: 42
+  territory_size_km: 50
+  duplicate_attempts: 8
+  mutation_attempts: 4
+  territorial_separation_km: 0  # Sin superposición; sin distancia adicional por defecto.
+  archive_per_territory: 10  # Reserva interna, no tamaño del ranking final (top 5).
 
 paths:
   data_raw: "data/raw"
   data_processed: "data/processed"
   arco_cache: "data/cache/arco_blocks"
-  database: "data/processed/parque_solar.sqlite"
-  results: "results"
+  database: "data/processed/parque_solar_spatial.sqlite"
+  results: "results/spatial"
   logs: "logs"

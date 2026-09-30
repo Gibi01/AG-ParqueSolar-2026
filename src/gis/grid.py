@@ -8,7 +8,7 @@ unidad de discretización espacial para el problema de optimización — es
 independiente de, y más gruesa/fina que, la resolución nativa de
 cualquier fuente de datos climáticos en particular (ver
 src/climate/arco.py para cómo los puntos de ~9km de ERA5-Land se
-asocian a estas celdas de 5km).
+asocian a estas celdas de optimización de 500 m).
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ import geopandas as gpd
 import numpy as np
 from pyproj import CRS
 from shapely.geometry import box
+import shapely
 
 from src.gis.crs import GEOGRAPHIC_CRS, estimate_projected_crs, to_projected
 
@@ -61,17 +62,28 @@ def build_grid(
     xs = np.arange(minx, maxx + cell_size_m, cell_size_m)
     ys = np.arange(miny, maxy + cell_size_m, cell_size_m)
 
-    squares = [
-        box(x0, y0, x0 + cell_size_m, y0 + cell_size_m)
-        for x0 in xs[:-1]
-        for y0 in ys[:-1]
-    ]
-    candidate_grid = gpd.GeoDataFrame({"geometry": squares}, crs=projected_crs)
+    rows, columns = np.meshgrid(np.arange(len(ys) - 1), np.arange(len(xs) - 1), indexing="ij")
+    rows, columns = rows.ravel(), columns.ravel()
+    squares = shapely.box(xs[columns], ys[rows], xs[columns] + cell_size_m, ys[rows] + cell_size_m)
+    candidate_grid = gpd.GeoDataFrame({"row": rows, "column": columns}, geometry=squares, crs=projected_crs)
 
-    intersects_mask = candidate_grid.intersects(region_geom)
+    shapely.prepare(region_geom)
+    intersects_mask = shapely.intersects(region_geom, squares)
     clipped = candidate_grid.loc[intersects_mask].copy()
-    clipped["geometry"] = clipped.geometry.intersection(region_geom)
-    clipped = clipped.loc[~clipped.geometry.is_empty].reset_index(drop=True)
+    # Interior squares need no intersection with the complex provincial boundary.
+    partial = ~shapely.contains_properly(region_geom, clipped.geometry.to_numpy())
+    clipped.loc[partial, 'geometry'] = clipped.loc[partial].geometry.intersection(region_geom)
+    clipped = clipped.explode(index_parts=False).reset_index(drop=True)
+    clipped = clipped.loc[(clipped.geometry.geom_type == "Polygon") & (clipped.geometry.area > 0)].copy()
+    # Only split squares require geometry-based component ordering.
+    split = clipped.duplicated(['row', 'column'], keep=False)
+    order = sorted(clipped.index[split], key=lambda i: (
+        clipped.at[i, 'row'], clipped.at[i, 'column'], tuple(clipped.at[i, 'geometry'].bounds),
+        clipped.at[i, 'geometry'].normalize().wkb_hex))
+    clipped['_order'] = 0
+    clipped.loc[order, '_order'] = np.arange(len(order))
+    clipped = clipped.sort_values(["row", "column", "_order"]).drop(columns="_order").reset_index(drop=True)
+    clipped["component"] = clipped.groupby(["row", "column"]).cumcount()
 
     clipped.insert(0, "cell_id", np.arange(1, len(clipped) + 1))
     clipped["cell_area_m2"] = clipped.geometry.area
@@ -85,3 +97,23 @@ def build_grid(
     clipped["longitude"] = centroids_geo.x.values
 
     return Grid(gdf=clipped, projected_crs=projected_crs)
+
+
+def build_neighbors(grid: gpd.GeoDataFrame) -> dict[int, tuple[int, ...]]:
+    """Precompute symmetric edge adjacency. Corners and excluded cells never connect."""
+    ids = grid.cell_id.to_numpy()
+    geometries = grid.geometry.to_numpy()
+    neighbors = {int(cell_id): [] for cell_id in ids}
+    tree = shapely.STRtree(geometries)
+    # Batches bound the spatial query's memory on the provincial 500 m grid.
+    for start in range(0, len(grid), 10000):
+        left, right = tree.query(geometries[start:start + 10000], predicate="touches")
+        left = left + start
+        mask = left < right
+        left, right = left[mask], right[mask]
+        lengths = shapely.length(shapely.intersection(
+            shapely.boundary(geometries[left]), shapely.boundary(geometries[right])))
+        for a, b in zip(left[lengths > 0], right[lengths > 0]):
+            neighbors[int(ids[a])].append(int(ids[b]))
+            neighbors[int(ids[b])].append(int(ids[a]))
+    return {key: tuple(sorted(values)) for key, values in neighbors.items()}

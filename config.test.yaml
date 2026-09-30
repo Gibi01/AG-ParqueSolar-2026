@@ -1,4 +1,4 @@
-# Configuración de validación: grilla de 30 km, un año climático y salidas
+# Configuración de validación: grilla de 500 m, un año climático y salidas
 # separadas. Usa ARCO, igual que la configuración principal.
 
 region:
@@ -13,10 +13,11 @@ region:
     native_crs: "EPSG:4326"
 
 grid:
-  resolution_km: 30
+  resolution_km: 0.5
 
 park:
-  area_hectares: 2
+  pv_power_density_mw_per_km2: 31.3
+  max_connection_capacity_mw: 80
 
 urban_exclusion:
   buffer_km: 3.0
@@ -39,23 +40,29 @@ infrastructure:
     native_crs: "EPSG:4326"
 
 fitness:
-  weight_solar: 0.50
-  weight_grid_distance: 0.20
-  weight_transformer_distance: 0.30
+  weight_solar: 0.40
+  weight_grid_distance: 0.10
+  weight_transformer_distance: 0.25
+  weight_installed_power: 0.25
 
 genetic_algorithm:
   population_size: 50
   generations: 100
   crossover_probability: 0.75
-  mutation_probability: 0.05
+  mutation_probability: 0.20
   elitism: 2
   tournament_size: 3
   random_seed: 42
+  territory_size_km: 50
+  duplicate_attempts: 8
+  mutation_attempts: 4
+  territorial_separation_km: 0
+  archive_per_territory: 10
 
 paths:
   data_raw: "data/raw"
   data_processed: "data/processed"
   arco_cache: "data/cache/arco_blocks"
-  database: "data/processed/parque_solar_test.sqlite"
-  results: "results_test"
+  database: "data/processed/parque_solar_spatial_test.sqlite"
+  results: "results/spatial_test"
   logs: "logs"

@@ -1,125 +1,134 @@
-"""Algoritmo genético sobre ubicaciones candidatas de parque solar.
-
-Representación del individuo: un único entero — la posición de una fila
-en la tabla (fija, pre-filtrada a `valid == True`) de ubicaciones
-candidatas. Esa fila ya lleva `grid_cell_id`, así que "individuo =
-grid_cell_id" (según los requisitos del proyecto) se cumple vía este
-mapeo uno a uno; el índice entero es solo una codificación contigua y
-conveniente para las operaciones de arreglo en selección/cruce/mutación.
-
-El fitness de cada candidato se precalcula una sola vez (depende solo de
-columnas estáticas, ya normalizadas, de la base de datos local — no
-sucede ninguna llamada a API en ningún lugar de este módulo, cumpliendo
-el requisito de "el AG nunca consulta una API"). Un hall-of-fame acumula
-los mejores individuos vistos a lo largo de todas las generaciones, así
-que el ranking final TOP-10 no puede perder una solución fuerte por
-deriva genética tarde en la corrida.
-"""
-
-from __future__ import annotations
-
+"""Variable-area spatial GA. Evaluations consume only the processed local dataset."""
+import json
 import logging
 from dataclasses import dataclass
+from time import perf_counter
 
 import numpy as np
 import pandas as pd
+from pyproj import Transformer
 
-from src.config.settings import FitnessWeights, GeneticAlgorithmConfig
-from src.optimization.crossover import crossover_population
-from src.optimization.fitness import compute_fitness
-from src.optimization.mutation import mutate_population
+from src.optimization.crossover import crossover_pair
+from src.optimization.mutation import mutate_effectively
+from src.optimization.initialization import TerritorialSampler
 from src.optimization.selection import tournament_selection
+from src.optimization.spatial import Individual
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class GAResult:
-    top10: pd.DataFrame
+    top5: pd.DataFrame
     history: pd.DataFrame
     generations_run: int
     population_size: int
     n_candidates_considered: int
+    random_seed: int
+    candidates: pd.DataFrame
+
+    @property
+    def top10(self):
+        """Compatibility alias for callers of the previous spatial API."""
+        return self.top5
 
 
 class GeneticAlgorithm:
-    def __init__(
-        self,
-        candidates: pd.DataFrame,
-        weights: FitnessWeights,
-        ga_config: GeneticAlgorithmConfig,
-    ):
-        if len(candidates) == 0:
-            raise ValueError("candidates is empty; cannot run the genetic algorithm.")
-        self.candidates = candidates.reset_index(drop=True)
-        self.weights = weights
-        self.config = ga_config
-        self.fitness_lookup = compute_fitness(self.candidates, weights).to_numpy()
-        self.n_candidates = len(self.candidates)
-        self.rng = np.random.default_rng(ga_config.random_seed)
+    def __init__(self, evaluator, ga_config):
+        self.evaluator, self.config = evaluator, ga_config
+        self.random_seed = ga_config.random_seed if ga_config.random_seed is not None else int(np.random.SeedSequence().entropy)
+        self.rng = np.random.default_rng(self.random_seed)
 
-    def run(self, top_n: int = 10) -> GAResult:
-        if self.n_candidates < self.config.population_size:
-            logger.warning(
-                "Only %d valid candidates available (< population_size=%d); "
-                "sampling with replacement to fill the population.",
-                self.n_candidates,
-                self.config.population_size,
-            )
-
-        population = self.rng.integers(0, self.n_candidates, size=self.config.population_size)
-        hall_of_fame: dict[int, float] = {}
-
-        def update_hall_of_fame(indices: np.ndarray) -> None:
-            for idx in indices:
-                idx = int(idx)
-                hall_of_fame[idx] = float(self.fitness_lookup[idx])
-
-        update_hall_of_fame(population)
-        history_rows = []
-
-        for generation in range(self.config.generations):
-            fitness_values = self.fitness_lookup[population]
-            history_rows.append(
-                {
-                    "generation": generation,
-                    "best_fitness": float(fitness_values.max()),
-                    "mean_fitness": float(fitness_values.mean()),
-                }
-            )
-
-            order = np.argsort(-fitness_values)
-            elite = population[order[: self.config.elitism]]
-
-            num_offspring = self.config.population_size - self.config.elitism
-            parents = tournament_selection(
-                population, self.fitness_lookup, self.config.tournament_size, num_offspring, self.rng
-            )
-            children = crossover_population(parents, self.config.crossover_probability, self.n_candidates, self.rng)
-            children = mutate_population(children, self.config.mutation_probability, self.n_candidates, self.rng)
-
-            population = np.concatenate([elite, children])
-            update_hall_of_fame(population)
-
-        final_fitness = self.fitness_lookup[population]
-        history_rows.append(
-            {
-                "generation": self.config.generations,
-                "best_fitness": float(final_fitness.max()),
-                "mean_fitness": float(final_fitness.mean()),
-            }
-        )
-
-        ranked_indices = sorted(hall_of_fame, key=lambda i: hall_of_fame[i], reverse=True)[:top_n]
-        top10 = self.candidates.iloc[ranked_indices].copy().reset_index(drop=True)
-        top10["fitness"] = [hall_of_fame[i] for i in ranked_indices]
-        top10 = top10.sort_values("fitness", ascending=False).reset_index(drop=True)
-        top10.insert(0, "rank", np.arange(1, len(top10) + 1))
-
-        return GAResult(
-            top10=top10,
-            history=pd.DataFrame(history_rows),
-            generations_run=self.config.generations,
-            population_size=self.config.population_size,
-            n_candidates_considered=self.n_candidates,
-        )
+    def run(self, top_n=5):
+        evaluator, config, rng = self.evaluator, self.config, self.rng
+        if top_n != 5:
+            raise ValueError('Esta versión exporta rankings de hasta cinco candidatos.')
+        start = perf_counter()
+        cache_start = evaluator.evaluate.cache_info()
+        sampler = TerritorialSampler(evaluator, rng, config.territory_size_km)
+        population = [sampler.individual() for _ in range(config.population_size)]
+        hall, history = {}, []
+        seen = set()
+        mutation_events = mutation_attempts = mutation_changes = duplicate_fallbacks = 0
+        for generation in range(config.generations + 1):
+            parks = [evaluator.evaluate(individual) for individual in population]
+            fitness = np.array([park.metrics['fitness'] for park in parks])
+            for individual, park in zip(population, parks):
+                seen.add(park.cell_ids)
+                previous = hall.get(park.cell_ids)
+                if previous is None or (len(individual.growth_genes), individual.seed_cell_id, individual.growth_genes) < (
+                        len(previous[0].growth_genes), previous[0].seed_cell_id, previous[0].growth_genes):
+                    hall[park.cell_ids] = (individual, park)
+            # Keep strong candidates in every visited territory, not just one cluster.
+            counts, retained = {}, {}
+            for identity, pair in sorted(hall.items(), key=lambda item: (-item[1][1].metrics['fitness'], item[0])):
+                metrics = pair[1].metrics
+                territory = sampler.territory(metrics['centroid_x_m'], metrics['centroid_y_m'])
+                if counts.get(territory, 0) < config.archive_per_territory:
+                    retained[identity] = pair
+                    counts[territory] = counts.get(territory, 0) + 1
+            hall = retained
+            cache = evaluator.evaluate.cache_info()
+            history.append(dict(generation=generation, best_fitness=float(fitness.max()),
+                                best_historical_fitness=max(p.metrics['fitness'] for _, p in hall.values()),
+                                mean_fitness=float(fitness.mean()), median_fitness=float(np.median(fitness)),
+                                unique_parks=len({p.cell_ids for p in parks}), population_size=len(population),
+                                unique_parks_seen=len(seen), archive_candidates=len(hall),
+                                mean_cells=float(np.mean([len(p.cell_ids) for p in parks])),
+                                mean_genes=float(np.mean([len(i.growth_genes) for i in population])),
+                                mean_accepted_genes=float(np.mean([len(p.accepted_gene_indices) for p in parks])),
+                                mean_skipped_genes=float(np.mean([len(p.skipped_gene_indices) for p in parks])),
+                                mean_unprocessed_genes=float(np.mean([p.unprocessed_genes for p in parks])),
+                                mutation_events=mutation_events, mutation_attempts=mutation_attempts,
+                                effective_mutations=mutation_changes,
+                                mutation_effective_percent=100 * mutation_changes / mutation_events if mutation_events else np.nan,
+                                duplicate_fallbacks=duplicate_fallbacks,
+                                evaluation_requests=cache.hits + cache.misses - cache_start.hits - cache_start.misses,
+                                decoded_individuals=cache.misses - cache_start.misses,
+                                elapsed_seconds=perf_counter() - start))
+            if generation % 20 == 0:
+                logger.info('Generación %d: fitness %.5f, parques únicos %d', generation, fitness.max(), history[-1]['unique_parks'])
+            if generation == config.generations:
+                break
+            elite, identities = [], set()
+            for i in np.argsort(-fitness, kind='stable'):
+                if len(elite) >= config.elitism:
+                    break
+                if parks[i].cell_ids not in identities:
+                    elite.append(population[i])
+                    identities.add(parks[i].cell_ids)
+            children = tournament_selection(population, fitness, config.tournament_size,
+                                            config.population_size - len(elite), rng)
+            for i in range(0, len(children) - 1, 2):
+                if rng.random() < config.crossover_probability:
+                    children[i], children[i + 1] = crossover_pair(children[i], children[i + 1], rng)
+            mutation_events = mutation_attempts = mutation_changes = duplicate_fallbacks = 0
+            population = list(elite)
+            for child in children:
+                if rng.random() < config.mutation_probability:
+                    child, attempts, changed = mutate_effectively(child, evaluator, rng, config.mutation_attempts)
+                    mutation_events += 1
+                    mutation_attempts += attempts
+                    mutation_changes += int(changed)
+                for attempt in range(config.duplicate_attempts + 1):
+                    identity = evaluator.evaluate(child).cell_ids
+                    if identity not in identities:
+                        break
+                    if attempt == config.duplicate_attempts:
+                        duplicate_fallbacks += 1
+                        break
+                    child = sampler.individual()
+                identities.add(identity)
+                population.append(child)
+        transform = Transformer.from_crs(evaluator.grid.crs, 4326, always_xy=True)
+        ranking = []
+        for rank, (individual, park) in enumerate(hall.values(), 1):
+            longitude, latitude = transform.transform(park.metrics['centroid_x_m'], park.metrics['centroid_y_m'])
+            ranking.append(dict(rank=rank, seed_cell_id=individual.seed_cell_id,
+                                growth_genes=json.dumps(individual.growth_genes), cell_ids=json.dumps(park.cell_ids),
+                                accepted_gene_indices=json.dumps(park.accepted_gene_indices),
+                                skipped_gene_indices=json.dumps(park.skipped_gene_indices),
+                                latitude=latitude, longitude=longitude, **park.metrics))
+        candidates = pd.DataFrame(ranking)
+        return GAResult(candidates.head(5).copy(), pd.DataFrame(history), config.generations,
+                        config.population_size, len(evaluator.grid), self.random_seed, candidates)

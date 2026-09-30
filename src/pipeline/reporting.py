@@ -1,174 +1,76 @@
-"""Arma y escribe results/: ranking.csv, candidate_locations.csv,
-optimization_run.json y map.html — además de persistir la corrida en
-`optimization_results`.
-"""
-
-from __future__ import annotations
-
+"""Export spatial solutions without overwriting historical runs."""
 import json
-import logging
 from datetime import datetime, timezone
-from pathlib import Path
+from uuid import uuid4
+from importlib.metadata import version
 
 import geopandas as gpd
-import pandas as pd
+import shapely
 
-from src.config.settings import Settings
-from src.climate.climatology import annual_solar_kwh_m2, monthly_climatology
-from src.database.repository import Repository
 from src.gis.spatial_operations import buffer_points_km
-from src.optimization.genetic_algorithm import GAResult
 from src.visualization.map import build_map
-
-logger = logging.getLogger(__name__)
-
-MONTH_COLUMN_NAMES = {
-    1: "solar_january",
-    2: "solar_february",
-    3: "solar_march",
-    4: "solar_april",
-    5: "solar_may",
-    6: "solar_june",
-    7: "solar_july",
-    8: "solar_august",
-    9: "solar_september",
-    10: "solar_october",
-    11: "solar_november",
-    12: "solar_december",
-}
+from src.visualization.search_charts import write_search_charts
+from src.optimization.ranking import territorial_top5
 
 RESULT_DISCLAIMER = (
-    "Estos resultados representan ubicaciones potencialmente favorables segun "
-    "las variables espaciales y climaticas consideradas en este MVP. No "
-    "constituyen una determinacion de la ubicacion economicamente optima: "
-    "no incorporan costo de terreno, costo de conexion, capacidad disponible "
-    "de subestacion o linea, permisos, cobertura de suelo completa, pendiente, "
-    "areas protegidas, hidrografia ni un analisis financiero. Los pesos de la "
-    "funcion de fitness son valores iniciales del MVP, no pesos cientificamente "
-    "validados."
+    "Capacidad de conexión EXPERIMENTAL: no representa capacidad real de las ET. "
+    "Energía anual ideal de referencia: sin pérdidas, inclinación ni modelado DC/AC. "
+    "Irradiación anual estimada mediante cuatro meses representativos; no integración anual completa. "
+    "Las distancias son geográficas, no trazados de conexión ni prueba de viabilidad eléctrica."
 )
 
 
-def enrich_with_monthly_solar(top10: pd.DataFrame, solar_radiation_df: pd.DataFrame, months: list[int]) -> pd.DataFrame:
-    pivot = monthly_climatology(solar_radiation_df, months)
-    pivot = pivot.rename(columns=MONTH_COLUMN_NAMES)
-    month_cols = [c for c in pivot.columns if c in MONTH_COLUMN_NAMES.values()]
-    enriched = top10.merge(pivot[month_cols], left_on="grid_cell_id", right_index=True, how="left")
-    return enriched
-
-
-def write_run_outputs(
-    settings: Settings,
-    repo: Repository,
-    ga_result: GAResult,
-    candidates_df: pd.DataFrame,
-    region_gdf: gpd.GeoDataFrame,
-    grid_gdf: gpd.GeoDataFrame,
-    urban_gdf: gpd.GeoDataFrame,
-    power_lines_gdf: gpd.GeoDataFrame,
-    transformers_gdf: gpd.GeoDataFrame,
-    run_id: str | None = None,
-) -> dict[str, Path]:
-    run_id = run_id or datetime.now(timezone.utc).strftime("run-%Y%m%dT%H%M%SZ")
-    results_dir = settings.paths.results
-    results_dir.mkdir(parents=True, exist_ok=True)
-
-    solar_radiation_df = repo.get_solar_radiation_df()
-    if settings.fitness.use_solar:
-        ranking = enrich_with_monthly_solar(ga_result.top10, solar_radiation_df, settings.climate.months)
-        annual_solar = annual_solar_kwh_m2(solar_radiation_df, settings.climate.months)
-        ranking["solar_annual_kwh_m2"] = ranking["grid_cell_id"].map(annual_solar)
-    else:
-        ranking = ga_result.top10.copy()
-        ranking["solar_annual_kwh_m2"] = float("nan")
-
-    ranking_path = results_dir / "ranking.csv"
-    ranking.to_csv(ranking_path, index=False)
-
-    candidates_path = results_dir / "candidate_locations.csv"
-    candidates_df.to_csv(candidates_path, index=False)
-
-    run_metadata = {
-        "run_id": run_id,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "region": settings.region.name,
-        "grid_resolution_km": settings.grid.resolution_km,
-        "park_area_hectares": settings.park.area_hectares,
-        "park_area_note": (
-            "Se guarda solo para trazabilidad; este MVP todavia no verifica que "
-            "existan 20.000 m^2 contiguos de terreno utilizable y sin "
-            "obstrucciones dentro de una celda candidata (todavia no hay capa "
-            "de cobertura de suelo)."
-        ),
-        "climate": {
-            "dataset": settings.climate.dataset,
-            "variable": settings.climate.variable,
-            "access_mode": "arco",
-            "used_for_fitness": settings.fitness.use_solar,
-            "years": settings.climate.years,
-            "months": settings.climate.months,
-            "period_start": f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}",
-            "period_end": f"{settings.climate.year_months[-1][0]}-{settings.climate.year_months[-1][1]:02d}",
-            "aggregation": "mean_monthly_total_across_years / days_in_month * days_in_represented_season; sum_four_seasons",
-            "annual_solar_unit": "kWh/m2/year",
-            "spatial_selection_method": "nearest_neighbour",
-        },
-        "fitness_weights": settings.fitness.model_dump(),
-        "active_criteria": [
-            name for name, active in (
-                ("solar", settings.fitness.use_solar),
-                ("power_lines", settings.fitness.use_power_lines),
-                ("transformers", settings.fitness.use_transformers),
-            ) if active
-        ],
-        "genetic_algorithm_config": settings.genetic_algorithm.model_dump(),
-        "n_candidates_considered": ga_result.n_candidates_considered,
-        "generations_run": ga_result.generations_run,
-        "population_size": ga_result.population_size,
-        "top10_grid_cell_ids": ranking["grid_cell_id"].tolist(),
-        "disclaimer": RESULT_DISCLAIMER,
-    }
-    run_path = results_dir / "optimization_run.json"
-    run_path.write_text(json.dumps(run_metadata, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
-
-    result_cols = [
-        "rank",
-        "grid_cell_id",
-        "latitude",
-        "longitude",
-        "solar_score",
-        "distance_to_power_line_km",
-        "distance_to_transformer_km",
-        "grid_proximity_score",
-        "transformer_proximity_score",
-        "fitness",
-    ]
-    repo.save_optimization_results(run_id, ga_result.top10[result_cols])
-
-    excluded_types = set(settings.urban_exclusion.include_types)
-    urban_for_map = urban_gdf[urban_gdf["tipo"].isin(excluded_types)]
-    urban_buffered = buffer_points_km(urban_for_map, settings.urban_exclusion.buffer_km, grid_gdf.crs)
-
-    map_path = build_map(
-        region_gdf=region_gdf,
-        grid_gdf=grid_gdf,
-        urban_buffered_gdf=urban_buffered,
-        power_lines_gdf=power_lines_gdf,
-        transformers_gdf=transformers_gdf,
-        top10_df=ranking,
-        output_path=results_dir / "map.html",
-        grid_resolution_km=settings.grid.resolution_km,
-        climate_period=(
-            f"{settings.climate.year_months[0][0]}-{settings.climate.year_months[0][1]:02d}"
-            f" a {settings.climate.year_months[-1][0]}-{settings.climate.year_months[-1][1]:02d}"
-            f" (meses {settings.climate.months})"
-        ) if settings.fitness.use_solar else "",
-    )
-
-    logger.info("Wrote run outputs: %s", results_dir)
-    return {
-        "ranking_csv": ranking_path,
-        "candidate_locations_csv": candidates_path,
-        "optimization_run_json": run_path,
-        "map_html": map_path,
-    }
+def write_run_outputs(settings, repo, ga_result, dataset, evaluator):
+    run_id = datetime.now(timezone.utc).strftime('run-%Y%m%dT%H%M%S') + '-' + uuid4().hex[:8]
+    output = settings.paths.results / run_id
+    output.mkdir(parents=True, exist_ok=False)
+    candidates = ga_result.candidates.copy()
+    indexed = dataset['grid'].set_index('cell_id')
+    selected_ids = set()
+    geometries = []
+    for raw in candidates.cell_ids:
+        ids = json.loads(raw)
+        selected_ids.update(ids)
+        geometries.append(shapely.union_all(indexed.loc[ids].geometry.to_numpy()))
+    candidates['geometry_wkt'] = [geometry.wkt for geometry in geometries]
+    ranking = candidates.head(5).copy()
+    separation = settings.genetic_algorithm.territorial_separation_km
+    territorial = territorial_top5(candidates, separation)
+    candidates.to_csv(output / 'candidates.csv', index=False)
+    ranking.to_csv(output / 'ranking.csv', index=False)
+    territorial.to_csv(output / 'ranking_territorial.csv', index=False)
+    ga_result.history.to_csv(output / 'history.csv', index=False)
+    write_search_charts(ga_result.history, output / 'evolution.html')
+    for frame, name in [(ranking, 'parks.geojson'), (territorial, 'parks_territorial.geojson')]:
+        polygons = gpd.GeoDataFrame(frame.drop(columns='geometry_wkt'),
+                                   geometry=gpd.GeoSeries.from_wkt(frame.geometry_wkt), crs=dataset['grid'].crs).to_crs(4326)
+        (output / name).write_text(polygons.to_json(), encoding='utf-8')
+    metadata = dict(run_id=run_id, dataset_id=dataset['dataset_id'],
+                    random_seed=ga_result.random_seed,
+                    software_versions={name: version(name) for name in ('numpy', 'pandas', 'shapely', 'geopandas', 'pyproj')},
+                    configuration=settings.model_dump(mode='json', exclude={'cds_api_key'}),
+                    dataset=dataset['metadata'], normalization_bounds=evaluator.bounds,
+                    search_version=3,
+                    territorial_ranking=dict(requested=5, obtained=len(territorial), candidates=len(candidates),
+                                             separation_km=separation, overlap_allowed=False,
+                                             incomplete_reason='No hay cinco alternativas compatibles en el archivo retenido.' if len(territorial)<5 else None),
+                    energy_formula='P_MW * H_kWh_m2 / (1 kW/m2)', disclaimer=RESULT_DISCLAIMER)
+    (output / 'optimization_run.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding='utf-8')
+    climate = dataset['climate']
+    if len(climate):
+        valid = climate.loc[climate.complete.astype(bool)]
+        counts = valid.groupby(['climate_pixel_id', 'month']).year.nunique().rename('valid_years').reset_index()
+        all_pairs = climate[['climate_pixel_id', 'month']].drop_duplicates()
+        all_pairs.merge(counts, how='left').fillna({'valid_years': 0}).to_csv(output / 'climate_coverage.csv', index=False)
+    selected_ids = {cid for raw in territorial.cell_ids for cid in json.loads(raw)}
+    selected_grid = dataset['grid'].loc[dataset['grid'].cell_id.isin(selected_ids)]
+    buffers = buffer_points_km(dataset['urban'], settings.urban_exclusion.buffer_km, dataset['grid'].crs)
+    build_map(dataset['region'], selected_grid, buffers, dataset['lines'], dataset['transformers'],
+              territorial, output / 'map.html', grid_resolution_km=settings.grid.resolution_km,
+              ranking_description=f'TOP 5 territorial: {len(territorial)}/5 alternativas sin superposición; separación mínima {separation:g} km. No acredita conexión eléctrica.',
+              climate_period='enero, abril, julio y octubre; extrapolación estacional')
+    repo.save_run(run_id, dataset['dataset_id'], metadata, ranking)
+    return dict(ranking_csv=output / 'ranking.csv', history_csv=output / 'history.csv',
+                ranking_territorial_csv=output / 'ranking_territorial.csv', evolution_html=output / 'evolution.html',
+                parks_geojson=output / 'parks.geojson', map_html=output / 'map.html',
+                optimization_run_json=output / 'optimization_run.json')

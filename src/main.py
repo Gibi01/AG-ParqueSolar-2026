@@ -23,8 +23,8 @@ from src.climate.arco import ArcoSolarService
 from src.config.settings import Settings, load_settings
 from src.data.cache import layer_cache_for_settings
 from src.data.validators import ValidationError
-from src.database.repository import Repository
-from src.gis.grid import build_grid
+from src.database.spatial import SpatialRepository as Repository, config_signature
+from src.optimization.spatial import ParkEvaluator
 from src.optimization.genetic_algorithm import GeneticAlgorithm
 from src.pipeline.ingest import (
     ingest_power_lines,
@@ -58,15 +58,17 @@ def setup_logging(settings: Settings) -> None:
 def cmd_setup(settings: Settings) -> None:
     settings.ensure_directories()
     print(f"Región configurada: {settings.region.name} (code={settings.region.admin_source.code_value})")
-    print(f"Grilla: {settings.grid.resolution_km} km | Parque: {settings.park.area_hectares} ha")
+    print(f"Grilla: {settings.grid.resolution_km} km | Capacidad EXPERIMENTAL: {settings.park.max_connection_capacity_mw} MW")
     print(
-        "Pesos fitness: solar={:.2f} linea={:.2f} transformador={:.2f} (suma={:.2f})".format(
+        "Pesos fitness: solar={:.2f} linea={:.2f} transformador={:.2f} potencia={:.2f} (suma={:.2f})".format(
             settings.fitness.weight_solar,
             settings.fitness.weight_grid_distance,
             settings.fitness.weight_transformer_distance,
+            settings.fitness.weight_installed_power,
             settings.fitness.weight_solar
             + settings.fitness.weight_grid_distance
-            + settings.fitness.weight_transformer_distance,
+            + settings.fitness.weight_transformer_distance
+            + settings.fitness.weight_installed_power,
         )
     )
     print(f"Clima: {settings.climate.dataset} / {settings.climate.variable}")
@@ -123,55 +125,13 @@ def cmd_process(settings: Settings, repo: Repository):
 
 
 def cmd_optimize(settings: Settings, repo: Repository):
-    region_gdf, urban_gdf, lines_gdf, transformers_gdf = _load_cached_layers(settings)
-    grid = build_grid(region_gdf, settings.grid.resolution_km)
-
-    stored_grid = repo.get_grid_cells_df()
-    if stored_grid.empty or not stored_grid["region_name"].eq(settings.region.name).all() or not stored_grid["resolution_km"].eq(settings.grid.resolution_km).all():
-        raise RuntimeError("La base procesada corresponde a otra región o grilla; ejecutá --process antes de --optimize.")
-
-    candidates_valid = repo.get_candidate_locations_df(valid_only=True)
-    candidates_all = repo.get_candidate_locations_df(valid_only=False)
-    for active, columns in (
-        (settings.fitness.use_solar, ["solar_score"]),
-        (settings.fitness.use_power_lines, ["distance_to_power_line_km", "grid_proximity_score"]),
-        (settings.fitness.use_transformers, ["distance_to_transformer_km", "transformer_proximity_score"]),
-    ):
-        if not active:
-            candidates_valid.loc[:, columns] = float("nan")
-            candidates_all.loc[:, columns] = float("nan")
-    if len(candidates_valid) == 0:
-        raise RuntimeError(
-            "No hay candidatos válidos en la base de datos. Ejecutá "
-            "'python -m src.main --process' primero."
-        )
-
-    ga = GeneticAlgorithm(candidates_valid, settings.fitness, settings.genetic_algorithm)
-    result = ga.run(top_n=10)
-
-    outputs = write_run_outputs(
-        settings, repo, result, candidates_all, region_gdf, grid.gdf, urban_gdf, lines_gdf, transformers_gdf
-    )
-    print("\nTOP 10 UBICACIONES")
-    print("=" * 60)
-    for _, row in result.top10.iterrows():
-        summary = (
-            f"#{int(row['rank']):>2}  cell_id={int(row['grid_cell_id']):<6} "
-            f"lat={row['latitude']:.5f} lon={row['longitude']:.5f}  "
-            f"fitness={row['fitness']:.4f}"
-        )
-        if settings.fitness.use_solar:
-            summary += f"  solar={row['solar_score']:.3f}"
-        if settings.fitness.use_power_lines:
-            summary += f"  linea={row['distance_to_power_line_km']:.1f}km ({row['grid_proximity_score']:.3f})"
-        if settings.fitness.use_transformers:
-            summary += f"  transf={row['distance_to_transformer_km']:.1f}km ({row['transformer_proximity_score']:.3f})"
-        print(summary)
-    print("=" * 60)
-    print(
-        "\nNota: estas son ubicaciones potencialmente favorables según las variables "
-        "espaciales y climáticas consideradas — no una determinación de óptimo económico."
-    )
+    dataset = repo.load_dataset(config_signature(settings))
+    evaluator = ParkEvaluator(dataset['grid'], dataset['neighbors'], dataset['lines'],
+                              dataset['transformers'], settings.park, settings.fitness)
+    result = GeneticAlgorithm(evaluator, settings.genetic_algorithm).run()
+    outputs = write_run_outputs(settings, repo, result, dataset, evaluator)
+    print("\nTOP 5 PARQUES — capacidad experimental, no capacidad real de ET")
+    print(result.top5[['rank', 'number_of_cells', 'park_area_km2', 'installed_power_mw', 'fitness']].to_string(index=False))
     for label, path in outputs.items():
         print(f"  {label}: {path}")
     return result
@@ -221,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.optimize or args.run_all:
             cmd_optimize(settings, repo)
 
-    except (ValidationError, RuntimeError) as exc:
+    except (ValidationError, RuntimeError, ValueError) as exc:
         logger.error("%s", exc)
         print(f"\nERROR: {exc}")
         return 1

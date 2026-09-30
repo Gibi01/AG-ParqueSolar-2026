@@ -27,3 +27,4 @@ SQLAlchemy>=2.0
 
 # Visualización
 folium>=0.15
+Pillow>=10.0

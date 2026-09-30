@@ -2,12 +2,13 @@
 
 Muestra el límite provincial, la grilla de análisis, los buffers de
 exclusión urbana, las líneas eléctricas, las estaciones transformadoras,
-y las ubicaciones del TOP-10, cada una como una capa que se puede activar/desactivar.
+y el TOP-5 de parques en capas individuales (TOP-10 para resultados puntuales históricos).
 """
 
 from __future__ import annotations
 
 from pathlib import Path
+from html import escape
 
 import folium
 import geopandas as gpd
@@ -74,6 +75,7 @@ def build_map(
     output_path: Path,
     grid_resolution_km: float = 5,
     climate_period: str = "",
+    ranking_description: str = "",
 ) -> Path:
     region_geo = _to_geographic(region_gdf)
     center = region_geo.geometry.union_all().centroid
@@ -84,7 +86,7 @@ def build_map(
         folium.Element(
             f'<div style="position:fixed;top:12px;left:50px;z-index:9999;background:white;'
             f'padding:8px;border:1px solid #777">Grilla {grid_resolution_km:g} km · '
-            f'Radiación media: {climate_period}</div>'
+            f'Irradiación anual estimada: {escape(climate_period)}</div>'
         ).add_to(fmap.get_root().html)
 
     folium.GeoJson(
@@ -156,8 +158,48 @@ def build_map(
             ).add_to(transformers_layer)
         transformers_layer.add_to(fmap)
 
+    spatial = 'geometry_wkt' in top10_df
+    shown = top10_df.sort_values('rank').head(5) if spatial else top10_df
     top_layer = folium.FeatureGroup(name="TOP 10 ubicaciones", show=True)
-    for _, row in top10_df.iterrows():
+    colors = ['#b77900', '#0072b2', '#009e73', '#cc79a7', '#d55e00']
+    if spatial:
+        folium.Element('<div style="position:fixed;bottom:25px;left:12px;z-index:9999;'
+                       'background:white;padding:8px;max-width:300px">'
+                       '<b>TOP 5 parques</b><br>' + escape(ranking_description or
+                       'Las alternativas pueden superponerse. Activá una capa por vez para comparar; no son cinco sitios independientes.') + '</div>').add_to(fmap.get_root().html)
+    for _, row in shown.sort_values('rank', ascending=False).iterrows():
+        if 'geometry_wkt' in top10_df:
+            rank = int(row['rank'])
+            top_layer = folium.FeatureGroup(name=f"TOP 5 - Parque #{rank}", show=True)
+            popup_html = (
+                f"<b>Parque #{int(row['rank'])}</b><br>Fitness: {row['fitness']:.5f}<br>"
+                f"Celdas: {int(row['number_of_cells'])}<br>Superficie: {row['park_area_km2']:.6f} km² / {row['park_area_ha']:.3f} ha<br>"
+                f"Potencia instalada: {row['installed_power_mw']:.3f} MWac<br>"
+                f"Capacidad EXPERIMENTAL: {row['max_connection_capacity_mw']:.3f} MW (no real de ET)<br>"
+                f"Utilización: {row['capacity_used_percent']:.2f}%<br>"
+            )
+            if pd.notna(row['solar_annual_kwh_m2']):
+                popup_html += (f"Irradiación anual estimada: {row['solar_annual_kwh_m2']:.2f} kWh/m²/año<br>"
+                               f"Energía anual ideal de referencia: {row['estimated_annual_energy_mwh']:.2f} MWh/año<br>")
+            if pd.notna(row['distance_to_transformer_km']):
+                popup_html += f"ET: {escape(str(row['station_name']))} ({escape(str(row['station_id']))}) · {row['distance_to_transformer_km']:.3f} km<br>"
+            if pd.notna(row['distance_to_power_line_km']):
+                popup_html += f"Distancia a red: {row['distance_to_power_line_km']:.3f} km<br>"
+            polygon = gpd.GeoSeries.from_wkt([row['geometry_wkt']], crs=grid_gdf.crs).to_crs(4326)
+            location = polygon.iloc[0].representative_point()
+            folium.Marker(
+                [location.y, location.x], tooltip=f"Candidato #{rank}",
+                icon=folium.DivIcon(html=f'<span style="background:white;color:{colors[(rank-1)%len(colors)]};'
+                                   f'border:2px solid;padding:3px;font-weight:bold">#{rank}</span>'),
+                popup=folium.Popup(popup_html, max_width=440),
+            ).add_to(top_layer)
+            folium.GeoJson(polygon.__geo_interface__,
+                           style_function=(lambda color: lambda _: {'color': color, 'weight': 3, 'fillOpacity': .4})(
+                               colors[(rank - 1) % len(colors)]),
+                           tooltip=f"Parque #{int(row['rank'])}",
+                           popup=folium.Popup(popup_html, max_width=440)).add_to(top_layer)
+            top_layer.add_to(fmap)
+            continue
         popup_html = (
             f"<b>Rank {int(row['rank'])}</b> — Cell ID {int(row['grid_cell_id'])}<br>"
             f"Lat/Lon: {row['latitude']:.5f}, {row['longitude']:.5f}<br>"
@@ -175,7 +217,13 @@ def build_map(
             icon=folium.Icon(color="green", icon="bolt", prefix="fa"),
             tooltip=f"#{int(row['rank'])}",
         ).add_to(top_layer)
-    top_layer.add_to(fmap)
+    if not spatial:
+        top_layer.add_to(fmap)
+    if spatial and len(shown):
+        west, south, east, north = gpd.GeoSeries.from_wkt(shown.geometry_wkt, crs=grid_gdf.crs).to_crs(4326).total_bounds
+        fit = folium.map.FitBounds([[south, west], [north, east]], padding=(40, 40), max_zoom=13)
+        fit.options['animate'] = False
+        fit.add_to(fmap)
 
     folium.LayerControl(collapsed=False).add_to(fmap)
 

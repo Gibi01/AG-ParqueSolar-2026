@@ -12,7 +12,8 @@ MONTH_DAYS = {1: 31, 4: 30, 7: 31, 10: 31}
 
 def monthly_climatology(records: pd.DataFrame, months: list[int]) -> pd.DataFrame:
     """Media interanual por mes; conserva NaN cuando falta un mes entero."""
-    monthly = records.groupby(["grid_cell_id", "month"])["radiation_kwh_m2"].mean()
+    key = "climate_pixel_id" if "climate_pixel_id" in records else "grid_cell_id"
+    monthly = records.groupby([key, "month"])["radiation_kwh_m2"].mean()
     return monthly.unstack("month").reindex(columns=months)
 
 
