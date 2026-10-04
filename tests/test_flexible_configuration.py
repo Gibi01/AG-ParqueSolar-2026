@@ -120,7 +120,7 @@ class FlexibleConfigurationTests(unittest.TestCase):
             crs="EPSG:32720",
         )
         region = gpd.GeoDataFrame(geometry=[box(0, 0, 18000, 9000)], crs="EPSG:32720")
-        urban = gpd.GeoDataFrame({"tipo": []}, geometry=[], crs="EPSG:4326")
+        urban = gpd.GeoDataFrame(geometry=[box(30000, 30000, 31000, 31000)], crs="EPSG:32720")
         lines = gpd.GeoDataFrame({'tension_v': [132000]}, geometry=[LineString([(0, 0), (0, 9000)])], crs="EPSG:32720")
         transformers = gpd.GeoDataFrame(geometry=[], crs="EPSG:4326")
         repo = MagicMock()

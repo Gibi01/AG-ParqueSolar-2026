@@ -112,9 +112,10 @@ def build_map(
     grid_layer.add_to(fmap)
 
     if len(urban_buffered_gdf) > 0:
-        urban_layer = folium.FeatureGroup(name="Zonas urbanas excluidas (buffer)", show=True)
+        urban_layer = folium.FeatureGroup(name="Máscara de exclusión urbana (INDEC)", show=True)
         folium.GeoJson(
             _to_geographic(urban_buffered_gdf)[["geometry"]],
+            tooltip='Fuente: Instituto Nacional de Estadística y Censos (2022). Marco Geoestadístico Nacional. Máscara derivada para exclusión.',
             style_function=lambda _: {"color": "#d62728", "weight": 1, "fillColor": "#d62728", "fillOpacity": 0.25},
         ).add_to(urban_layer)
         urban_layer.add_to(fmap)

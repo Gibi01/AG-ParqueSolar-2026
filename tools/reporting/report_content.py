@@ -8,6 +8,18 @@ META = RUN["metadata"]
 FIRST = RUN["first"]
 GA = CFG["genetic_algorithm"]
 FIT = CFG["fitness"]
+INDEC_URBAN = CFG['infrastructure']['urban_areas'].get('provider') == 'INDEC'
+
+
+def urban_method_description():
+    margin = CFG['urban_exclusion']['buffer_km']
+    if INDEC_URBAN:
+        holes = 'Se excluyen también los huecos interiores encerrados.' if CFG['urban_exclusion']['fill_holes'] else 'Se conservan los huecos interiores de la fuente.'
+        return (f'Restricción urbana. Se usan envolventes INDEC del Censo 2022, con un margen de {margin:g} km '
+                f'desde el perímetro. {holes} Toda celda que intersecta la máscara queda excluida antes de la búsqueda. '
+                'El margen es experimental; la cartografía censal no acredita límites catastrales ni actualización posterior a 2022.')
+    return (f'Restricción urbana. Esta corrida histórica usa puntos BAHRA de tipo LOCALIDAD con un buffer uniforme '
+            f'de {margin:g} km. Es una aproximación y no equivale a límites urbanos catastrales.')
 
 
 TITLE = "Optimización de configuraciones contiguas para parques solares en Santa Fe"
@@ -28,6 +40,9 @@ REFERENCES = [
     "[11] Secretaría de Energía, Redes de distribución eléctrica. Datos Argentina. https://datos.gob.ar/dataset/energia-redes-distribucion-electrica",
     "[12] Secretaría de Energía, Transporte Eléctrico AT — Estaciones Transformadoras. Datos Argentina. https://www.datos.gob.ar/dataset/energia-transporte-electrico-at-estaciones-transformadoras",
 ]
+if INDEC_URBAN:
+    REFERENCES[9] = ('[10] Instituto Nacional de Estadística y Censos (2022). Marco Geoestadístico Nacional. '
+                     'Localidades censales. https://portalgeoestadistico.indec.gob.ar/geoportal/documents/metadato_localidades_censales.pdf')
 
 
 def fmt(value, decimals=2):
@@ -38,7 +53,7 @@ def report_sections():
     return [
         ("Resumen ejecutivo", [
             f"El problema de investigación es cómo reducir un espacio territorial muy amplio y heterogéneo hasta obtener configuraciones de parque solar comparables, contiguas y trazables, sin confundir una preselección computacional con una decisión de inversión. La radiación es necesaria, pero no suficiente: también importan la cercanía a infraestructura, la ocupación urbana, la forma del terreno y una escala compatible con la potencia pretendida.",
-            f"La corrida vigente {META['run_id']} discretiza Santa Fe en celdas de 500 × 500 m y representa cada alternativa como un conjunto contiguo de celdas. Se analizaron {RUN['total_cells']:,} celdas; {RUN['urban_excluded']:,} se excluyeron por intersección con buffers urbanos y {RUN['valid_cells']:,} quedaron disponibles para construir soluciones. El algoritmo trabajó con un límite experimental de 80 MW, población de {GA['population_size']} individuos y {GA['generations']} generaciones.",
+            f"La corrida vigente {META['run_id']} discretiza Santa Fe en celdas de 500 × 500 m y representa cada alternativa como un conjunto contiguo de celdas. Se analizaron {RUN['total_cells']:,} celdas; {RUN['urban_excluded']:,} se excluyeron por intersección con la máscara urbana y {RUN['valid_cells']:,} quedaron disponibles para construir soluciones. El algoritmo trabajó con un límite experimental de 80 MW, población de {GA['population_size']} individuos y {GA['generations']} generaciones.",
             f"El mejor parque observado reúne {int(FIRST.number_of_cells)} celdas, ocupa {fmt(FIRST.park_area_ha, 0)} ha y alcanza {fmt(FIRST.installed_power_mw)} MW, con fitness {fmt(FIRST.fitness, 4)}. La corrida terminó con {RUN['final_unique']} configuraciones distintas entre {RUN['final_population']} individuos. Se obtuvieron dos lecturas complementarias: un TOP 5 general, que puede contener variantes superpuestas, y un TOP 5 territorial sin superposición. El resultado cumple una función de preselección y experimentación; no prueba óptimo global, capacidad eléctrica disponible ni viabilidad predial, ambiental o económica.",
         ]),
         ("1 Denominación y tema", [
@@ -66,7 +81,7 @@ def report_sections():
         ("6 Modelo del problema", [
             "Unidad de decisión. Un individuo se codifica mediante una celda semilla y una secuencia de genes de crecimiento. Al decodificarlo, el parque incorpora celdas vecinas que comparten borde; las diagonales no crean continuidad. Los genes que exceden la capacidad se omiten y el crecimiento continúa mientras exista frontera y alguna celda pueda incorporarse.",
             "Criterios. La irradiación del parque es un promedio ponderado por área. Las distancias se calculan desde los centroides de sus celdas a las geometrías de líneas y a las cuatro estaciones transformadoras incluidas —Santo Tomé, Cañada de Gómez, Rosario Oeste y Romang—. La potencia surge del área por una densidad experimental. Todos los componentes se normalizan antes de la suma ponderada.",
-            "Restricción urbana. Se usan puntos BAHRA de tipo LOCALIDAD con un buffer uniforme de 3 km, aplicado antes de la búsqueda. Es una aproximación conservadora y no equivale a límites urbanos catastrales.",
+            urban_method_description(),
             "Clima. Cada celda apunta al píxel nativo ERA5-Land más cercano; la grilla de 500 m no representa resolución climática de 500 m. La corrida exige cobertura horaria completa y finita para los meses representativos disponibles entre 2024 y julio de 2026. La irradiación anual se estima con enero, abril, julio y octubre; no es una integración de los doce meses.",
         ]),
         ("7 Diseño experimental", [

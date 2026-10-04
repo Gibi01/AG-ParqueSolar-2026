@@ -10,7 +10,7 @@ from src.climate.records import CellPoint
 from src.climate.climatology import annual_solar_kwh_m2
 from src.database.spatial import config_signature
 from src.gis.grid import build_grid, build_neighbors
-from src.gis.spatial_operations import buffer_points_km, urban_exclusion_mask
+from src.gis.spatial_operations import prepare_urban_mask, urban_exclusion_mask
 
 logger = logging.getLogger(__name__)
 STATION_IDS = frozenset({'ST', 'CN', 'RO', 'RM'})
@@ -29,9 +29,11 @@ def reference_stations(frame):
 def run_preprocessing(settings, repo, region_gdf, urban_gdf, power_lines_gdf, transformers_gdf, era5_service=None):
     grid = build_grid(region_gdf, settings.grid.resolution_km)
     cells = grid.gdf
-    urban = urban_gdf.loc[urban_gdf.tipo.isin(settings.urban_exclusion.include_types)]
-    buffers = buffer_points_km(urban, settings.urban_exclusion.buffer_km, grid.projected_crs)
-    excluded = urban_exclusion_mask(cells, buffers).to_numpy()
+    urban, mask = prepare_urban_mask(urban_gdf, region_gdf,
+                                   settings.urban_exclusion.buffer_km, grid.projected_crs,
+                                   settings.urban_exclusion.fill_holes)
+    mask_metadata = mask.attrs.copy()
+    excluded = urban_exclusion_mask(cells, mask).to_numpy()
     cells['valid'] = ~excluded
     cells['invalid_reason'] = np.where(excluded, 'intersects_urban_area', None)
     cells['climate_pixel_id'] = None
@@ -68,12 +70,18 @@ def run_preprocessing(settings, repo, region_gdf, urban_gdf, power_lines_gdf, tr
     stations = reference_stations(transformers_gdf).to_crs(4326) if settings.fitness.use_transformers else empty.assign(station_id=pd.Series(dtype=str), nombre=pd.Series(dtype=str))
     neighbors = build_neighbors(cells.loc[cells.valid])
     layers = dict(region=region_gdf[['geometry']].to_crs(4326),
-                  urban=urban[['geometry']].to_crs(4326), lines=lines, transformers=stations)
+                  urban=urban[['geometry']].to_crs(4326),
+                  urban_envelopes=urban.to_crs(4326), urban_mask=mask,
+                  lines=lines, transformers=stations)
     metadata = dict(config_signature=config_signature(settings), projected_crs=str(grid.projected_crs),
                     grid_origin=list(region_gdf.to_crs(grid.projected_crs).total_bounds[:2]),
                     resolution_km=settings.grid.resolution_km, climate_url=ARCO_SSRD_URL,
                     climate_periods=settings.climate.year_months, coverage='100% unique finite hourly values',
-                    station_ids=stations.station_id.tolist(), processing_version=2)
+                    station_ids=stations.station_id.tolist(), processing_version=3,
+                    urban_source=urban_gdf.attrs.get('source_metadata', {}),
+                    urban_exclusion=dict(**settings.urban_exclusion.model_dump(),
+                                         **mask_metadata,
+                                         excluded_cells=int(excluded.sum())))
     dataset_id = repo.save_dataset(cells, neighbors, climate, layers, metadata)
     cells.attrs['dataset_id'] = dataset_id
     logger.info('Dataset %s: %d/%d celdas válidas, %d registros mensuales por píxel',

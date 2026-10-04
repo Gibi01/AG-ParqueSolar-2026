@@ -12,6 +12,7 @@ Las capas vectoriales y los bloques climáticos ARCO se cachean en disco.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
 from datetime import datetime, timezone
@@ -37,7 +38,7 @@ from src.pipeline.reporting import write_run_outputs
 
 logger = logging.getLogger(__name__)
 
-REQUIRED_LAYER_NAMES = ["region_boundary", "urban_areas_points"]
+REQUIRED_LAYER_NAMES = ["region_boundary", "urban_areas_envelopes"]
 
 
 def _empty_layer(columns: list[str]) -> gpd.GeoDataFrame:
@@ -85,7 +86,7 @@ def cmd_download(settings: Settings, force: bool = False) -> None:
     region = ingest_region_boundary(settings, force=force)
     print(f"Límite provincial: {region.metadata['source']}")
     urban = ingest_urban_areas(settings, region.gdf, force=force)
-    print(f"Zonas urbanas (BAHRA): {len(urban.gdf)} puntos en la región.")
+    print(f"Envolventes INDEC: {len(urban.gdf)} geometrías nacionales (recorte al procesar).")
     if settings.fitness.use_power_lines:
         lines = ingest_power_lines(settings, region.gdf, force=force)
         print(f"Líneas eléctricas: {len(lines.gdf)} segmentos en la región.")
@@ -107,7 +108,8 @@ def _load_cached_layers(settings: Settings) -> tuple[gpd.GeoDataFrame, gpd.GeoDa
             f"Faltan capas en caché: {missing}. Ejecutá 'python -m src.main --download' primero."
         )
     region_gdf, _ = cache.load("region_boundary")
-    urban_gdf, _ = cache.load("urban_areas_points")
+    urban_gdf, urban_metadata = cache.load("urban_areas_envelopes")
+    urban_gdf.attrs['source_metadata'] = urban_metadata
     lines_gdf = cache.load("power_lines")[0] if settings.fitness.use_power_lines else _empty_layer(["line_id", "tension_v"])
     transformers_gdf = cache.load("transformers")[0] if settings.fitness.use_transformers else _empty_layer(["nombre"])
     return region_gdf, urban_gdf, lines_gdf, transformers_gdf
@@ -126,6 +128,15 @@ def cmd_process(settings: Settings, repo: Repository):
 
 def cmd_optimize(settings: Settings, repo: Repository):
     dataset = repo.load_dataset(config_signature(settings))
+    source_hash = dataset['metadata'].get('urban_source', {}).get('sha256')
+    if source_hash:
+        cache = layer_cache_for_settings(settings)
+        metadata_path = cache.cache_dir / 'urban_areas_envelopes.meta.json'
+        if not metadata_path.exists():
+            raise RuntimeError('Falta la referencia urbana actual; ejecutá --download y --process.')
+        current_hash = json.loads(metadata_path.read_text(encoding='utf-8')).get('sha256')
+        if current_hash != source_hash:
+            raise RuntimeError('La fuente INDEC cambió desde el procesamiento; ejecutá --process.')
     evaluator = ParkEvaluator(dataset['grid'], dataset['neighbors'], dataset['lines'],
                               dataset['transformers'], settings.park, settings.fitness)
     result = GeneticAlgorithm(evaluator, settings.genetic_algorithm).run()

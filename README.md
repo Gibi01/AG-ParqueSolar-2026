@@ -456,10 +456,36 @@ Se mantienen exclusivamente las cuatro ET existentes de la fuente nacional:
 Santo Tomé (ST), Río Coronda (CN), Rosario Oeste (RO) y Romang (RM).
 La versión espacial utiliza sus IDs, nombres y posiciones, no atributos de capacidad.
 
-Se conservan las líneas del Consejo Federal, el límite provincial IGN y
-la exclusión por buffers de 3 km alrededor de puntos BAHRA de tipo LOCALIDAD.
-Se excluye todo componente que intersecta un buffer. Son aproximaciones
-geográficas, no límites catastrales ni trazados de conexión.
+Se conservan las líneas del Consejo Federal y el límite provincial IGN.
+La exclusión urbana usa las envolventes oficiales INDEC del Censo 2022,
+descargadas por WFS como polígonos nacionales completos. Se unen los componentes
+de cada aglomerado antes de rellenar huecos interiores; las localidades simples
+permanecen separadas. No se aplica una envolvente convexa. Se agrega el margen
+`urban_exclusion.buffer_km` desde el perímetro y luego se recorta a Santa Fe,
+incluyendo posibles márgenes de localidades exteriores a la provincia.
+
+El margen inicial es **0 km**, una línea de base sin calibración. Los escenarios
+de 100, 250 y 500 m requieren contraste con referencias recientes independientes;
+no son distancias normativas. `fill_holes: true` es una política conservadora
+que excluye también terrenos abiertos encerrados por la ciudad. Toda celda que
+intersecta o toca la máscara se excluye completa. La cartografía representa 2022,
+no límites catastrales ni crecimiento urbano posterior.
+
+La máscara exacta se guarda en el snapshot y el mapa la lee sin reconstruirla.
+Los metadatos registran fuente, SHA-256, año, margen, reparaciones y área de huecos.
+El procesamiento versión 3 requiere un nuevo `--download` y `--process`; las
+corridas BAHRA anteriores se conservan. Configuraciones antiguas con
+`include_types` o `urban_areas.resource_id` se rechazan explícitamente.
+Si una descarga forzada cambia la huella INDEC, `--optimize` exige reprocesar.
+
+Para comparar sobre la grilla histórica sin modificarla:
+
+```powershell
+.\.venv\Scripts\python.exe -m tools.validate_urban_exclusion --run results/spatial/run-20260928T134148-b01f2d3a --output results/urban-validation/nueva-auditoria
+```
+
+El directorio de salida debe ser nuevo. Genera sensibilidad provincial, revisión
+de parques históricos y un mapa de Rosario. Detalles: [migración INDEC](docs/migracion-urbana-indec.md).
 
 No se incorpora inventario EPE, población, demanda, MVA, factor de potencia,
 clasificaciones LOW/MEDIUM/HIGH, flujo de potencia, costos, pendiente ni Pareto.

@@ -29,21 +29,12 @@ park:
   # Restricción EXPERIMENTAL, no capacidad real de ninguna estación.
   max_connection_capacity_mw: 80
 urban_exclusion:
-  # La fuente de "localidades" de BAHRA (ver infrastructure.urban_areas más
-  # abajo) provee PUNTOS, no polígonos. Para aproximar una huella urbana a
-  # fines de exclusión, cada punto de localidad se bufferiza con este radio
-  # (en un CRS proyectado, métrico). Esta es una aproximación de MVP
-  # documentada, no una capa catastral real de límites urbanos.
-  buffer_km: 3.0
-  # BAHRA mezcla centros poblados reales con estructuras edificadas aisladas
-  # (edificios sueltos, escuelas rurales, etc.) bajo distintos valores de
-  # `tipo`. Distribución observada en Santa Fe: LOCALIDAD=386,
-  # SITIO EDIFICADO=473, ENTIDAD=6. Bufferizar TODOS con buffer_km excluye
-  # ~48% de toda la provincia (dominado por los puntos aislados de
-  # "SITIO EDIFICADO", que no son zonas urbanas). Solo estos tipos se tratan
-  # como "urbanos" para el criterio de exclusión; el resto de la capa BAHRA
-  # ingerida igual se guarda completa para trazabilidad.
-  include_types: ["LOCALIDAD"]
+  # Margen desde el perímetro de las envolventes INDEC, en un CRS métrico.
+  # 0 es la línea de base; 0.1/0.25/0.5 km son escenarios aún por calibrar.
+  buffer_km: 0.0
+  # Política conservadora: excluir huecos encerrados, incluso sin edificios.
+  # No genera una envolvente convexa ni une componentes rurales separados.
+  fill_holes: true
 
 climate:
   # Dataset del Copernicus Climate Data Store. DEBE seguir siendo el dataset
@@ -58,9 +49,11 @@ climate:
 
 infrastructure:
   urban_areas:
-    # Localidades BAHRA (puntos), DataStore de datos.gob.ar.
-    # https://datos.gob.ar/dataset/localidades-bahra
-    resource_id: "c1fc1f5b-dfe3-5231-9f3b-f7c703b906c7"
+    provider: "INDEC"
+    wfs_url: "https://geonode.indec.gob.ar/geoserver/geonode/wfs"
+    layer_name: "geonode:localidades_censales"
+    reference_year: 2022
+    page_size: 500
   power_lines:
     # Redes de distribución eléctrica del Consejo Federal, DataStore de datos.gob.ar.
     # Contiene geometrías de línea con un único atributo "tension" (voltaje) —

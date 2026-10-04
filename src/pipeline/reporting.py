@@ -7,7 +7,6 @@ from importlib.metadata import version
 import geopandas as gpd
 import shapely
 
-from src.gis.spatial_operations import buffer_points_km
 from src.visualization.map import build_map
 from src.visualization.search_charts import write_search_charts
 from src.optimization.ranking import territorial_top5
@@ -21,6 +20,8 @@ RESULT_DISCLAIMER = (
 
 
 def write_run_outputs(settings, repo, ga_result, dataset, evaluator):
+    if 'urban_mask' not in dataset or dataset['metadata'].get('processing_version') != 3:
+        raise ValueError('Falta la máscara urbana INDEC persistida; ejecutá --process.')
     run_id = datetime.now(timezone.utc).strftime('run-%Y%m%dT%H%M%S') + '-' + uuid4().hex[:8]
     output = settings.paths.results / run_id
     output.mkdir(parents=True, exist_ok=False)
@@ -64,8 +65,7 @@ def write_run_outputs(settings, repo, ga_result, dataset, evaluator):
         all_pairs.merge(counts, how='left').fillna({'valid_years': 0}).to_csv(output / 'climate_coverage.csv', index=False)
     selected_ids = {cid for raw in territorial.cell_ids for cid in json.loads(raw)}
     selected_grid = dataset['grid'].loc[dataset['grid'].cell_id.isin(selected_ids)]
-    buffers = buffer_points_km(dataset['urban'], settings.urban_exclusion.buffer_km, dataset['grid'].crs)
-    build_map(dataset['region'], selected_grid, buffers, dataset['lines'], dataset['transformers'],
+    build_map(dataset['region'], selected_grid, dataset['urban_mask'], dataset['lines'], dataset['transformers'],
               territorial, output / 'map.html', grid_resolution_km=settings.grid.resolution_km,
               ranking_description=f'TOP 5 territorial: {len(territorial)}/5 alternativas sin superposición; separación mínima {separation:g} km. No acredita conexión eléctrica.',
               climate_period='enero, abril, julio y octubre; extrapolación estacional')

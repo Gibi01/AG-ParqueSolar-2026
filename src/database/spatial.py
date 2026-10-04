@@ -15,7 +15,7 @@ def config_signature(settings):
              for name in ('region', 'grid', 'urban_exclusion', 'climate', 'infrastructure')}
     value['periods'] = settings.climate.year_months
     value['active_sources'] = [settings.fitness.use_solar, settings.fitness.use_power_lines, settings.fitness.use_transformers]
-    value['processing_version'] = 2
+    value['processing_version'] = 3
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
 
 
@@ -91,6 +91,8 @@ class SpatialRepository:
             graph = read('spatial_neighbors')
             neighbors = {int(row.cell_id): tuple(json.loads(row.neighbors)) for row in graph.itertuples()}
             layers = {name: geo('layer_' + name, 'EPSG:4326') for name in ('region', 'urban', 'lines', 'transformers')}
+            layers['urban_mask'] = geo('layer_urban_mask', metadata['projected_crs'])
+            layers['urban_envelopes'] = geo('layer_urban_envelopes', 'EPSG:4326')
             return dict(dataset_id=key, metadata=metadata, grid=grid, neighbors=neighbors,
                         climate=read('pixel_months'), **layers)
 

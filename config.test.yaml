@@ -20,8 +20,8 @@ park:
   max_connection_capacity_mw: 80
 
 urban_exclusion:
-  buffer_km: 3.0
-  include_types: ["LOCALIDAD"]
+  buffer_km: 0.0
+  fill_holes: true
 
 climate:
   dataset: "reanalysis-era5-land-timeseries"
@@ -32,7 +32,11 @@ climate:
 
 infrastructure:
   urban_areas:
-    resource_id: "c1fc1f5b-dfe3-5231-9f3b-f7c703b906c7"
+    provider: "INDEC"
+    wfs_url: "https://geonode.indec.gob.ar/geoserver/geonode/wfs"
+    layer_name: "geonode:localidades_censales"
+    reference_year: 2022
+    page_size: 500
   power_lines:
     resource_id: "3d5eda86-6822-5c39-b366-f89360b0363a"
   transformers:

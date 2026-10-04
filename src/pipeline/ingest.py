@@ -5,10 +5,9 @@ recortarlo. La configuración de esta versión valida que la región sea
 Santa Fe; esta separación conserva la base técnica para admitir otras
 provincias en el futuro, junto con fuentes eléctricas adecuadas.
 
-Las capas de puntos/líneas se obtienen completas desde su fuente y luego
-se recortan espacialmente al límite provincial, en vez de depender de
-coincidencias de texto con el nombre de Santa Fe. La fuente BAHRA es
-nacional; el recurso configurado de líneas corresponde a Santa Fe.
+Las líneas se recortan espacialmente al límite provincial. Las envolventes
+urbanas INDEC se conservan completas a escala nacional hasta el procesamiento,
+para no perder márgenes exteriores ni componentes de aglomerados.
 """
 
 from __future__ import annotations
@@ -28,6 +27,7 @@ import shapely
 from shapely.geometry import shape
 
 from src.api.datos_gob_ar import DatosGobArClient
+from src.api.indec import fetch_urban_envelopes
 from src.config.settings import Settings
 from src.data.cache import RawLayerCache, layer_cache_for_settings
 from src.data.downloader import download_and_extract_zip
@@ -39,6 +39,7 @@ from src.data.validators import (
     validate_not_empty,
 )
 from src.gis.crs import GEOGRAPHIC_CRS
+from src.gis.spatial_operations import repair_urban_envelopes
 
 logger = logging.getLogger(__name__)
 
@@ -126,67 +127,31 @@ def ingest_region_boundary(
     return LayerBundle(boundary, metadata)
 
 
-def _bahra_records_to_geodataframe(records: list[dict[str, Any]]) -> gpd.GeoDataFrame:
-    geometries = []
-    rows = []
-    for rec in records:
-        geojson_raw = rec.get("geojson")
-        if not geojson_raw:
-            continue
-        geometries.append(shape(json.loads(geojson_raw)))
-        rows.append(
-            {
-                "bahra_id": rec.get("_id"),
-                "nom_prov": rec.get("nom_prov"),
-                "nom_depto": rec.get("nom_depto"),
-                "nombre": rec.get("nombre"),
-                "tipo": rec.get("tipo"),
-                "fuente": rec.get("fuente"),
-            }
-        )
-    return gpd.GeoDataFrame(rows, geometry=geometries, crs=GEOGRAPHIC_CRS)
-
-
 def ingest_urban_areas(
     settings: Settings,
     region_boundary: gpd.GeoDataFrame,
     cache: Optional[RawLayerCache] = None,
-    client: Optional[DatosGobArClient] = None,
+    session: Optional[requests.Session] = None,
     force: bool = False,
 ) -> LayerBundle:
-    """Obtiene las localidades BAHRA (puntos) y las recorta al límite de la región.
-
-    Confirmado al inspeccionar el schema: este recurso es geometría de
-    PUNTO (campo `geojson` con tipo "Point"), nunca polígonos — ver README
-    para saber por qué las zonas urbanas se aproximan entonces con un buffer.
-    """
+    """Cache complete national INDEC polygons; crop only after margin processing."""
     cache = cache or layer_cache_for_settings(settings)
-    name = "urban_areas_points"
+    name = "urban_areas_envelopes"
     if cache.exists(name) and not force:
         gdf, metadata = cache.load(name)
+        repair_urban_envelopes(gdf)
+        source = settings.infrastructure.urban_areas
+        if (metadata.get('url') != source.wfs_url or metadata.get('layer_name') != source.layer_name
+                or metadata.get('reference_year') != source.reference_year
+                or metadata.get('national_total_records') != len(gdf) or not metadata.get('sha256')):
+            raise ValueError('La caché INDEC está incompleta o no corresponde a la fuente; repetir --download --force.')
+        gdf.attrs['source_metadata'] = metadata
         return LayerBundle(gdf, metadata)
-
-    client = client or DatosGobArClient()
-    resource_id = settings.infrastructure.urban_areas.resource_id
-    result = client.fetch_all_records(resource_id)
-    gdf = _bahra_records_to_geodataframe(result.records)
-
-    region_geom = region_boundary.union_all()
-    clipped = gdf[gdf.intersects(region_geom)].reset_index(drop=True)
-    validate_not_empty(clipped, "urban_areas (clipped to region)")
-
-    metadata = {
-        "source": "BAHRA - Base de Asentamientos Humanos de la República Argentina (datos.gob.ar DataStore)",
-        "resource_id": resource_id,
-        "url": result.source_url,
-        "downloaded_at": _now(),
-        "geometry_type_confirmed": "Point",
-        "national_total_records": result.total,
-        "clipped_to_region_count": len(clipped),
-        "native_crs": GEOGRAPHIC_CRS,
-    }
-    cache.save(name, clipped, metadata)
-    return LayerBundle(clipped, metadata)
+    gdf, metadata = fetch_urban_envelopes(settings.infrastructure.urban_areas, session)
+    region_geom = region_boundary.to_crs(GEOGRAPHIC_CRS).union_all()
+    validate_not_empty(gdf[gdf.intersects(region_geom)], 'INDEC: localidades en la región')
+    cache.save(name, gdf, metadata)
+    return LayerBundle(gdf, metadata)
 
 
 def _linestring_records_to_geodataframe(records: list[dict[str, Any]]) -> gpd.GeoDataFrame:

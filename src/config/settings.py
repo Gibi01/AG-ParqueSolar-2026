@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Literal
 
 import yaml
 from dotenv import load_dotenv
@@ -57,8 +57,9 @@ class ParkConfig(BaseModel):
 
 
 class UrbanExclusionConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
     buffer_km: float = Field(ge=0)
-    include_types: list[str] = Field(min_length=1)
+    fill_holes: bool = True
 
 
 class ClimateConfig(BaseModel):
@@ -133,7 +134,12 @@ class ClimateConfig(BaseModel):
 
 
 class UrbanAreasSource(BaseModel):
-    resource_id: str
+    model_config = ConfigDict(extra="forbid")
+    provider: Literal['INDEC'] = 'INDEC'
+    wfs_url: str = Field(min_length=1)
+    layer_name: str = Field(min_length=1)
+    reference_year: Literal[2022] = 2022
+    page_size: int = Field(default=500, ge=1, le=1000)
 
 
 class PowerLinesSource(BaseModel):
