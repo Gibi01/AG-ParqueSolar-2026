@@ -179,6 +179,9 @@ def build_map(
                 f"Capacidad EXPERIMENTAL: {row['max_connection_capacity_mw']:.3f} MW (no real de ET)<br>"
                 f"Utilización: {row['capacity_used_percent']:.2f}%<br>"
             )
+            if pd.notna(row.get('compactness_score')):
+                popup_html += (f"Compactación (0–1): {row['compactness_score']:.4f}<br>"
+                               f"Perímetro total: {row['park_perimeter_m']:.1f} m<br>")
             if pd.notna(row['solar_annual_kwh_m2']):
                 popup_html += (f"Irradiación anual estimada: {row['solar_annual_kwh_m2']:.2f} kWh/m²/año<br>"
                                f"Energía anual ideal de referencia: {row['estimated_annual_energy_mwh']:.2f} MWh/año<br>")

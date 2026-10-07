@@ -111,7 +111,7 @@ park:
 
 La capacidad puede cambiarse, por ejemplo, a 40, 120 o 160 MW. Es una restricción
 experimental, no capacidad eléctrica real. Mantener la grilla en `0.5` km y los
-meses climáticos `[1, 4, 7, 10]`. Los cuatro pesos de fitness deben sumar 1.
+meses climáticos `[1, 4, 7, 10]`. Los cinco pesos de fitness deben sumar 1.
 Consultar [Configuración](#configuracion) para conocer el efecto de cada cambio.
 
 <a id="manual-etapas"></a>
@@ -302,10 +302,11 @@ park:
   pv_power_density_mw_per_km2: 31.3
   max_connection_capacity_mw: 80
 fitness:
-  weight_solar: 0.40
+  weight_solar: 0.35
   weight_grid_distance: 0.10
-  weight_transformer_distance: 0.25
-  weight_installed_power: 0.25
+  weight_transformer_distance: 0.35
+  weight_installed_power: 0.10
+  weight_compactness: 0.10
 genetic_algorithm:
   population_size: 50
   generations: 200
@@ -341,7 +342,7 @@ se inventan. Las exclusiones urbanas siguen activas.
 
 `Individual(seed_cell_id, growth_genes)` no contiene polígonos ni coordenadas.
 El fenotipo contiene celdas aceptadas, área, potencia, irradiación, distancias,
-ET asociada, fitness y energía ideal.
+ET asociada, perímetro total, compactación, fitness y energía ideal.
 
 - Los recortes provinciales mantienen su área real. Fragmentos desconectados
   del mismo cuadrado son componentes independientes.
@@ -452,10 +453,11 @@ del calendario horario no se reutilizan como si cumplieran el nuevo criterio.
 ## Fitness y energía
 
 ```text
-fitness = 0,40 × radiation_score
-        + 0,10 × grid_distance_score
-        + 0,25 × transformer_distance_score
-        + 0,25 × installed_power_score
+fitness = 0,35 × solar_score
+        + 0,10 × grid_proximity_score
+        + 0,35 × transformer_proximity_score
+        + 0,10 × installed_power_score
+        + 0,10 × compactness_score
 ```
 
 La irradiación es el promedio ponderado por área de todas las celdas.
@@ -467,6 +469,33 @@ irradiación y distancias de centroides individuales. Los valores fuera del rang
 se limitan a [0,1]; una variable constante tiene score 1. Las distancias se
 invierten para favorecer proximidad. No se renormaliza por generación ni
 por población. El score de potencia es potencia/capacidad experimental.
+
+La compactación usa `C = 4πA/P²`, con área en m² y perímetro en metros
+del CRS proyectado. Se incluye el contorno exterior y los bordes de huecos.
+Su escala es fija [0,1], sin min–max por población: a igual superficie,
+menor perímetro obtiene mayor score. Un bloque de cuatro celdas de 500 m
+tiene perímetro 4000 m y C ≈ 0,7854; una cadena de cuatro tiene 5000 m
+y C ≈ 0,5027. No se exige una forma rectangular.
+
+El evaluador precalcula perímetros de celdas y longitudes compartidas entre
+vecinas una vez al cargar el snapshot. Cada parque usa
+`P = suma(perímetros de celdas) − 2 × suma(bordes compartidos)`, sin unir
+polígonos durante el fitness. Los recortes conservan sus bordes reales.
+`park_perimeter_m` y `compactness_score` se exportan a CSV, GeoJSON,
+SQLite y los popups del mapa; los metadatos registran la fórmula y
+`fitness_version: 2`.
+
+El peso 0,10 es experimental y requiere análisis de sensibilidad. La
+compactación es una preferencia geométrica, no un costo de caminos,
+cableado o construcción. Es independiente de la escala: no premia por sí
+sola mayor potencia. Para recuperar los criterios previos, establecer
+`weight_compactness: 0` y restaurar los otros pesos, manteniendo suma 1.
+Los YAML anteriores omiten el campo y reciben peso 0 por compatibilidad.
+Cambiar este peso no requiere reprocesar ni descargar datos mientras se
+mantengan las fuentes activas; ejecutar `--optimize` genera otra corrida.
+Comparar métricas físicas y compactación entre escenarios, porque cambiar
+los pesos cambia la definición del fitness. `config.test.yaml` conserva
+su escenario previo con compactación desactivada.
 
 Agregar celdas puede aumentar potencia y empeorar otros componentes, pero no
 se garantiza un óptimo pequeño. Dentro del mismo píxel climático, con distancias

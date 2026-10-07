@@ -72,6 +72,12 @@ class SpatialPipelineTests(unittest.TestCase):
                 self.assertEqual(meta['dataset']['urban_exclusion']['interior_holes_count'], 1)
                 self.assertEqual(meta['dataset']['urban_exclusion']['excluded_cells'], 4)
                 self.assertEqual(meta['search_version'], 4)
+                self.assertEqual(meta['fitness_version'], 2)
+                self.assertEqual(meta['compactness']['weight'], .1)
+                ranking = pd.read_csv(run / 'ranking.csv')
+                self.assertTrue(ranking.compactness_score.between(0, 1).all())
+                self.assertTrue(ranking.park_perimeter_m.gt(0).all())
+                self.assertIn('Perímetro total:', html)
                 self.assertEqual(meta['crossover_operator'], 'competitive_homologous')
             finally:
                 repo.engine.dispose()

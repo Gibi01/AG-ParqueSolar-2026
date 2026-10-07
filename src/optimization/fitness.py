@@ -3,11 +3,13 @@
     fitness = weight_solar * normalized_solar
             + weight_grid_distance * normalized_grid_proximity
             + weight_transformer_distance * normalized_transformer_proximity
+            + weight_installed_power * installed_power_score
+            + weight_compactness * compactness_score
 
-Las tres entradas ya están normalizadas a [0, 1] (más cerca/más radiación
-= 1, según src/optimization/fitness.py:normalize_min_max) antes de que
-esta función las combine — este módulo no calcula distancias ni radiación
-por sí mismo.
+Las entradas ya tienen escala [0, 1] antes de combinarlas. Irradiación y
+proximidad usan min-max; potencia usa la capacidad experimental como
+referencia y compactación usa 4πA/P². Este módulo no calcula geometrías
+ni consulta fuentes externas.
 """
 
 from __future__ import annotations
@@ -50,6 +52,7 @@ def compute_fitness(candidates: pd.DataFrame, weights: FitnessWeights) -> pd.Ser
         "grid_proximity_score": weights.weight_grid_distance,
         "transformer_proximity_score": weights.weight_transformer_distance,
         "installed_power_score": weights.weight_installed_power,
+        "compactness_score": weights.weight_compactness,
     }
     required = [column for column, weight in active.items() if weight > 0]
     missing = [c for c in required if c not in candidates.columns]

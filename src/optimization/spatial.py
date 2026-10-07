@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 import math
+from itertools import islice
 
 import numpy as np
 import shapely
@@ -43,6 +44,20 @@ class ParkEvaluator:
             raise ValueError('No hay semillas válidas compatibles con la capacidad experimental.')
         if weights.use_solar and not np.isfinite(self.solar).all():
             raise ValueError('Las celdas válidas requieren irradiación finita.')
+        # Once per evaluator: exact projected boundaries, including clipped cells
+        # and holes. Fitness evaluations need neither intersections nor unions.
+        geometries = self.grid.geometry.to_numpy()
+        self.cell_perimeters = shapely.length(geometries)
+        boundaries = shapely.boundary(geometries)
+        self.shared_borders = {}
+        edges = ((cid, other) for cid in self.positions
+                 for other in self.neighbors.get(cid, ())
+                 if other in self.positions and cid < other)
+        while batch := list(islice(edges, 10000)):
+            left = [self.positions[a] for a, _ in batch]
+            right = [self.positions[b] for _, b in batch]
+            lengths = shapely.length(shapely.intersection(boundaries[left], boundaries[right]))
+            self.shared_borders.update(zip(batch, map(float, lengths)))
         self.lines = lines.to_crs(grid.crs).geometry.to_numpy()
         self.line_tree = shapely.STRtree(self.lines) if len(self.lines) else None
         self.transformers = transformers.to_crs(grid.crs).copy()
@@ -103,7 +118,12 @@ class ParkEvaluator:
         center = shapely.Point(cx, cy)
         irradiation = float(np.dot(areas, self.solar[positions]) / area) if self.weights.use_solar else np.nan
         power = float(area * self.config.pv_power_density_mw_per_km2)
+        perimeter = math.fsum(self.cell_perimeters[i] for i in positions) - 2 * math.fsum(
+            self.shared_borders[(cid, other)] for cid in ids
+            for other in self.neighbors.get(cid, ()) if cid < other and other in selected)
+        compactness = float(np.clip(4 * math.pi * area * 1e6 / perimeter**2, 0, 1))
         metrics = dict(park_area_km2=float(area), park_area_ha=float(area * 100),
+                       park_perimeter_m=float(perimeter), compactness_score=compactness,
                        number_of_cells=len(ids), installed_power_mw=power,
                        max_connection_capacity_mw=self.config.max_connection_capacity_mw,
                        installed_power_score=float(np.clip(power / self.config.max_connection_capacity_mw, 0, 1)),
@@ -129,5 +149,6 @@ class ParkEvaluator:
             (self.weights.weight_solar, 'solar_score'),
             (self.weights.weight_grid_distance, 'grid_proximity_score'),
             (self.weights.weight_transformer_distance, 'transformer_proximity_score'),
-            (self.weights.weight_installed_power, 'installed_power_score')] if weight > 0)
+            (self.weights.weight_installed_power, 'installed_power_score'),
+            (self.weights.weight_compactness, 'compactness_score')] if weight > 0)
         return Park(ids, tuple(accepted), tuple(skipped), metrics, len(individual.growth_genes) - processed)

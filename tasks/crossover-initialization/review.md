@@ -1,0 +1,11 @@
+# Revisión del experimento
+
+Se revisaron los tests antes del runner: uniformidad sobre seed_ids válidos inicialmente, retorno a ciclos territoriales, reproducibilidad y equivalencia con territorial al contar cero candidatos iniciales. Se comprobó el cálculo de interacción con un caso donde el mayor fitness absoluto no implica mayor aporte del crossover. Las estadísticas vectorizadas reproducen el helper previo en casos con empates, ceros y diferencias constantes; enumeración exacta acotada a 20 pares, por lotes de 65.536 combinaciones.
+
+El runner experimental reutiliza validaciones, exportaciones y configuración del runner previo. Los parches sólo existen durante cada condición; no se editó código del AG ni config.yaml. La intervención afecta las primeras 50 elecciones por corrida; reemplazos posteriores y archivo siguen territoriales. Los cuatro samplers capturados por semilla (digest/AG en cada variante) generan poblaciones iniciales iguales. Las poblaciones archivadas reconstruyen exactamente los hashes de cada corrida.
+
+80 corridas completas, 12.080 registros de historia y 2.000 entradas iniciales (una población por semilla/método, compartida con/sin crossover). Fitness y capacidad validados; contigüidad de todos los candidatos exportados por el runner. Huellas de módulos y runner sin cambios durante ejecución; misma configuración y dataset entre métodos. No consultas de red, nuevas dependencias ni claves exportadas.
+
+Análisis principal predefinido: interacción a 150 generaciones. Diferencias de generación 100 y presupuestos son exploratorias y dependientes de las mismas trayectorias. Los presupuestos por checkpoint son aproximaciones, no detenciones exactas; tiempos secuenciales descriptivos, con unos segundos de ejecución de tests durante el primer bloque. Los umbrales no se presentan como criterios de viabilidad real. La evidencia del experimento se limita al dataset y pesos fijados.
+
+93 tests pasan. La primera suite dentro del sandbox falló en archivos temporales por permisos; la misma suite fuera del sandbox pasó completa. Análisis integral ejecutado y gráficos revisados visualmente: se corrigió la etiqueta de la barra de 50 sectores para que no se superponga al título. Sin hallazgos pendientes que impidan interpretar estos resultados dentro de su alcance.

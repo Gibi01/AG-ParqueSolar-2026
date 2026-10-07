@@ -75,10 +75,12 @@ fitness:
   # una ponderación científicamente validada. Deben sumar 1.0 (+/- 1e-6).
   # Peso 0 desactiva el criterio: no se descarga ni se calcula su fuente.
   # La exclusión urbana sigue activa, separada del fitness.
-  weight_solar: 0.40
+  weight_solar: 0.35
   weight_grid_distance: 0.10
-  weight_transformer_distance: 0.40
+  weight_transformer_distance: 0.35
   weight_installed_power: 0.10
+  # Preferencia experimental por menor perímetro a igual superficie: 4πA/P².
+  weight_compactness: 0.10
 
 genetic_algorithm:
   population_size: 50

@@ -61,15 +61,17 @@ def cmd_setup(settings: Settings) -> None:
     print(f"Región configurada: {settings.region.name} (code={settings.region.admin_source.code_value})")
     print(f"Grilla: {settings.grid.resolution_km} km | Capacidad EXPERIMENTAL: {settings.park.max_connection_capacity_mw} MW")
     print(
-        "Pesos fitness: solar={:.2f} linea={:.2f} transformador={:.2f} potencia={:.2f} (suma={:.2f})".format(
+        "Pesos fitness: solar={:.2f} linea={:.2f} transformador={:.2f} potencia={:.2f} compactacion={:.2f} (suma={:.2f})".format(
             settings.fitness.weight_solar,
             settings.fitness.weight_grid_distance,
             settings.fitness.weight_transformer_distance,
             settings.fitness.weight_installed_power,
+            settings.fitness.weight_compactness,
             settings.fitness.weight_solar
             + settings.fitness.weight_grid_distance
             + settings.fitness.weight_transformer_distance
-            + settings.fitness.weight_installed_power,
+            + settings.fitness.weight_installed_power
+            + settings.fitness.weight_compactness,
         )
     )
     print(f"Clima: {settings.climate.dataset} / {settings.climate.variable}")
@@ -142,7 +144,8 @@ def cmd_optimize(settings: Settings, repo: Repository):
     result = GeneticAlgorithm(evaluator, settings.genetic_algorithm).run()
     outputs = write_run_outputs(settings, repo, result, dataset, evaluator)
     print("\nTOP 5 PARQUES — capacidad experimental, no capacidad real de ET")
-    print(result.top5[['rank', 'number_of_cells', 'park_area_km2', 'installed_power_mw', 'fitness']].to_string(index=False))
+    print(result.top5[['rank', 'number_of_cells', 'park_area_km2', 'installed_power_mw',
+                       'park_perimeter_m', 'compactness_score', 'fitness']].to_string(index=False))
     for label, path in outputs.items():
         print(f"  {label}: {path}")
     return result

@@ -158,20 +158,25 @@ class InfrastructureConfig(BaseModel):
 
 
 class FitnessWeights(BaseModel):
+    model_config = ConfigDict(allow_inf_nan=False)
     weight_solar: float = Field(ge=0, le=1)
     weight_grid_distance: float = Field(ge=0, le=1)
     weight_transformer_distance: float = Field(ge=0, le=1)
     weight_installed_power: float = Field(default=0, ge=0, le=1)
+    weight_compactness: float = Field(default=0, ge=0, le=1)
 
     @model_validator(mode="after")
     def _weights_sum_to_one(self) -> "FitnessWeights":
-        total = self.weight_solar + self.weight_grid_distance + self.weight_transformer_distance + self.weight_installed_power
+        total = (self.weight_solar + self.weight_grid_distance + self.weight_transformer_distance
+                 + self.weight_installed_power + self.weight_compactness)
         if abs(total - 1.0) > 1e-6:
             raise ValueError(
                 "fitness weights must sum to 1.0 "
                 f"(got weight_solar={self.weight_solar} + "
                 f"weight_grid_distance={self.weight_grid_distance} + "
-                f"weight_transformer_distance={self.weight_transformer_distance} = {total})"
+                f"weight_transformer_distance={self.weight_transformer_distance} + "
+                f"weight_installed_power={self.weight_installed_power} + "
+                f"weight_compactness={self.weight_compactness} = {total})"
             )
         return self
 
