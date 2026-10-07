@@ -1,0 +1,2 @@
+# Dependencia adicional para figuras; instalar sobre requirements.txt del proyecto.
+matplotlib>=3.9

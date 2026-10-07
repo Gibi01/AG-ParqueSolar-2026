@@ -1,0 +1,363 @@
+[
+  {
+    "number": 1,
+    "title": "Parques solares en Santa Fe",
+    "time": 0.3,
+    "explanation": "Presentar el objetivo: explorar ubicación, forma y superficie de parques solares mediante un algoritmo genético. La defensa dura unos 26 minutos y reserva las diapositivas de apoyo para preguntas.",
+    "decision": "Organizar el relato alrededor de una decisión territorial permite comprender el algoritmo antes de ver su implementación.",
+    "limits": "El resultado es una preselección computacional que requiere estudios posteriores.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md"
+    ],
+    "fullNote": "Tiempo sugerido: 0.3 minutos\n\nEXPLICACIÓN\nPresentar el objetivo: explorar ubicación, forma y superficie de parques solares mediante un algoritmo genético. La defensa dura unos 26 minutos y reserva las diapositivas de apoyo para preguntas.\n\nDECISIONES Y JUSTIFICACIÓN\nOrganizar el relato alrededor de una decisión territorial permite comprender el algoritmo antes de ver su implementación.\n\nALCANCE Y LÍMITES\nEl resultado es una preselección computacional que requiere estudios posteriores.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 2,
+    "title": "La decisión territorial",
+    "time": 1,
+    "explanation": "Un parque necesita buen recurso solar, terreno suficiente y acceso a infraestructura. Elegir sólo la celda con más radiación omite la forma del parque y la conexión. La pregunta del proyecto es qué combinaciones de celdas conviene estudiar primero.",
+    "decision": "Santa Fe es el alcance geográfico fijado. Una búsqueda heurística permite explorar un espacio amplio de ubicaciones y configuraciones sin enumerar todas las formas posibles.",
+    "limits": "El proyecto no estima rentabilidad ni garantiza disponibilidad del suelo. Tampoco prueba que encontró el óptimo global.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md",
+      "https://www.nlr.gov/gis/rev"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nUn parque necesita buen recurso solar, terreno suficiente y acceso a infraestructura. Elegir sólo la celda con más radiación omite la forma del parque y la conexión. La pregunta del proyecto es qué combinaciones de celdas conviene estudiar primero.\n\nDECISIONES Y JUSTIFICACIÓN\nSanta Fe es el alcance geográfico fijado. Una búsqueda heurística permite explorar un espacio amplio de ubicaciones y configuraciones sin enumerar todas las formas posibles.\n\nALCANCE Y LÍMITES\nEl proyecto no estima rentabilidad ni garantiza disponibilidad del suelo. Tampoco prueba que encontró el óptimo global.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md\nhttps://www.nlr.gov/gis/rev\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 3,
+    "title": "Funcionamiento de un parque solar",
+    "time": 1,
+    "explanation": "Los paneles convierten radiación en corriente continua. Los inversores la transforman en corriente alterna. Los transformadores adaptan la tensión y la infraestructura permite conectar la planta con la red.",
+    "decision": "Esta explicación identifica los elementos que motivan nuestras variables: recurso solar, superficie y proximidad a líneas y estaciones.",
+    "limits": "La simulación no dimensiona paneles, inversores, transformadores ni protecciones. La potencia representa capacidad instalada estimada y la energía una producción durante un período.",
+    "sources": [
+      "https://www.nlr.gov/news/video/training-module-3-text-version",
+      "https://atb.nrel.gov/electricity/2024/utility-scale_pv"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nLos paneles convierten radiación en corriente continua. Los inversores la transforman en corriente alterna. Los transformadores adaptan la tensión y la infraestructura permite conectar la planta con la red.\n\nDECISIONES Y JUSTIFICACIÓN\nEsta explicación identifica los elementos que motivan nuestras variables: recurso solar, superficie y proximidad a líneas y estaciones.\n\nALCANCE Y LÍMITES\nLa simulación no dimensiona paneles, inversores, transformadores ni protecciones. La potencia representa capacidad instalada estimada y la energía una producción durante un período.\n\nFUENTES\nhttps://www.nlr.gov/news/video/training-module-3-text-version\nhttps://atb.nrel.gov/electricity/2024/utility-scale_pv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 4,
+    "title": "Variables que usa el modelo",
+    "time": 1,
+    "explanation": "Los cuatro criterios del fitness son irradiación anual estimada, proximidad a líneas, proximidad a las cuatro estaciones de referencia y potencia instalada estimada por área. Las zonas urbanas son una exclusión previa.",
+    "decision": "Distinguir criterios graduables de restricciones evita que un puntaje alto compense una celda urbana. La potencia se deriva de la superficie, no de la radiación.",
+    "limits": "Las distancias se calculan desde el centroide del parque. Se usan las geometrías disponibles y cuatro ET seleccionadas, no una representación completa de todas las conexiones posibles.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nLos cuatro criterios del fitness son irradiación anual estimada, proximidad a líneas, proximidad a las cuatro estaciones de referencia y potencia instalada estimada por área. Las zonas urbanas son una exclusión previa.\n\nDECISIONES Y JUSTIFICACIÓN\nDistinguir criterios graduables de restricciones evita que un puntaje alto compense una celda urbana. La potencia se deriva de la superficie, no de la radiación.\n\nALCANCE Y LÍMITES\nLas distancias se calculan desde el centroide del parque. Se usan las geometrías disponibles y cuatro ET seleccionadas, no una representación completa de todas las conexiones posibles.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 5,
+    "title": "Radiación solar en Santa Fe",
+    "time": 1,
+    "explanation": "La fuente ERA5-Land entrega SSRD horario. El proyecto convierte J/m² a kWh/m², exige meses completos, promedia años por mes y pondera días de estación para enero, abril, julio y octubre. El parque usa una media ponderada por el área de sus celdas.",
+    "decision": "Los cuatro meses representan las estaciones y reducen el volumen de datos. El requisito de horas completas evita comparar un mes incompleto con otro completo.",
+    "limits": "Es una estimación estacional. El historial empieza en 2024 y cubre 11 períodos hasta julio de 2026. Es breve y no sustituye una climatología larga. Los puntos del mapa representan agregados por píxel climático, no una medición independiente por celda.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/arco.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/climatology.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nLa fuente ERA5-Land entrega SSRD horario. El proyecto convierte J/m² a kWh/m², exige meses completos, promedia años por mes y pondera días de estación para enero, abril, julio y octubre. El parque usa una media ponderada por el área de sus celdas.\n\nDECISIONES Y JUSTIFICACIÓN\nLos cuatro meses representan las estaciones y reducen el volumen de datos. El requisito de horas completas evita comparar un mes incompleto con otro completo.\n\nALCANCE Y LÍMITES\nEs una estimación estacional. El historial empieza en 2024 y cubre 11 períodos hasta julio de 2026. Es breve y no sustituye una climatología larga. Los puntos del mapa representan agregados por píxel climático, no una medición independiente por celda.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/arco.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/climatology.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 6,
+    "title": "Infraestructura eléctrica de referencia",
+    "time": 1,
+    "explanation": "El modelo calcula la menor distancia entre el centroide del parque y las líneas disponibles y la menor distancia a las cuatro ET: Río Coronda, Romang, Rosario Oeste y Santo Tomé. Ambas son medidas geográficas en un sistema proyectado.",
+    "decision": "Usar distancias aporta un indicador simple de proximidad. Mantener cuatro identidades estables hace el escenario repetible y evita confundir entidades entre corridas.",
+    "limits": "La selección de cuatro ET es una delimitación del MVP que restringe los resultados. Cercanía no acredita posibilidad de conexión. No usamos capacidad libre, MVA, flujos eléctricos ni una ruta de cableado. La capa de líneas disponible no equivale a una red de transporte validada para conexión.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nEl modelo calcula la menor distancia entre el centroide del parque y las líneas disponibles y la menor distancia a las cuatro ET: Río Coronda, Romang, Rosario Oeste y Santo Tomé. Ambas son medidas geográficas en un sistema proyectado.\n\nDECISIONES Y JUSTIFICACIÓN\nUsar distancias aporta un indicador simple de proximidad. Mantener cuatro identidades estables hace el escenario repetible y evita confundir entidades entre corridas.\n\nALCANCE Y LÍMITES\nLa selección de cuatro ET es una delimitación del MVP que restringe los resultados. Cercanía no acredita posibilidad de conexión. No usamos capacidad libre, MVA, flujos eléctricos ni una ruta de cableado. La capa de líneas disponible no equivale a una red de transporte validada para conexión.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 7,
+    "title": "Variables pendientes para evaluar viabilidad",
+    "time": 1.2,
+    "explanation": "Una preselección completa también debería considerar pendiente, inundaciones y cuerpos de agua, áreas protegidas, uso y propiedad del suelo, acceso vial y capacidad de conexión. Estos factores pueden modificar o invalidar los candidatos actuales.",
+    "decision": "No se implementaron porque el MVP prioriza la búsqueda espacial con las fuentes actualmente integradas. Cada factor necesita una fuente verificable, una regla y validación propia. Esto delimita el alcance, no demuestra irrelevancia.",
+    "limits": "Pendiente: falta integrar y validar un modelo de elevación. Inundaciones y agua: falta una máscara hídrica y de amenaza. Áreas protegidas: falta integrar zonificación ambiental. Propiedad, uso y accesos: faltan datos parcelarios, permisos y costos. Capacidad real: faltan capacidad disponible y un estudio eléctrico. Temperatura, inclinación, sombras y pérdidas requieren un modelo de producción fotovoltaica. Costos y tarifas requieren un modelo económico. Ninguna de estas omisiones autoriza construir en el candidato.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md",
+      "https://www.nlr.gov/gis/rev",
+      "https://atb.nrel.gov/electricity/2024/utility-scale_pv"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nUna preselección completa también debería considerar pendiente, inundaciones y cuerpos de agua, áreas protegidas, uso y propiedad del suelo, acceso vial y capacidad de conexión. Estos factores pueden modificar o invalidar los candidatos actuales.\n\nDECISIONES Y JUSTIFICACIÓN\nNo se implementaron porque el MVP prioriza la búsqueda espacial con las fuentes actualmente integradas. Cada factor necesita una fuente verificable, una regla y validación propia. Esto delimita el alcance, no demuestra irrelevancia.\n\nALCANCE Y LÍMITES\nPendiente: falta integrar y validar un modelo de elevación. Inundaciones y agua: falta una máscara hídrica y de amenaza. Áreas protegidas: falta integrar zonificación ambiental. Propiedad, uso y accesos: faltan datos parcelarios, permisos y costos. Capacidad real: faltan capacidad disponible y un estudio eléctrico. Temperatura, inclinación, sombras y pérdidas requieren un modelo de producción fotovoltaica. Costos y tarifas requieren un modelo económico. Ninguna de estas omisiones autoriza construir en el candidato.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md\nhttps://www.nlr.gov/gis/rev\nhttps://atb.nrel.gov/electricity/2024/utility-scale_pv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 8,
+    "title": "Supuestos y restricciones",
+    "time": 1.2,
+    "explanation": "Trabajamos con celdas de 500 metros y parques que crecen por bordes compartidos. Se excluyen las celdas que tocan la máscara urbana INDEC. La potencia es el área real por 31,3 MW/km² y el crecimiento se limita a 80 MW.",
+    "decision": "500 m es la discretización del problema. La contigüidad garantiza un conjunto conectado. La exclusión urbana es conservadora, con buffer cero y relleno de huecos internos. La densidad de potencia procede del estudio NREL de uso de tierra: 7,9 acres/MWac de área total en grandes plantas FV, equivalentes aproximadamente a 31,3 MWac/km². Los 80 MW son un escenario experimental configurable.",
+    "limits": "No existe calibración local de la densidad. El límite de 80 MW no corresponde a capacidad libre de ninguna ET. Los pesos 0,4/0,1/0,4/0,1 son iniciales y requieren análisis de sensibilidad. La exclusión urbana no cubre las restricciones hídricas o ambientales pendientes.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "https://docs.nrel.gov/docs/fy13osti/56290.pdf"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nTrabajamos con celdas de 500 metros y parques que crecen por bordes compartidos. Se excluyen las celdas que tocan la máscara urbana INDEC. La potencia es el área real por 31,3 MW/km² y el crecimiento se limita a 80 MW.\n\nDECISIONES Y JUSTIFICACIÓN\n500 m es la discretización del problema. La contigüidad garantiza un conjunto conectado. La exclusión urbana es conservadora, con buffer cero y relleno de huecos internos. La densidad de potencia procede del estudio NREL de uso de tierra: 7,9 acres/MWac de área total en grandes plantas FV, equivalentes aproximadamente a 31,3 MWac/km². Los 80 MW son un escenario experimental configurable.\n\nALCANCE Y LÍMITES\nNo existe calibración local de la densidad. El límite de 80 MW no corresponde a capacidad libre de ninguna ET. Los pesos 0,4/0,1/0,4/0,1 son iniciales y requieren análisis de sensibilidad. La exclusión urbana no cubre las restricciones hídricas o ambientales pendientes.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nhttps://docs.nrel.gov/docs/fy13osti/56290.pdf\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 9,
+    "title": "Representación de un parque",
+    "time": 1.3,
+    "explanation": "Un individuo contiene una celda semilla y una secuencia variable de genes enteros. El decodificador empieza por la semilla y usa cada gen para elegir una celda de la frontera. Así aparecen ubicación, forma y superficie.",
+    "decision": "La representación construye contigüidad por crecimiento. Una longitud variable permite explorar distintos tamaños. La secuencia guarda decisiones de crecimiento, no coordenadas de cada panel.",
+    "limits": "Un gen no es una dirección fija. Su significado depende de la frontera actual. Genes distintos pueden dar el mismo conjunto de celdas. La longitud del cromosoma puede exceder la cantidad de genes que realmente produce crecimiento.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/initialization.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1.3 minutos\n\nEXPLICACIÓN\nUn individuo contiene una celda semilla y una secuencia variable de genes enteros. El decodificador empieza por la semilla y usa cada gen para elegir una celda de la frontera. Así aparecen ubicación, forma y superficie.\n\nDECISIONES Y JUSTIFICACIÓN\nLa representación construye contigüidad por crecimiento. Una longitud variable permite explorar distintos tamaños. La secuencia guarda decisiones de crecimiento, no coordenadas de cada panel.\n\nALCANCE Y LÍMITES\nUn gen no es una dirección fija. Su significado depende de la frontera actual. Genes distintos pueden dar el mismo conjunto de celdas. La longitud del cromosoma puede exceder la cantidad de genes que realmente produce crecimiento.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/initialization.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 10,
+    "title": "Fitness: cómo comparamos parques",
+    "time": 1.2,
+    "explanation": "El fitness combina cuatro puntajes entre cero y uno. Más irradiación aumenta el puntaje solar, menos distancia aumenta la proximidad y más potencia aumenta el aprovechamiento del límite. Los pesos suman uno.",
+    "decision": "Una suma ponderada proporciona un orden explícito y fácil de auditar. Los pesos iniciales priorizan radiación y ET, con 40% cada una, y asignan 10% a líneas y 10% a potencia.",
+    "limits": "Estos pesos no se validaron científicamente y no representan euros, producción real ni probabilidad de éxito. Un fitness alto significa buen desempeño bajo el escenario configurado. Los criterios pueden compensarse dentro de esta suma.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nEl fitness combina cuatro puntajes entre cero y uno. Más irradiación aumenta el puntaje solar, menos distancia aumenta la proximidad y más potencia aumenta el aprovechamiento del límite. Los pesos suman uno.\n\nDECISIONES Y JUSTIFICACIÓN\nUna suma ponderada proporciona un orden explícito y fácil de auditar. Los pesos iniciales priorizan radiación y ET, con 40% cada una, y asignan 10% a líneas y 10% a potencia.\n\nALCANCE Y LÍMITES\nEstos pesos no se validaron científicamente y no representan euros, producción real ni probabilidad de éxito. Un fitness alto significa buen desempeño bajo el escenario configurado. Los criterios pueden compensarse dentro de esta suma.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 11,
+    "title": "Flujo de trabajo del proyecto",
+    "time": 1,
+    "explanation": "Primero se obtienen las fuentes y se guarda la caché. Luego se validan geometrías y cobertura climática, se construye la grilla y sus vecinos, y se guarda un snapshot local. El AG carga ese dataset para buscar y exporta mapas, rankings e historial.",
+    "decision": "Separar preparación de optimización evita repetir descargas por individuo y permite ejecutar múltiples escenarios sobre el mismo conjunto de datos. El identificador del dataset y la configuración hacen trazable cada resultado.",
+    "limits": "El mapa puede usar teselas web, pero el bucle del AG trabaja sólo con datos locales. Cambios incompatibles de fuente o configuración espacial exigen reprocesar.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/main.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/database/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nPrimero se obtienen las fuentes y se guarda la caché. Luego se validan geometrías y cobertura climática, se construye la grilla y sus vecinos, y se guarda un snapshot local. El AG carga ese dataset para buscar y exporta mapas, rankings e historial.\n\nDECISIONES Y JUSTIFICACIÓN\nSeparar preparación de optimización evita repetir descargas por individuo y permite ejecutar múltiples escenarios sobre el mismo conjunto de datos. El identificador del dataset y la configuración hacen trazable cada resultado.\n\nALCANCE Y LÍMITES\nEl mapa puede usar teselas web, pero el bucle del AG trabaja sólo con datos locales. Cambios incompatibles de fuente o configuración espacial exigen reprocesar.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/main.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/preprocess.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/database/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 12,
+    "title": "Parámetros de la nueva corrida",
+    "time": 0.8,
+    "explanation": "La corrida del 6 de octubre usa semilla aleatoria 20261006, 50 individuos y 200 generaciones. Se mantienen 75% de cruce, 20% de mutación, dos élites y torneo de tres. El escenario es 80 MW, densidad 31,3 y pesos 0,4/0,1/0,4/0,1.",
+    "decision": "Mantener el escenario y cambiar la semilla respecto de la presentación anterior produce un experimento nuevo comparable. Los parámetros se conservaron para demostrar el comportamiento del proyecto actual, no se eligieron mediante una búsqueda de hiperparámetros.",
+    "limits": "La semilla reproduce la secuencia pseudoaleatoria bajo el mismo dataset y entorno. Una sola corrida no mide robustez estadística. El criterio de parada es completar 200 generaciones, con evaluación inicial en generación cero.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/config_corrida.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json"
+    ],
+    "fullNote": "Tiempo sugerido: 0.8 minutos\n\nEXPLICACIÓN\nLa corrida del 6 de octubre usa semilla aleatoria 20261006, 50 individuos y 200 generaciones. Se mantienen 75% de cruce, 20% de mutación, dos élites y torneo de tres. El escenario es 80 MW, densidad 31,3 y pesos 0,4/0,1/0,4/0,1.\n\nDECISIONES Y JUSTIFICACIÓN\nMantener el escenario y cambiar la semilla respecto de la presentación anterior produce un experimento nuevo comparable. Los parámetros se conservaron para demostrar el comportamiento del proyecto actual, no se eligieron mediante una búsqueda de hiperparámetros.\n\nALCANCE Y LÍMITES\nLa semilla reproduce la secuencia pseudoaleatoria bajo el mismo dataset y entorno. Una sola corrida no mide robustez estadística. El criterio de parada es completar 200 generaciones, con evaluación inicial en generación cero.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/config_corrida.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 13,
+    "title": "Un cromosoma real y su crecimiento",
+    "time": 1.2,
+    "explanation": "El padre A del cruce real tiene semilla194480 y cuatro genes:2083272650,938200436,671673529,538685106. Mostrar tres pasos de decodificación: sólo semilla, primer par de genes y secuencia completa, que genera cinco celdas y39,125MW.",
+    "decision": "Seguir prefijos de un cromosoma permite ver cómo una secuencia se transforma en un parque sin inventar una geometría. El orden de la frontera es determinista y cada selección usa gen módulo cantidad de vecinos candidatos.",
+    "limits": "Estos son pasos de crecimiento dentro de un individuo, no generaciones del AG. El ejemplo se observó como padre del evento de cruce que produce la generación2, no se afirma que fuera el mejor de la población.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nEl padre A del cruce real tiene semilla194480 y cuatro genes:2083272650,938200436,671673529,538685106. Mostrar tres pasos de decodificación: sólo semilla, primer par de genes y secuencia completa, que genera cinco celdas y39,125MW.\n\nDECISIONES Y JUSTIFICACIÓN\nSeguir prefijos de un cromosoma permite ver cómo una secuencia se transforma en un parque sin inventar una geometría. El orden de la frontera es determinista y cada selección usa gen módulo cantidad de vecinos candidatos.\n\nALCANCE Y LÍMITES\nEstos son pasos de crecimiento dentro de un individuo, no generaciones del AG. El ejemplo se observó como padre del evento de cruce que produce la generación2, no se afirma que fuera el mejor de la población.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 14,
+    "title": "Población inicial y selección",
+    "time": 1.1,
+    "explanation": "La inicialización recorre territorios ocupados de50×50km en orden aleatorio y escoge una semilla dentro de cada uno. Genera longitudes de secuencia aleatorias y evalúa50parques. En cada torneo extrae tres candidatos con reemplazo y conserva el de mayor fitness.",
+    "decision": "El muestreo por territorios favorece cobertura espacial en lugar de concentrar todas las semillas en una zona. El torneo ejerce presión selectiva conservando azar. Dos élites distintas por conjunto de celdas pasan directamente a la próxima población.",
+    "limits": "Cobertura equilibrada no es un muestreo uniforme por superficie. El gráfico ilustra el mecanismo, no un torneo observado. Los ejemplos de operadores de las siguientes slides sí son eventos registrados. Los parámetros de torneo y elitismo no se calibraron para demostrar optimalidad.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/initialization.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/selection.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1.1 minutos\n\nEXPLICACIÓN\nLa inicialización recorre territorios ocupados de50×50km en orden aleatorio y escoge una semilla dentro de cada uno. Genera longitudes de secuencia aleatorias y evalúa50parques. En cada torneo extrae tres candidatos con reemplazo y conserva el de mayor fitness.\n\nDECISIONES Y JUSTIFICACIÓN\nEl muestreo por territorios favorece cobertura espacial en lugar de concentrar todas las semillas en una zona. El torneo ejerce presión selectiva conservando azar. Dos élites distintas por conjunto de celdas pasan directamente a la próxima población.\n\nALCANCE Y LÍMITES\nCobertura equilibrada no es un muestreo uniforme por superficie. El gráfico ilustra el mecanismo, no un torneo observado. Los ejemplos de operadores de las siguientes slides sí son eventos registrados. Los parámetros de torneo y elitismo no se calibraron para demostrar optimalidad.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/initialization.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/selection.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 15,
+    "title": "Cruce de secuencias: evento real",
+    "time": 1.3,
+    "explanation": "En la generación2, el padre A tiene semilla194480 y cuatro genes; el B tiene semilla78089 y seis. El cruce corta A tras el tercer gen y B tras el cuarto. El hijo A conserva la semilla A y combina A1,A2,A3,B5,B6. Pasa de cinco a seis celdas y su fitness aumenta de0,5273 a0,5371.",
+    "decision": "El cruce de prefijo y sufijo admite secuencias de longitudes diferentes. Conservar la semilla del prefijo da un inicio definido para el nuevo decodificado. La probabilidad de75% se aplica por pareja.",
+    "limits": "Los genes del otro padre se reinterpretan en la frontera del hijo, no transportan celdas físicas de B. El código también crea un hijo recíproco. Este evento mejoró al padre A, pero el cruce no garantiza mejora.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/crossover.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json"
+    ],
+    "fullNote": "Tiempo sugerido: 1.3 minutos\n\nEXPLICACIÓN\nEn la generación2, el padre A tiene semilla194480 y cuatro genes; el B tiene semilla78089 y seis. El cruce corta A tras el tercer gen y B tras el cuarto. El hijo A conserva la semilla A y combina A1,A2,A3,B5,B6. Pasa de cinco a seis celdas y su fitness aumenta de0,5273 a0,5371.\n\nDECISIONES Y JUSTIFICACIÓN\nEl cruce de prefijo y sufijo admite secuencias de longitudes diferentes. Conservar la semilla del prefijo da un inicio definido para el nuevo decodificado. La probabilidad de75% se aplica por pareja.\n\nALCANCE Y LÍMITES\nLos genes del otro padre se reinterpretan en la frontera del hijo, no transportan celdas físicas de B. El código también crea un hijo recíproco. Este evento mejoró al padre A, pero el cruce no garantiza mejora.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/crossover.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 16,
+    "title": "Mutación: una celda nueva",
+    "time": 1.2,
+    "explanation": "En la generación1, el individuo de semilla23162 añade el gen7 a su secuencia. El parque crece de7 a8celdas, de54,775 a62,6MW. El fitness pasa de0,5174 a0,5273.",
+    "decision": "La mutación efectiva elige al azar entre operaciones aplicables: añadir un gen que permita crecer, borrar el último crecimiento aceptado, cambiar un gen aceptado o cambiar la semilla. Reintenta hasta cuatro veces buscando un cambio de celdas.",
+    "limits": "20% es probabilidad por hijo, no cantidad fija de mutaciones. Un cambio efectivo modifica el parque, pero no implica mejora del fitness. En el caso mostrado hubo un intento. Dorado señala semilla y nueva celda.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/mutation.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nEn la generación1, el individuo de semilla23162 añade el gen7 a su secuencia. El parque crece de7 a8celdas, de54,775 a62,6MW. El fitness pasa de0,5174 a0,5273.\n\nDECISIONES Y JUSTIFICACIÓN\nLa mutación efectiva elige al azar entre operaciones aplicables: añadir un gen que permita crecer, borrar el último crecimiento aceptado, cambiar un gen aceptado o cambiar la semilla. Reintenta hasta cuatro veces buscando un cambio de celdas.\n\nALCANCE Y LÍMITES\n20% es probabilidad por hijo, no cantidad fija de mutaciones. Un cambio efectivo modifica el parque, pero no implica mejora del fitness. En el caso mostrado hubo un intento. Dorado señala semilla y nueva celda.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/mutation.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 17,
+    "title": "Ciclo de una generación",
+    "time": 1,
+    "explanation": "El ciclo evalúa los50parques, conserva dos élites, selecciona hijos por torneo, cruza parejas, muta hijos y controla duplicados antes de formar la próxima población. Repite hasta200generaciones.",
+    "decision": "El elitismo conserva soluciones buenas. Cruce y mutación exploran otras configuraciones. El control de duplicados intenta evitar repetir el mismo conjunto de celdas, con hasta ocho reemplazos por muestreo.",
+    "limits": "Las élites pasan directamente a la nueva población, sin aplicarles los operadores. El flujo es conceptual y no expresa esa bifurcación literalmente. Si los reintentos se agotan se conserva el candidato. Además del mejor actual, un archivo conserva hasta10candidatos por territorio.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nEl ciclo evalúa los50parques, conserva dos élites, selecciona hijos por torneo, cruza parejas, muta hijos y controla duplicados antes de formar la próxima población. Repite hasta200generaciones.\n\nDECISIONES Y JUSTIFICACIÓN\nEl elitismo conserva soluciones buenas. Cruce y mutación exploran otras configuraciones. El control de duplicados intenta evitar repetir el mismo conjunto de celdas, con hasta ocho reemplazos por muestreo.\n\nALCANCE Y LÍMITES\nLas élites pasan directamente a la nueva población, sin aplicarles los operadores. El flujo es conceptual y no expresa esa bifurcación literalmente. Si los reintentos se agotan se conserva el candidato. Además del mejor actual, un archivo conserva hasta10candidatos por territorio.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 18,
+    "title": "Evolución de la nueva corrida",
+    "time": 1.3,
+    "explanation": "El mejor fitness crece de0,6384 a0,7174. La mejora relativa del puntaje es12,4%. El historial registra201evaluaciones de población, de0 a200. La búsqueda visitó6309parques distintos.",
+    "decision": "Mostrar el mejor y la media permite distinguir progreso del líder y comportamiento de la población. Conservar el historial y métricas por generación permite auditar la búsqueda.",
+    "limits": "La mejora del fitness no es un aumento porcentual de producción. Una meseta no prueba óptimo global. Las élites reducen el riesgo de perder el mejor candidato y no eliminan la variabilidad entre semillas.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/history.csv"
+    ],
+    "fullNote": "Tiempo sugerido: 1.3 minutos\n\nEXPLICACIÓN\nEl mejor fitness crece de0,6384 a0,7174. La mejora relativa del puntaje es12,4%. El historial registra201evaluaciones de población, de0 a200. La búsqueda visitó6309parques distintos.\n\nDECISIONES Y JUSTIFICACIÓN\nMostrar el mejor y la media permite distinguir progreso del líder y comportamiento de la población. Conservar el historial y métricas por generación permite auditar la búsqueda.\n\nALCANCE Y LÍMITES\nLa mejora del fitness no es un aumento porcentual de producción. Una meseta no prueba óptimo global. Las élites reducen el riesgo de perder el mejor candidato y no eliminan la variabilidad entre semillas.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/history.csv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 19,
+    "title": "Mejor candidato encontrado",
+    "time": 1.2,
+    "explanation": "El mejor parque tiene10celdas completas,2,5km² o250ha y78,25MW estimados. Su irradiación media es1.896,0kWh/m²/año. Está a14,9m de la línea disponible más próxima y a175,1km de Santo Tomé, la ET de referencia más cercana.",
+    "decision": "La combinación favorece la irradiación máxima del dataset y proximidad a una línea. El score de potencia es78,25/80=0,9781. En conjunto produce fitness0,7174.",
+    "limits": "La gran distancia a la ET muestra una compensación de criterios y el efecto de trabajar con sólo cuatro estaciones. La distancia de14,9m se refiere al centroide y geometría de la línea, no a una traza viable. Deben revisarse las variables de viabilidad pendientes antes de interpretar el candidato como sitio construible.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/ranking.csv"
+    ],
+    "fullNote": "Tiempo sugerido: 1.2 minutos\n\nEXPLICACIÓN\nEl mejor parque tiene10celdas completas,2,5km² o250ha y78,25MW estimados. Su irradiación media es1.896,0kWh/m²/año. Está a14,9m de la línea disponible más próxima y a175,1km de Santo Tomé, la ET de referencia más cercana.\n\nDECISIONES Y JUSTIFICACIÓN\nLa combinación favorece la irradiación máxima del dataset y proximidad a una línea. El score de potencia es78,25/80=0,9781. En conjunto produce fitness0,7174.\n\nALCANCE Y LÍMITES\nLa gran distancia a la ET muestra una compensación de criterios y el efecto de trabajar con sólo cuatro estaciones. La distancia de14,9m se refiere al centroide y geometría de la línea, no a una traza viable. Deben revisarse las variables de viabilidad pendientes antes de interpretar el candidato como sitio construible.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/ranking.csv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 20,
+    "title": "Alternativas territoriales",
+    "time": 0.8,
+    "explanation": "El ranking general ordena por fitness y puede contener variantes superpuestas. El ranking territorial selecciona hasta cinco alternativas sin superposición desde el archivo de candidatos. El mapa muestra sus centroides.",
+    "decision": "Separar ambos rankings entrega opciones espaciales además de variaciones del líder. La separación adicional configurada es0km: se prohíbe solapar, pero pueden existir alternativas próximas.",
+    "limits": "Las alternativas territoriales dependen del archivo acotado, no de una búsqueda exhaustiva. El mapa de la diapositiva ubica centroides y no muestra dimensiones de los parques a escala provincial.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/ranking.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/ranking_territorial.csv"
+    ],
+    "fullNote": "Tiempo sugerido: 0.8 minutos\n\nEXPLICACIÓN\nEl ranking general ordena por fitness y puede contener variantes superpuestas. El ranking territorial selecciona hasta cinco alternativas sin superposición desde el archivo de candidatos. El mapa muestra sus centroides.\n\nDECISIONES Y JUSTIFICACIÓN\nSeparar ambos rankings entrega opciones espaciales además de variaciones del líder. La separación adicional configurada es0km: se prohíbe solapar, pero pueden existir alternativas próximas.\n\nALCANCE Y LÍMITES\nLas alternativas territoriales dependen del archivo acotado, no de una búsqueda exhaustiva. El mapa de la diapositiva ubica centroides y no muestra dimensiones de los parques a escala provincial.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/ranking.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/ranking_territorial.csv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 21,
+    "title": "Conclusiones y próximos pasos",
+    "time": 1.4,
+    "explanation": "La corrida demuestra que el AG construye parques conectados y mejora el puntaje bajo un escenario explícito. El proyecto entrega candidatos, un mapa y un historial reproducible. El resultado también muestra que buenas puntuaciones pueden coexistir con limitaciones de conexión.",
+    "decision": "La principal contribución es integrar crecimiento espacial, criterios comparables y trazabilidad de búsqueda. Separar la preparación de datos permite ensayar nuevas semillas y parámetros.",
+    "limits": "No se demostró optimalidad ni robustez con una sola corrida. Próximos pasos: integrar restricciones territoriales faltantes y capacidad de red, ampliar la referencia climática, repetir semillas, variar pesos y comparar con una búsqueda aleatoria bajo igual presupuesto. Modelar producción y economía requiere trabajo adicional.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/history.csv"
+    ],
+    "fullNote": "Tiempo sugerido: 1.4 minutos\n\nEXPLICACIÓN\nLa corrida demuestra que el AG construye parques conectados y mejora el puntaje bajo un escenario explícito. El proyecto entrega candidatos, un mapa y un historial reproducible. El resultado también muestra que buenas puntuaciones pueden coexistir con limitaciones de conexión.\n\nDECISIONES Y JUSTIFICACIÓN\nLa principal contribución es integrar crecimiento espacial, criterios comparables y trazabilidad de búsqueda. Separar la preparación de datos permite ensayar nuevas semillas y parámetros.\n\nALCANCE Y LÍMITES\nNo se demostró optimalidad ni robustez con una sola corrida. Próximos pasos: integrar restricciones territoriales faltantes y capacidad de red, ampliar la referencia climática, repetir semillas, variar pesos y comparar con una búsqueda aleatoria bajo igual presupuesto. Modelar producción y economía requiere trabajo adicional.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/README.md\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/history.csv\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 22,
+    "title": "Detalle técnico: normalización",
+    "time": 1,
+    "explanation": "Para irradiación se utiliza min-max: (x−mín)/(máx−mín). Para distancias se invierte:1−min-max. Los límites provienen de todas las celdas válidas y permanecen fijos en la corrida. La potencia se normaliza conP/80MW.",
+    "decision": "Fijar los límites evita que cambiar la población altere la escala de comparación. Las métricas del parque usan irradiación media ponderada por área y distancias desde su centroide. Se recorta a[0,1]. Si mínimo y máximo coinciden, el criterio asigna1 a todos.",
+    "limits": "No usamos z-score ni renormalizamos por generación. Estos puntajes son relativos al dataset y escenario. No comparar directamente fitness entre escenarios de distinto límite sin analizar sus componentes.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nPara irradiación se utiliza min-max: (x−mín)/(máx−mín). Para distancias se invierte:1−min-max. Los límites provienen de todas las celdas válidas y permanecen fijos en la corrida. La potencia se normaliza conP/80MW.\n\nDECISIONES Y JUSTIFICACIÓN\nFijar los límites evita que cambiar la población altere la escala de comparación. Las métricas del parque usan irradiación media ponderada por área y distancias desde su centroide. Se recorta a[0,1]. Si mínimo y máximo coinciden, el criterio asigna1 a todos.\n\nALCANCE Y LÍMITES\nNo usamos z-score ni renormalizamos por generación. Estos puntajes son relativos al dataset y escenario. No comparar directamente fitness entre escenarios de distinto límite sin analizar sus componentes.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 23,
+    "title": "Implementación y bibliotecas",
+    "time": 0.8,
+    "explanation": "Python organiza el pipeline y el AG propio. NumPy gestiona azar y cálculos, pandas los registros, GeoPandas y Shapely las geometrías y distancias, y PyProj los sistemas de coordenadas. xarray,Zarr,Dask y fsspec leen el clima. SQLAlchemy y SQLite persisten datasets y corridas. Folium y HTML presentan resultados.",
+    "decision": "Separar módulos de datos, procesamiento, optimización y visualización permite cambiar una fuente o probar un escenario sin mezclar acceso remoto con evaluación. Pydantic valida configuración y requests realiza los accesos HTTP vectoriales.",
+    "limits": "El AG no depende de DEAP. La librería específica de dibujo de gráficas es JavaScript embebido del proyecto. El mapa puede requerir teselas de OpenStreetMap. Las versiones efectivas de las bibliotecas principales están en los metadatos de la corrida.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/requirements.txt",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/main.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/reporting.py"
+    ],
+    "fullNote": "Tiempo sugerido: 0.8 minutos\n\nEXPLICACIÓN\nPython organiza el pipeline y el AG propio. NumPy gestiona azar y cálculos, pandas los registros, GeoPandas y Shapely las geometrías y distancias, y PyProj los sistemas de coordenadas. xarray,Zarr,Dask y fsspec leen el clima. SQLAlchemy y SQLite persisten datasets y corridas. Folium y HTML presentan resultados.\n\nDECISIONES Y JUSTIFICACIÓN\nSeparar módulos de datos, procesamiento, optimización y visualización permite cambiar una fuente o probar un escenario sin mezclar acceso remoto con evaluación. Pydantic valida configuración y requests realiza los accesos HTTP vectoriales.\n\nALCANCE Y LÍMITES\nEl AG no depende de DEAP. La librería específica de dibujo de gráficas es JavaScript embebido del proyecto. El mapa puede requerir teselas de OpenStreetMap. Las versiones efectivas de las bibliotecas principales están en los metadatos de la corrida.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/requirements.txt\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/main.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/genetic_algorithm.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/pipeline/reporting.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 24,
+    "title": "Fuentes, peticiones y manejo de datos",
+    "time": 1,
+    "explanation": "IGN se obtiene como ZIP con shapefile. INDEC usa GET WFS paginado, con500registros por página. Las líneas usan CKAN datastore_search paginado y las ET un CSV directo. El clima usa lectura de bloques ARCO Zarr. Se valida la respuesta y se conserva la caché antes de preparar el dataset.",
+    "decision": "WFS requiere controles de IDs, páginas y total para evitar capas incompletas. El clima exige horas únicas y finitas para cada mes. La caché reduce transferencias repetidas. SQLite conserva snapshots de contenido y la corrida guarda semilla, configuración, versiones y límites de normalización.",
+    "limits": "La credencial de Copernicus se toma del entorno y se excluye de los resultados. Si falta una fuente activa, el pipeline se detiene. El código no inventa ET ni valores solares. La exclusión urbana siempre permanece activa.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/api/indec.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/api/datos_gob_ar.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/arco.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/database/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 1 minutos\n\nEXPLICACIÓN\nIGN se obtiene como ZIP con shapefile. INDEC usa GET WFS paginado, con500registros por página. Las líneas usan CKAN datastore_search paginado y las ET un CSV directo. El clima usa lectura de bloques ARCO Zarr. Se valida la respuesta y se conserva la caché antes de preparar el dataset.\n\nDECISIONES Y JUSTIFICACIÓN\nWFS requiere controles de IDs, páginas y total para evitar capas incompletas. El clima exige horas únicas y finitas para cada mes. La caché reduce transferencias repetidas. SQLite conserva snapshots de contenido y la corrida guarda semilla, configuración, versiones y límites de normalización.\n\nALCANCE Y LÍMITES\nLa credencial de Copernicus se toma del entorno y se excluye de los resultados. Si falta una fuente activa, el pipeline se detiene. El código no inventa ET ni valores solares. La exclusión urbana siempre permanece activa.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/config.yaml\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/api/indec.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/api/datos_gob_ar.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/climate/arco.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/database/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 25,
+    "title": "Apoyo: límites y valores del escenario",
+    "time": 0,
+    "explanation": "Consultar durante preguntas los rangos fijos de normalización y principales supuestos.",
+    "decision": "Estos valores proceden directamente de optimization_run.json y no se recalcularon a partir de la población.",
+    "limits": "Los rangos reflejan el dataset utilizado. No son valores universales.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json"
+    ],
+    "fullNote": "Tiempo sugerido: 0 minutos (apoyo para preguntas, fuera del recorrido principal)\n\nEXPLICACIÓN\nConsultar durante preguntas los rangos fijos de normalización y principales supuestos.\n\nDECISIONES Y JUSTIFICACIÓN\nEstos valores proceden directamente de optimization_run.json y no se recalcularon a partir de la población.\n\nALCANCE Y LÍMITES\nLos rangos reflejan el dataset utilizado. No son valores universales.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/results/spatial/run-20261006T231108-428e45c4/optimization_run.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 26,
+    "title": "Apoyo: genes del cruce observado",
+    "time": 0,
+    "explanation": "Los alias del diagrama corresponden a los enteros indicados en esta tabla. La semilla del hijo A es194480.",
+    "decision": "La tabla permite auditar el ejemplo sin cargar la explicación principal con enteros largos. Los cortes son3 y4.",
+    "limits": "Los enteros se interpretan mediante módulo sobre la frontera actual. Un alias no identifica una dirección fija.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/crossover.py",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json"
+    ],
+    "fullNote": "Tiempo sugerido: 0 minutos (apoyo para preguntas, fuera del recorrido principal)\n\nEXPLICACIÓN\nLos alias del diagrama corresponden a los enteros indicados en esta tabla. La semilla del hijo A es194480.\n\nDECISIONES Y JUSTIFICACIÓN\nLa tabla permite auditar el ejemplo sin cargar la explicación principal con enteros largos. Los cortes son3 y4.\n\nALCANCE Y LÍMITES\nLos enteros se interpretan mediante módulo sobre la frontera actual. Un alias no identifica una dirección fija.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/crossover.py\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  },
+  {
+    "number": 27,
+    "title": "Apoyo: mejores parques por generación",
+    "time": 0,
+    "explanation": "Comparar formas del mejor candidato en generaciones0,50 y200. Los tres son resultados reales de la nueva corrida.",
+    "decision": "Esta comparación ilustra cambios en el liderazgo de la población.",
+    "limits": "No es una genealogía: distintos líderes pueden proceder de diferentes padres y ubicaciones. El líder final conserva32genes, de los cuales9producen crecimiento, y termina con10celdas.",
+    "sources": [
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json",
+      "C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py"
+    ],
+    "fullNote": "Tiempo sugerido: 0 minutos (apoyo para preguntas, fuera del recorrido principal)\n\nEXPLICACIÓN\nComparar formas del mejor candidato en generaciones0,50 y200. Los tres son resultados reales de la nueva corrida.\n\nDECISIONES Y JUSTIFICACIÓN\nEsta comparación ilustra cambios en el liderazgo de la población.\n\nALCANCE Y LÍMITES\nNo es una genealogía: distintos líderes pueden proceder de diferentes padres y ubicaciones. El líder final conserva32genes, de los cuales9producen crecimiento, y termina con10celdas.\n\nFUENTES\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/evidence.json\nC:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/src/optimization/spatial.py\nCorrida nueva: C:\\Users\\creis\\OneDrive\\Escritorio\\AG-ParqueSolar-2026\\results\\spatial\\run-20261006T231108-428e45c4\nSemilla: 20261006. Dataset: 6faf11ae1cb9762cc5a86283208eeb1998185d43777af5bec977a12d3325117e\nLas ilustraciones conceptuales se generaron con IA. Los mapas y gráficas de resultados usan datos reales de esta corrida."
+  }
+]

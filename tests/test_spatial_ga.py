@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import numpy as np
 
 from test_spatial_growth import example_evaluator
@@ -10,6 +11,19 @@ from src.optimization.mutation import mutate_individual
 
 
 class SpatialGATests(unittest.TestCase):
+    def test_history_records_population_fitness_standard_deviation(self):
+        evaluator = example_evaluator(20)
+        population = [Individual(1, ()), Individual(2, ()), Individual(3, ())]
+        fitness = [evaluator.evaluate(i).metrics['fitness'] for i in population]
+        config = GeneticAlgorithmConfig(population_size=3, generations=1, elitism=1,
+                                        tournament_size=2, random_seed=42,
+                                        crossover_probability=0, mutation_probability=0)
+        with patch('src.optimization.genetic_algorithm.TerritorialSampler.individual',
+                   side_effect=population + [population[0]] * 100):
+            result = GeneticAlgorithm(evaluator, config).run()
+        self.assertAlmostEqual(result.history.iloc[0].std_fitness, np.std(fitness, ddof=0))
+        self.assertTrue(result.history.std_fitness.ge(0).all())
+
     def test_generated_seed_is_recorded_and_replayable(self):
         config = GeneticAlgorithmConfig(population_size=8, generations=3, crossover_probability=.75,
                                         mutation_probability=.2, elitism=2, tournament_size=3, random_seed=None)

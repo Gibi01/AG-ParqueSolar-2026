@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from pyproj import Transformer
 
-from src.optimization.crossover import crossover_pair
+from src.optimization.crossover import competitive_crossover_pair
 from src.optimization.mutation import mutate_effectively
 from src.optimization.initialization import TerritorialSampler
 from src.optimization.selection import tournament_selection
@@ -72,6 +72,7 @@ class GeneticAlgorithm:
             history.append(dict(generation=generation, best_fitness=float(fitness.max()),
                                 best_historical_fitness=max(p.metrics['fitness'] for _, p in hall.values()),
                                 mean_fitness=float(fitness.mean()), median_fitness=float(np.median(fitness)),
+                                std_fitness=float(fitness.std(ddof=0)),
                                 unique_parks=len({p.cell_ids for p in parks}), population_size=len(population),
                                 unique_parks_seen=len(seen), archive_candidates=len(hall),
                                 mean_cells=float(np.mean([len(p.cell_ids) for p in parks])),
@@ -101,7 +102,7 @@ class GeneticAlgorithm:
                                             config.population_size - len(elite), rng)
             for i in range(0, len(children) - 1, 2):
                 if rng.random() < config.crossover_probability:
-                    children[i], children[i + 1] = crossover_pair(children[i], children[i + 1], rng)
+                    children[i], children[i + 1] = competitive_crossover_pair(children[i], children[i + 1], rng, evaluator)
             mutation_events = mutation_attempts = mutation_changes = duplicate_fallbacks = 0
             population = list(elite)
             for child in children:

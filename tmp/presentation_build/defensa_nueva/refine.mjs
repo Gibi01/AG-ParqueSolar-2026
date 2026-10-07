@@ -1,0 +1,14 @@
+import fs from 'node:fs/promises';
+const file='C:/Users/creis/OneDrive/Escritorio/AG-ParqueSolar-2026/tmp/presentation_build/defensa_nueva/build_defensa.mjs';
+let s=await fs.readFile(file,'utf8');
+s=s.replace('notes.push({number:n,title,time,explanation,decision,limits,sources:sources.map(src)})','notes.push({number:n,title,time,explanation,decision,limits,sources:sources.map(src),fullNote:note})');
+s=s.replace('s.speakerNotes.textFrame.toString()','notes.at(-1).fullNote');
+s=s.replace('`${d.prefixes[k].number_of_cells} celdas`','`${d.prefixes[k].number_of_cells} ${d.prefixes[k].number_of_cells===1?\'celda\':\'celdas\'}`');
+s=s.replace('Las notas explican qué dato o modelo falta para incorporar cada variable','Estas variables pueden cambiar o invalidar los candidatos actuales');
+s=s.replace('El detalle de normalización aparece al final de la presentación','Pesos iniciales que requieren análisis de sensibilidad');
+s=s.replace("path.join(dir,'selection.png'),59,145,1160,350,{left:0,top:.14,right:0,bottom:.13}","path.join(dir,'selection.png'),59,145,1160,350,{left:0,top:.06,right:0,bottom:.03}");
+s=s.replace("function chart(s,type,o){chartOwners.push(n);const z=s.charts.add(type,{", "function chart(s,type,o){chartOwners.push(n);const styles={typeface:'Arial',fontSize:22,fill:C.ink};o.xAxis={...o.xAxis,textStyle:styles};o.yAxis={...o.yAxis,textStyle:styles};if(o.legend)o.legend={...o.legend,textStyle:styles};if(o.dataLabels)o.dataLabels={...o.dataLabels,textStyle:{...styles,bold:true}};const z=s.charts.add(type,{");
+s=s.replace("<text x=\"${x+14}\" y=\"${y+(p.rank>1?(p.rank-3)*17:0)}\" font-family=\"Arial\" font-size=\"20\" fill=\"${C.navy}\">#${p.rank}</text>","${p.rank===1?`<text x=\"${x+16}\" y=\"${y}\" font-family=\"Arial\" font-size=\"27\" fill=\"${C.navy}\">#1</text>`:p.rank===2?`<text x=\"${x+26}\" y=\"${y+10}\" font-family=\"Arial\" font-size=\"27\" fill=\"${C.navy}\">#2–#5</text>`:''}");
+s=s.replace('criterios de ubicación con provincia, sol e infraestructura;','');
+s=s.replace('Las imágenes conceptuales de grilla, restricciones y ciclo se reutilizan de la revisión anterior, una vez cada una.','Las ilustraciones de restricciones y ciclo se reutilizan de la revisión anterior, una vez cada una. Todas las imágenes provinciales usan el contorno oficial IGN del dataset existente, sin siluetas generadas con IA.');
+await fs.writeFile(file,s);

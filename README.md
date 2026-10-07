@@ -188,8 +188,8 @@ configuración principal será una carpeta nueva dentro de `results/spatial/`.
 | `ranking.csv` | Top 5 general por fitness; puede contener variantes superpuestas. |
 | `ranking_territorial.csv` | Hasta cinco alternativas compatibles; conserva `general_rank` dentro del archivo de candidatos. |
 | `candidates.csv` | Archivo acotado de candidatos, retenidos por territorio para auditar ambos rankings. |
-| `evolution.html` | Cuatro gráficas sin conexión: fitness, diversidad, mutaciones efectivas y genes. |
-| `history.csv` | Revisar la evolución del fitness, diversidad y tamaño medio por generación. |
+| `evolution.html` | Seis gráficas sin conexión: fitness, desvío estándar del fitness, diversidad, porcentaje y cantidad de mutaciones efectivas, y genes; incluyen instrucciones de lectura. |
+| `history.csv` | Revisar la evolución del fitness, su desvío estándar poblacional (`std_fitness`, divisor N), diversidad y tamaño medio por generación. |
 | `parks.geojson` | Abrir los polígonos en un programa GIS. |
 | `optimization_run.json` | Consultar configuración, semilla efectiva, dataset y supuestos de esa corrida. |
 | `climate_coverage.csv` | Revisar los años válidos por píxel y mes; se genera cuando el criterio solar está activo. |
@@ -197,6 +197,18 @@ configuración principal será una carpeta nueva dentro de `results/spatial/`.
 El mapa se centra en el mejor parque. Abrir el archivo de la **corrida recién
 finalizada**, no un mapa histórico ni el de `spatial-validation`, que usa datos
 sintéticos. La energía mostrada es ideal de referencia; no es producción AC validada.
+
+El desvío estándar mide la dispersión del fitness dentro de cada generación:
+si baja, los puntajes se parecen más; no demuestra que se alcanzó el óptimo.
+Los historiales antiguos que no guardaron `std_fitness` muestran un aviso de
+dato no disponible; la media y la mediana no permiten reconstruirlo.
+La diversidad cuenta conjuntos de celdas distintos: puede permanecer igual
+al tamaño de la población porque el AG reemplaza duplicados. No mide similitud
+espacial ni significa que se mantengan los mismos parques entre generaciones.
+La efectividad de mutación es el porcentaje de eventos que cambió las celdas,
+tras los reintentos permitidos: 100 % significa que todos esos eventos cambiaron
+el parque, no que mejoraron el fitness. La gráfica de cantidad muestra cuántos
+eventos hubo; el porcentaje no está definido cuando no hay eventos.
 
 <a id="manual-experimentos"></a>
 
@@ -342,13 +354,18 @@ ET asociada, fitness y energía ideal.
   No se busca otra candidata para el mismo gen ni se modifica la frontera.
 - Termina cuando no hay frontera, se agotan los genes o ninguna celda de la frontera cabe. La semilla debe caber.
 - No hay superficie mínima ni número mínimo arbitrario: solamente la semilla.
-- Crossover: prefijo y sufijo con cortes independientes. Cada hijo conserva
-  la semilla del progenitor que aporta su prefijo.
+- Crossover competitivo: se retiran genes saltados o no procesados, conservando
+  el parque de cada padre, y se prueban hasta tres puntos de corte comunes distintos.
+  Cada hijo conserva su semilla y combina el prefijo propio con el sufijo del otro
+  padre. Compite contra su padre: se acepta una mejora de fitness o un empate con
+  un parque distinto. Así el cruce no empeora al padre antes de la mutación y del
+  reemplazo de duplicados; no garantiza mejora por generación ni óptimo global.
 - Mutación: agregar una celda que cabe, truncar antes de la última incorporación
   aceptada, cambiar un gen aceptado o cambiar semilla. Las operaciones aplicables
   tienen igual probabilidad; hasta `mutation_attempts` intentos buscan cambiar
   el conjunto de celdas. Si no lo logran, se conserva el individuo original.
-- Los genes omitidos se conservan: pueden adquirir significado tras otros cambios.
+- El decodificador conserva genes omitidos; el crossover competitivo los compacta
+  antes de recombinar, descartando instrucciones que no afectaban al parque actual.
 - El ranking no repite conjuntos de celdas, aunque distintos cromosomas los generen.
 
 La inicialización recorre sectores ocupados de `territory_size_km` (50 km por
@@ -374,7 +391,23 @@ Aceptados, rechazados y no procesados suman la longitud del genoma. La efectivid
 de mutación se mide por evento; sin eventos el porcentaje queda vacío, no en cero.
 Cambiar estos parámetros no requiere descargar clima ni ejecutar `--process` de
 nuevo si el dataset sigue siendo compatible. Las semillas antiguas no reproducen
-el algoritmo anterior: los metadatos nuevos incluyen `search_version: 3`.
+el algoritmo anterior: los metadatos nuevos incluyen `search_version: 4` y
+`crossover_operator: competitive_homologous`. Las corridas anteriores siguen
+identificadas con su versión original.
+
+Para comparar el crossover nuevo con la variante sin cruce sobre el dataset
+persistido, sin descargar datos:
+
+```powershell
+.\.venv\Scripts\python.exe -m tasks.compare_crossover --operator competitive --output results/experiments/nueva-comparacion
+.\.venv\Scripts\python.exe -m tasks.analyze_crossover results/experiments/nueva-comparacion
+```
+
+`--operator sequence` reproduce el crossover anterior para comparación experimental.
+`--seeds` acepta una lista de semillas. Las parejas comparten población inicial y
+parámetros; registrar solicitudes y decodificaciones es necesario porque el nuevo
+cruce evalúa alternativas antes de aceptarlas. El analizador de figuras requiere
+las dependencias adicionales de `tasks/crossover-experiment/requirements.txt`.
 
 La longitud inicial se escala con la capacidad y el área mediana de las celdas;
 no es un máximo de tamaño del parque. Elitismo y torneo se aplican al fitness

@@ -71,6 +71,8 @@ class SpatialPipelineTests(unittest.TestCase):
                 meta = json.loads((run / 'optimization_run.json').read_text(encoding='utf-8'))
                 self.assertEqual(meta['dataset']['urban_exclusion']['interior_holes_count'], 1)
                 self.assertEqual(meta['dataset']['urban_exclusion']['excluded_cells'], 4)
+                self.assertEqual(meta['search_version'], 4)
+                self.assertEqual(meta['crossover_operator'], 'competitive_homologous')
             finally:
                 repo.engine.dispose()
 
@@ -101,7 +103,8 @@ class SpatialPipelineTests(unittest.TestCase):
                 self.assertIn('TOP 5 territorial', html)
                 self.assertLessEqual(len(pd.read_csv(run / 'ranking.csv')), 5)
                 self.assertLessEqual(len(pd.read_csv(run / 'ranking_territorial.csv')), 5)
-                self.assertEqual((run / 'evolution.html').read_text(encoding='utf-8').count('<svg '), 4)
+                self.assertEqual((run / 'evolution.html').read_text(encoding='utf-8').count('<svg '), 6)
+                self.assertTrue(pd.read_csv(run / 'history.csv').std_fitness.ge(0).all())
                 geojson = json.loads((run / 'parks.geojson').read_text())
                 self.assertTrue(all(f['geometry']['type'] == 'Polygon' for f in geojson['features']))
                 self.assertTrue(all(f['properties']['station_id'] in ('ST', 'CN', 'RO', 'RM') for f in geojson['features']))

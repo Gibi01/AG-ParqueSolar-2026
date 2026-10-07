@@ -23,14 +23,31 @@ class SearchOutputTests(unittest.TestCase):
 
     def test_charts_handle_missing_mutations_and_constant_series(self):
         history = pd.DataFrame(dict(generation=[0,1], best_historical_fitness=[.5,.5],
-                                    mean_fitness=[.5,.5], median_fitness=[.5,.5],
+                                    mean_fitness=[.5,.5], median_fitness=[.5,.5], std_fitness=[.1,.05],
                                     unique_parks=[2,2], population_size=[2,2],
                                     mutation_effective_percent=[float('nan'),100],
+                                    mutation_events=[0,2], effective_mutations=[0,2],
                                     mean_accepted_genes=[1,1], mean_skipped_genes=[0,0],
                                     mean_unprocessed_genes=[0,0]))
         with tempfile.TemporaryDirectory() as directory:
             path = write_search_charts(history, Path(directory)/'evolution.html')
             html = path.read_text(encoding='utf-8')
-        self.assertEqual(html.count('<svg '), 4)
+        self.assertEqual(html.count('<svg '), 6)
         self.assertNotIn('nan', html.lower())
         self.assertIn('Sin reinicios', html)
+        self.assertIn('Desvío estándar del fitness', html)
+        self.assertIn('ddof=0', html)
+        self.assertIn('se superponen', html)
+        self.assertIn('no implica una mejora del fitness', html)
+
+    def test_old_history_reports_unavailable_standard_deviation(self):
+        history = pd.DataFrame(dict(generation=[0], best_historical_fitness=[.5],
+                                    mean_fitness=[.5], median_fitness=[.5],
+                                    unique_parks=[1], population_size=[1],
+                                    mutation_effective_percent=[float('nan')],
+                                    mean_accepted_genes=[1], mean_skipped_genes=[0],
+                                    mean_unprocessed_genes=[0]))
+        with tempfile.TemporaryDirectory() as directory:
+            html = write_search_charts(history, Path(directory)/'evolution.html').read_text(encoding='utf-8')
+        self.assertIn('Esta corrida no registró el desvío estándar', html)
+        self.assertNotIn('nan', html.lower())

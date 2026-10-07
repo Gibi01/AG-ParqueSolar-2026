@@ -83,6 +83,10 @@ def add_table(doc, rows, widths=None):
     table = doc.add_table(rows=len(rows), cols=len(rows[0]))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.style = "Table Grid"
+    if widths:
+        table.autofit = False
+        for column, width in zip(table.columns, widths):
+            column.width = Cm(width)
     for i, row in enumerate(rows):
         for j, value in enumerate(row):
             cell = table.cell(i, j)
