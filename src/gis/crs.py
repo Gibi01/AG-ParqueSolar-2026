@@ -1,13 +1,6 @@
-"""Helpers de selección de CRS.
+"""CRS geográfico para intercambio y CRS métrico estimado desde Santa Fe.
 
-El proyecto nunca debe hardcodear un código EPSG para una región — el
-límite de una provincia cambia, y también cambia el CRS proyectado
-"correcto" para ella. En cambio, le pedimos a una librería geoespacial
-que derive un CRS proyectado apropiado a partir de la geometría real, vía
-`estimate_utm_crs()` de GeoPandas/pyproj. Esto elige la zona UTM (y el
-hemisferio) que contiene el centroide de la geometría — una elección
-apropiada y bien definida de CRS proyectado en metros para cualquier
-provincia argentina sin mantener una tabla de referencia.
+Las áreas y distancias usan la proyección calculada a partir del límite IGN.
 """
 
 from __future__ import annotations

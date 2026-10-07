@@ -69,14 +69,14 @@ def session(*pages):
 
 
 class IndecIngestionTests(unittest.TestCase):
-    def test_old_bahra_configuration_is_rejected(self):
+    def test_point_source_configuration_is_rejected(self):
         configuration = load_settings().model_dump()
         for field in ('include_types', 'resource_id'):
             candidate = copy.deepcopy(configuration)
             if field == 'include_types':
                 candidate['urban_exclusion'][field] = ['LOCALIDAD']
             else:
-                candidate['infrastructure']['urban_areas'] = {field: 'old-bahra-resource'}
+                candidate['infrastructure']['urban_areas'] = {field: 'unsupported-point-source'}
             with self.subTest(field=field), self.assertRaises(ValueError):
                 Settings.model_validate(candidate)
 

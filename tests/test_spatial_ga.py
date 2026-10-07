@@ -6,7 +6,7 @@ from test_spatial_growth import example_evaluator
 from src.config.settings import GeneticAlgorithmConfig
 from src.optimization.genetic_algorithm import GeneticAlgorithm
 from src.optimization.spatial import Individual
-from src.optimization.crossover import crossover_pair
+from src.optimization.crossover import competitive_crossover_pair
 from src.optimization.mutation import mutate_individual
 
 
@@ -30,20 +30,20 @@ class SpatialGATests(unittest.TestCase):
         first = GeneticAlgorithm(example_evaluator(20), config).run()
         config.random_seed = first.random_seed
         second = GeneticAlgorithm(example_evaluator(20), config).run()
-        self.assertEqual(first.top10.to_json(), second.top10.to_json())
+        self.assertEqual(first.top5.to_json(), second.top5.to_json())
 
     def test_repeatable_ga_and_unique_phenotypes(self):
         config = GeneticAlgorithmConfig(population_size=12, generations=8, crossover_probability=.75,
                                         mutation_probability=.8, elitism=2, tournament_size=3, random_seed=42)
         first = GeneticAlgorithm(example_evaluator(20), config).run()
         second = GeneticAlgorithm(example_evaluator(20), config).run()
-        self.assertEqual(first.top10.to_json(), second.top10.to_json())
-        self.assertEqual(first.top10.cell_ids.nunique(), len(first.top10))
-        self.assertTrue((first.top10.installed_power_mw <= 20).all())
+        self.assertEqual(first.top5.to_json(), second.top5.to_json())
+        self.assertEqual(first.top5.cell_ids.nunique(), len(first.top5))
+        self.assertTrue((first.top5.installed_power_mw <= 20).all())
 
     def test_crossover_keeps_prefix_seed_and_parents(self):
         a, b = Individual(1, (1, 2, 3)), Individual(3, (4,))
-        children = crossover_pair(a, b, np.random.default_rng(3))
+        children = competitive_crossover_pair(a, b, np.random.default_rng(3), example_evaluator(20))
         self.assertEqual([c.seed_cell_id for c in children], [1, 3])
         self.assertEqual(a.growth_genes, (1, 2, 3))
 

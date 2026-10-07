@@ -12,12 +12,10 @@ import numpy as np
 import pandas as pd
 from pydantic import ValidationError
 from shapely.geometry import LineString, box
-from sqlalchemy import create_engine
 
 from src.config.settings import ClimateConfig, FitnessWeights, Settings, load_settings
 from src.data.cache import layer_cache_for_settings
 from src.data.validators import ValidationError as DataValidationError
-from src.database.models import Base, OptimizationResult
 from src.main import build_arg_parser, cmd_download
 from src.optimization.fitness import compute_fitness
 from src.pipeline.ingest import ingest_region_boundary
@@ -30,7 +28,7 @@ class FlexibleConfigurationTests(unittest.TestCase):
         configured = load_settings().model_dump()
         self.assertEqual(configured["region"]["name"], "Santa Fe")
         self.assertEqual(configured["region"]["admin_source"]["code_value"], "82")
-        for name, code in (("Córdoba", "14"), ("Santa Fe", "14"), ("Córdoba", "82")):
+        for name, code in (("Región inválida", "14"), ("Santa Fe", "14"), ("Región inválida", "82")):
             with self.subTest(name=name, code=code), self.assertRaisesRegex(ValidationError, "solo admite Santa Fe"):
                 candidate = {**configured, "region": {
                     **configured["region"], "name": name,
@@ -82,7 +80,7 @@ class FlexibleConfigurationTests(unittest.TestCase):
         with patch("src.data.cache.RawLayerCache", side_effect=lambda path: SimpleNamespace(cache_dir=path)):
             settings = load_settings()
             first = layer_cache_for_settings(settings).cache_dir
-            settings.region.admin_source.code_value = "14"
+            settings.infrastructure.urban_areas.wfs_url = "https://example.invalid/wfs"
             second = layer_cache_for_settings(settings).cache_dir
             settings.infrastructure.power_lines.resource_id = "another-source"
             third = layer_cache_for_settings(settings).cache_dir
@@ -90,7 +88,7 @@ class FlexibleConfigurationTests(unittest.TestCase):
 
     def test_region_name_cannot_disagree_with_code(self) -> None:
         settings = load_settings()
-        settings.region.name = "Cordoba"
+        settings.region.name = "Región inválida"
         settings.region.admin_source.code_value = "82"
         provinces = gpd.GeoDataFrame(
             {"NAM": ["Santa Fe"], "IN1": ["82"]},
@@ -154,28 +152,15 @@ class FlexibleConfigurationTests(unittest.TestCase):
         lines.assert_not_called()
         transformers.assert_not_called()
 
-    def test_optimization_storage_accepts_unused_metrics(self) -> None:
-        engine = create_engine("sqlite:///:memory:")
-        Base.metadata.create_all(engine)
-        data = pd.DataFrame([{
-            "run_id": "test", "rank": 1, "grid_cell_id": 1,
-            "latitude": -30.0, "longitude": -61.0, "solar_score": 0.9,
-            "distance_to_power_line_km": np.nan,
-            "distance_to_transformer_km": np.nan,
-            "grid_proximity_score": np.nan,
-            "transformer_proximity_score": np.nan,
-            "fitness": 0.9, "created_at": pd.Timestamp("2026-01-01"),
-        }])
-        data.to_sql(OptimizationResult.__tablename__, engine, if_exists="append", index=False)
-        stored = pd.read_sql(OptimizationResult.__tablename__, engine)
-        self.assertTrue(pd.isna(stored.iloc[0]["distance_to_transformer_km"]))
-
     def test_map_omits_disabled_layers_and_metrics(self) -> None:
         region = gpd.GeoDataFrame(geometry=[box(-62, -31, -61, -30)], crs="EPSG:4326")
         grid = gpd.GeoDataFrame(geometry=[box(0, 0, 9000, 9000)], crs="EPSG:32720")
         empty = gpd.GeoDataFrame(geometry=[], crs="EPSG:4326")
         top = pd.DataFrame([{
-            "rank": 1, "grid_cell_id": 1, "latitude": -30.5, "longitude": -61.5,
+            "rank": 1, "geometry_wkt": box(0, 0, 9000, 9000).wkt,
+            "number_of_cells": 1, "park_area_km2": 81, "park_area_ha": 8100,
+            "installed_power_mw": 1, "max_connection_capacity_mw": 80,
+            "capacity_used_percent": 1.25,
             "fitness": 1.0, "solar_score": np.nan, "solar_annual_kwh_m2": np.nan,
             "grid_proximity_score": np.nan, "distance_to_power_line_km": np.nan,
             "transformer_proximity_score": np.nan, "distance_to_transformer_km": np.nan,

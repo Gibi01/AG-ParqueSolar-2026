@@ -103,7 +103,7 @@ def build_profile():
                           p("8.1 Ranking territorial", "h2"),
                           table(ranking_rows(RUN["territorial"]), [0.8, 1.0, 1.25, 1.25, 0.7, 1.1, 1.1, 1.25, 1.1], 6.9),
                           p("Tabla 2. TOP 5 territorial. Solar en kWh/m²/año; distancias en km.", "caption"),
-                          figure("figura_componentes_fitness.png", 16, "Figura 4. Contribución ponderada de los cuatro componentes.")])
+                          figure("figura_componentes_fitness.png", 16, "Figura 4. Contribución ponderada de los cinco componentes.")])
     story.append(p("Referencias", "h1"))
     story.extend(p(reference, "ref") for reference in REFERENCES)
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
@@ -138,7 +138,7 @@ def build_article():
             y -= 19
         y -= 16  # La línea de autores queda intencionalmente en blanco para evaluación ciega.
         canvas.setFont("Times-BoldItalic", 12)
-        canvas.drawCentredString(page_width / 2, y, "Universidad Tecnológica Nacional Facultad Regional Buenos Aires")
+        canvas.drawCentredString(page_width / 2, y, "Universidad Tecnológica Nacional")
         canvas.restoreState()
 
     doc = BaseDocTemplate(str(ARTICLE), pagesize=A4, rightMargin=margin, leftMargin=margin,

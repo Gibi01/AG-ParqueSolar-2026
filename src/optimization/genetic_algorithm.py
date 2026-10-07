@@ -27,11 +27,6 @@ class GAResult:
     random_seed: int
     candidates: pd.DataFrame
 
-    @property
-    def top10(self):
-        """Compatibility alias for callers of the previous spatial API."""
-        return self.top5
-
 
 class GeneticAlgorithm:
     def __init__(self, evaluator, ga_config):

@@ -1,7 +1,7 @@
 # Configuración para el MVP de ubicación de parques solares.
 #
 # Región fija de esta versión: Santa Fe. No cambiar `region`; la estructura
-# queda preparada para admitir otras provincias en una versión futura.
+# solo admite el nombre Santa Fe y el código 82.
 
 region:
   name: "Santa Fe"

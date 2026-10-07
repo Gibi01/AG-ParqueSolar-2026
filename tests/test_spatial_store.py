@@ -38,15 +38,15 @@ class SpatialStoreTests(unittest.TestCase):
             self.assertEqual(repo.load_dataset('second')['dataset_id'], second)
             repo.engine.dispose()
 
-    def test_historical_database_is_rejected_without_changes(self):
+    def test_incompatible_database_is_rejected_without_changes(self):
         import sqlite3
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'legacy.sqlite'
+            path = Path(directory) / 'incompatible.sqlite'
             with sqlite3.connect(path) as conn:
                 conn.execute('CREATE TABLE grid_cells (cell_id INTEGER)')
                 conn.execute('INSERT INTO grid_cells VALUES (42)')
             conn.close()  # sqlite3's transaction context does not close the Windows file handle.
             before = path.read_bytes()
-            with self.assertRaisesRegex(RuntimeError, 'histórica'):
+            with self.assertRaisesRegex(RuntimeError, 'incompatible'):
                 SpatialRepository(path)
             self.assertEqual(path.read_bytes(), before)

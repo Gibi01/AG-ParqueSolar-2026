@@ -1,4 +1,4 @@
-"""Reports must describe the source in each run, including historical BAHRA runs."""
+"""Reports only describe the active polygonal urban source."""
 from pathlib import Path
 import runpy
 import sys
@@ -8,10 +8,10 @@ from unittest.mock import patch
 
 
 class UrbanReportSourceTests(unittest.TestCase):
-    def module(self, indec):
-        source = {'provider': 'INDEC'} if indec else {'resource_id': 'bahra'}
+    def module(self, indec=True):
+        source = {'provider': 'INDEC'} if indec else {'provider': 'unsupported'}
         configuration = dict(infrastructure={'urban_areas': source},
-                             urban_exclusion={'buffer_km': 0 if indec else 3, 'fill_holes': True},
+                             urban_exclusion={'buffer_km': 0, 'fill_holes': True},
                              genetic_algorithm={}, fitness={})
         current = SimpleNamespace(RUN=dict(configuration=configuration, metadata={}, first=None))
         path = Path(__file__).resolve().parents[1] / 'tools/reporting/report_content.py'
@@ -26,8 +26,6 @@ class UrbanReportSourceTests(unittest.TestCase):
         self.assertIn('huecos interiores', description)
         self.assertIn('Instituto Nacional de Estadística y Censos', module['REFERENCES'][9])
 
-    def test_old_report_keeps_its_actual_bahra_source(self):
-        module = self.module(False)
-        self.assertIn('BAHRA', module['urban_method_description']())
-        self.assertIn('3 km', module['urban_method_description']())
-        self.assertIn('Localidades BAHRA', module['REFERENCES'][9])
+    def test_report_rejects_an_unsupported_urban_source(self):
+        with self.assertRaisesRegex(ValueError, 'INDEC'):
+            self.module(False)

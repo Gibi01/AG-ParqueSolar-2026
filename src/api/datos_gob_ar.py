@@ -3,7 +3,7 @@
 Este proyecto usa dos patrones de acceso, según lo que reveló la
 inspección de schemas (Fase 3) sobre los recursos reales:
 
-- Los recursos respaldados por DataStore (localidades BAHRA, líneas
+- Los recursos respaldados por DataStore (líneas
   eléctricas) se consultan mediante la acción CKAN `datastore_search`, paginada.
 - El recurso de estaciones transformadoras es un archivo CSV plano alojado
   por la Secretaría de Energía (no respaldado por DataStore:

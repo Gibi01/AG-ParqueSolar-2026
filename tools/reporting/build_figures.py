@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import geopandas as gpd
+import sqlite3
+from shapely import wkt
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from current_run import RUN
@@ -11,7 +12,6 @@ from current_run import RUN
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tmp" / "report_assets"
 OUT.mkdir(parents=True, exist_ok=True)
-REGION_BOUNDARY = ROOT / "data" / "raw" / "layers" / "region_boundary.gpkg"
 
 
 def font(size: int, bold: bool = False, italic: bool = False):
@@ -67,8 +67,13 @@ def architecture():
 
 def territorial_map(ranking=None, province=None, output=None):
     ranking = RUN["territorial"] if ranking is None else ranking
-    province = (gpd.read_file(REGION_BOUNDARY).to_crs(4326).geometry.iloc[0]
-                if province is None else province)
+    if province is None:
+        with sqlite3.connect(RUN['configuration']['paths']['database']) as connection:
+            geometry, = connection.execute(
+                'SELECT geometry_wkt FROM layer_region WHERE dataset_id = ?',
+                (RUN['metadata']['dataset_id'],),
+            ).fetchone()
+        province = wkt.loads(geometry)
     minx, miny, maxx, maxy = province.bounds
     minx, maxx = minx - .12, maxx + .12
     miny, maxy = miny - .12, maxy + .12
@@ -108,7 +113,7 @@ def territorial_map(ranking=None, province=None, output=None):
         label_offsets = {3: (-115, -70), 4: (35, -8), 5: (-125, 42)}
         dx, dy = label_offsets.get(int(row.rank), (28, -14))
         draw.text((x + dx, y + dy), f"#{int(row.rank)} · {row.station_id}", font=font(20, bold=True), fill="#222222")
-    draw.text((100, 1290), "Cada polígono reúne 10 celdas contiguas de 500 m (250 ha; 78,25 MW).", font=font(24), fill="#222222")
+    draw.text((100, 1290), "Parques contiguos de área variable; grilla de 500 m y límite de 80 MW.", font=font(24), fill="#222222")
     draw.text((100, 1335), "La separación configurada es 0 km: se evita el solapamiento, no la cercanía.", font=font(22, italic=True), fill="#444444")
     image.save(output or OUT / "figura_mapa_territorial.png", dpi=(240, 240))
 
@@ -121,6 +126,7 @@ def fitness_components():
         ("Líneas", "weight_grid_distance", weights["weight_grid_distance"] * ranking.grid_proximity_score.to_numpy(), "#666666"),
         ("Transformadores", "weight_transformer_distance", weights["weight_transformer_distance"] * ranking.transformer_proximity_score.to_numpy(), "#aaaaaa"),
         ("Potencia", "weight_installed_power", weights["weight_installed_power"] * ranking.installed_power_score.to_numpy(), "#dddddd"),
+        ("Forma", "weight_compactness", weights["weight_compactness"] * ranking.compactness_score.to_numpy(), "#b0b0b0"),
     ]
     image, draw = canvas(1800, 900)
     draw.text((65, 35), "Aportes al fitness del TOP 5 territorial", font=font(34, bold=True), fill="#222222")
@@ -143,7 +149,7 @@ def fitness_components():
     for label, key, _, color in components:
         draw.rectangle((x, 835, x + 30, 860), fill=color, outline="#333333")
         draw.text((x + 42, 831), f"{label} × {weights[key]:.2f}", font=font(21), fill="#222222")
-        x += 415
+        x += 330
     image.save(OUT / "figura_componentes_fitness.png", dpi=(240, 240))
 
 

@@ -15,12 +15,28 @@ def latest_complete_run() -> Path:
         path
         for path in (ROOT / "results" / "spatial").glob("run-*")
         if all((path / name).exists() for name in (
-            "optimization_run.json", "ranking.csv", "ranking_territorial.csv", "history.csv"
+            "optimization_run.json", "ranking.csv", "ranking_territorial.csv", "history.csv", "candidates.csv"
         ))
+        and is_current_run(path)
     ]
     if not runs:
         raise FileNotFoundError("No hay corridas espaciales completas en results/spatial.")
     return max(runs, key=lambda path: path.name)
+
+
+def is_current_run(path: Path) -> bool:
+    """Los informes solo utilizan el modelo vigente de Santa Fe."""
+    metadata = json.loads((path / "optimization_run.json").read_text(encoding="utf-8"))
+    configuration = metadata.get("configuration", {})
+    region = configuration.get("region", {})
+    return (
+        region.get("name") == "Santa Fe"
+        and str(region.get("admin_source", {}).get("code_value")) == "82"
+        and configuration.get("infrastructure", {}).get("urban_areas", {}).get("provider") == "INDEC"
+        and metadata.get("dataset", {}).get("processing_version") == 3
+        and metadata.get("search_version") == 4
+        and metadata.get("fitness_version") == 2
+    )
 
 
 def load_run_summary() -> dict:

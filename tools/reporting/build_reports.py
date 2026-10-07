@@ -192,7 +192,7 @@ def build_profile():
             add_heading(doc, "8.1 Ranking territorial", 2)
             add_table(doc, ranking_rows(RUN["territorial"]), [1.0, 1.2, 1.5, 1.5, 0.9, 1.3, 1.3, 1.5, 1.3])
             add_paragraph(doc, "Tabla 2. TOP 5 territorial. Solar en kWh/m²/año; distancias en km.", italic=True).alignment = WD_ALIGN_PARAGRAPH.CENTER
-            add_figure(doc, "figura_componentes_fitness.png", "Figura 4. Contribución ponderada de los cuatro componentes.")
+            add_figure(doc, "figura_componentes_fitness.png", "Figura 4. Contribución ponderada de los cinco componentes.")
     add_heading(doc, "Referencias", 1)
     for reference in REFERENCES:
         add_paragraph(doc, reference)
@@ -212,7 +212,7 @@ def build_article():
     title.style = doc.styles["Title"]
     title.runs[0].font.size = Pt(16)
     article_paragraph(doc, "", size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, after=0)
-    article_paragraph(doc, "Universidad Tecnológica Nacional Facultad Regional Buenos Aires",
+    article_paragraph(doc, "Universidad Tecnológica Nacional",
                       size=12, bold=True, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, after=10)
 
     two_column = doc.add_section(WD_SECTION.CONTINUOUS)

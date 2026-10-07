@@ -2,8 +2,7 @@
 
 Cada función lee `settings.region` para decidir qué obtener y cómo
 recortarlo. La configuración de esta versión valida que la región sea
-Santa Fe; esta separación conserva la base técnica para admitir otras
-provincias en el futuro, junto con fuentes eléctricas adecuadas.
+Santa Fe. Todos los parques y las capas de análisis se recortan a su límite.
 
 Las líneas se recortan espacialmente al límite provincial. Las envolventes
 urbanas INDEC se conservan completas a escala nacional hasta el procesamiento,
@@ -184,9 +183,8 @@ def ingest_power_lines(
     la página del dataset): pese a su nombre genérico "Consejo Federal",
     los ~46 mil registros de este recurso ya están TODOS ubicados dentro
     del bounding box de Santa Fe — en realidad no cubre el resto del país.
-    Es la fuente de líneas para Santa Fe. Si más adelante se habilitan
-    otras provincias, habrá que revisar la fuente de líneas activa; un
-    recorte vacío falla explícitamente vía validate_not_empty.
+    Es la fuente de líneas para Santa Fe. Un recorte vacío falla
+    explícitamente vía validate_not_empty.
     """
     cache = cache or layer_cache_for_settings(settings)
     name = "power_lines"

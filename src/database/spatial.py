@@ -1,4 +1,4 @@
-"""Append-only spatial dataset snapshots and run records, separate from legacy SQLite."""
+"""Spatial dataset snapshots and reproducible run records."""
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -32,7 +32,7 @@ class SpatialRepository:
         self.engine = create_engine(f'sqlite:///{self.db_path}')
         if 'grid_cells' in inspect(self.engine).get_table_names():
             self.engine.dispose()
-            raise RuntimeError('Base histórica: usar otra ruta para la versión espacial; no se migrará ni sobrescribirá.')
+            raise RuntimeError('Esquema incompatible: usar una base espacial válida; no se sobrescribirá esta base.')
         with self.engine.begin() as conn:
             conn.execute(text('CREATE TABLE IF NOT EXISTS datasets (dataset_id TEXT PRIMARY KEY, metadata TEXT NOT NULL, created_at TEXT NOT NULL)'))
             conn.execute(text('CREATE TABLE IF NOT EXISTS spatial_runs (run_id TEXT PRIMARY KEY, dataset_id TEXT NOT NULL, metadata TEXT NOT NULL, ranking TEXT NOT NULL)'))

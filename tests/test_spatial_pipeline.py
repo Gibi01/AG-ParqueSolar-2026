@@ -49,7 +49,7 @@ class SpatialPipelineTests(unittest.TestCase):
             settings.paths.results = Path(directory) / 'results'
             repo = SpatialRepository(Path(directory) / 'spatial.sqlite')
             try:
-                # Existing BAHRA snapshots have only this geometry schema.
+                # La fixture urbana contiene polígonos en el CRS métrico.
                 with repo.engine.begin() as connection:
                     connection.execute(text('CREATE TABLE layer_urban (dataset_id TEXT, geometry_wkt TEXT)'))
                 grid = run_preprocessing(settings, repo, region, urban, lines, stations, CompleteClimate())
@@ -61,7 +61,7 @@ class SpatialPipelineTests(unittest.TestCase):
                 self.assertTrue(mask.geometry.union_all().covers(Point(501000, 6601000)))
                 self.assertFalse(urban_exclusion_mask(grid.loc[grid.valid], mask).any())
                 result = cmd_optimize(settings, repo)
-                for raw in result.top10.cell_ids:
+                for raw in result.top5.cell_ids:
                     chosen = grid.loc[grid.cell_id.isin(json.loads(raw))]
                     self.assertFalse(urban_exclusion_mask(chosen, mask).any())
                 run = next(settings.paths.results.iterdir())
@@ -99,7 +99,7 @@ class SpatialPipelineTests(unittest.TestCase):
             for capacity in (40, 80, 120, 160):
                 settings.park.max_connection_capacity_mw = capacity
                 result = cmd_optimize(settings, repo)
-                self.assertTrue(result.top10.installed_power_mw.le(capacity).all())
+                self.assertTrue(result.top5.installed_power_mw.le(capacity).all())
             runs = list(settings.paths.results.iterdir())
             self.assertEqual(len(runs), 4)
             for run in runs:
